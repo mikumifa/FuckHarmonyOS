@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.chat.ChatFragment">
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        android:contentDescription="more"
+        android:textColor="@color/black"
+        app:backgroundTint="@color/accent_250"
+        app:elevation="6dp"
+        app:icon="@drawable/ic_add"
+        app:iconTint="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/input_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_add" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/btn_accent_tonal"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/refresh"
+        app:layout_constraintStart_toStartOf="@+id/refresh">
+
+        <!-- 添加水平排列的按钮 -->
+        <LinearLayout
+            android:id="@+id/photo_input"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/sheet_bg"
+            android:clickable="true"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/baseline_image_24"
+                android:orientation="vertical" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/add_location"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/btm_bg"
+            android:clickable="true"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/baseline_add_location_24"
+                android:orientation="vertical" />
+
+        </LinearLayout>
+
+        <!-- 添加更多水平排列的按钮 -->
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/activity_prompts_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/title_diray"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_bar"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/btn_accent_tonal"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_prompts_title">
+
+        <EditText
+            android:id="@+id/field_search"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/transparent"
+            android:ems="10"
+            android:hint="@string/hint_search"
+            android:inputType="text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_search"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/hint_search"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_search" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/input_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_bar" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintBottom_toTopOf="@+id/input_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date_line_choose">
+
+        <ListView
+            android:id="@+id/messages"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:listSelector="@android:color/transparent"
+            android:scrollbars="none"
+            android:stackFromBottom="true"
+            android:transcriptMode="alwaysScroll"
+            app:layout_constraintBottom_toTopOf="@+id/input_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/date_line_choose"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_bar">
+
+        <HorizontalScrollView
+            android:id="@+id/date_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/date_more"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="more"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/baseline_more_horiz_24"
+                        android:orientation="vertical" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_item_1"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="@string/date"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:text="test" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_item_2"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="@string/date"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:text="test" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_item_3"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="@string/date"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:text="test" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_item_4"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="@string/date"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:text="test" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_item_5"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="@string/date"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:text="test" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_item_6"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="@string/date"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:text="test" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_item_7"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="@string/date"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:text="test" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_item_8"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="@string/date"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:text="test" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_item_9"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="@string/date"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:text="test" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_item_10"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="@string/date"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:text="test" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_item_11"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="@string/date"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:text="test" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_item_12"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="@string/date"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:text="test" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_item_13"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="@string/date"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:text="test" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/date_item_14"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/date_item"
+                    android:clickable="true"
+                    android:contentDescription="@string/date"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:text="test" />
+                </LinearLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/input_layout"
+        android:layout_width="410dp"
+        android:layout_height="86dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/refresh">
+
+
+        <ImageButton
+            android:id="@+id/voice_btn"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/btm_bg"
+            android:contentDescription="语言输入"
+            android:src="@drawable/baseline_keyboard_voice_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/messageInput"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/messageInput"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="70dp"
+            android:layout_marginBottom="16dp"
+            android:autofillHints="message"
+            android:background="@drawable/btm_bg"
+            android:ems="10"
+            android:gravity="center_vertical"
+            android:hint="@string/hint_message"
+            android:inputType="text|textMultiLine"
+            android:isScrollContainer="true"
+            android:paddingLeft="12dp"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.366" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

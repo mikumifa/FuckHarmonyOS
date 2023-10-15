@@ -1,0 +1,28 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+
+    android:background="@drawable/sheet_bg"
+    android:orientation="horizontal">
+
+    <!-- 添加水平排列的按钮 -->
+    <ImageButton
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="4dp"
+
+        android:background="@drawable/btm_bg"
+        android:src="@drawable/baseline_image_24" />
+
+    <ImageButton
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="4dp"
+
+        android:background="@drawable/btm_bg"
+        android:src="@drawable/baseline_add_location_24" />
+
+    <!-- 添加更多水平排列的按钮 -->
+
+</LinearLayout>

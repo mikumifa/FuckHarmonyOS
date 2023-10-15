@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">chatDiary2</string>
+    <string name="creat_acount">Create an Account</string>
+    <string name="hey_there">Hey there,</string>
+    <string name="hide_password">hide password</string>
+    <string name="show_password">show password\n</string>
+    <string name="password">password</string>
+    <string name="email">email</string>
+    <string name="login">login</string>
+    <string name="Dont_have_acount">"Don't have an account yet? "</string>
+    <string name="register">Register</string>
+    <string name="login_your_acount">Login your Acount</string>
+    <string name="name">name</string>
+    <string name="have_acount">"Already have an account? "</string>
+    <string name="Login">Login</string>
+</resources>
