@@ -1,0 +1,3 @@
+[submodule "ChatDiary-backend"]
+	path = ChatDiary-backend
+	url = https://github.com/MisakaBryant/ChatDiary
