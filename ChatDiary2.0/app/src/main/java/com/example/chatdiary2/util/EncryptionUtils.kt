@@ -5,9 +5,8 @@ import androidx.security.crypto.MasterKey
 
 class EncryptionUtils(private val context: Context) {
 
-    private val masterKeyAlias = MasterKey.Builder(context)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
+    private val masterKeyAlias =
+        MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
 
     private val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
         context,
@@ -26,5 +25,21 @@ class EncryptionUtils(private val context: Context) {
 
     fun decrypt(key: String): String {
         return sharedPreferences.getString(key, "") ?: ""
+    }
+}
+
+object UserPref {
+    fun savePassword(userId: Long, username: String, password: String, context: Context) {
+
+        val encryptionUtils = EncryptionUtils(context)
+        encryptionUtils.encryptAndSave("userId", userId.toString())
+        encryptionUtils.encryptAndSave("password", password)
+        encryptionUtils.encryptAndSave("email", username)
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putBoolean("isLoggedIn", true)
+            apply()
+        }
     }
 }

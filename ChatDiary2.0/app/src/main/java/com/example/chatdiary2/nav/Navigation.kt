@@ -13,7 +13,9 @@ object Destination {
 }
 
 class Action(navController: NavController) {
+
+
     val toLogin: () -> Unit = { navController.navigate(Login) }
     val toRegister: () -> Unit = { navController.navigate(Register) }
-    val diary: () -> Unit = { navController.navigate(Diary) }
+    val toDiary: () -> Unit = { navController.navigate(Diary) }
 }

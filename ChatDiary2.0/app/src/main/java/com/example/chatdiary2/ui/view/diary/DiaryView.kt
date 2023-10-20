@@ -1,10 +1,24 @@
 package com.example.chatdiary2.ui.view.diary
 
+import EncryptionUtils
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Geocoder
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.widget.CalendarView
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +36,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
@@ -37,6 +52,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +65,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -57,20 +77,49 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.app.ActivityCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.compose.rememberNavController
+import androidx.tv.material3.ExperimentalTvMaterial3Api
 import com.example.chatdiary2.R
+import com.example.chatdiary2.data.Diary
 import com.example.chatdiary2.nav.Action
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale
+
+@Preview
+@Composable
+fun DiaryViewPreview(
+) {
+    val navController = rememberNavController()
+    val actions = remember(navController) {
+        Action(navController)
+    }
+    DiaryView(
+        actions, diaryViewModel = null
+    )
+}
+
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun DiaryView(action: Action) {
+fun DiaryView(
+    action: Action, diaryViewModel: DiaryViewModel? = hiltViewModel()
+) {
+    val context = LocalContext.current
+    var lifecycleOwner = LocalLifecycleOwner.current
+    val encryptionUtils = EncryptionUtils(context)
 
-    var searchText by rememberSaveable { mutableStateOf("") }
+    val useId = encryptionUtils.decrypt("userId").toLong()
+    var searchText by remember { mutableStateOf("") }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-
+    var diaryList = remember { mutableStateOf(emptyList<Diary>()) }
+    var hasSearchResult by remember { mutableStateOf(false) }
     Scaffold(
 
         content = {
@@ -80,42 +129,70 @@ fun DiaryView(action: Action) {
                     .background(color = MaterialTheme.colorScheme.background)
             ) {
                 Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.surfaceVariant)) {
-                    Title()
+                    Title(action)
                     Divider(
-                        color = Color.Gray, // 分割线颜色
-                        thickness = 0.5.dp, // 分割线厚度
+                        color = Color.Gray,
+                        thickness = 0.5.dp,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp) // 填充整个宽度
+                            .padding(16.dp)
                     )
-                    Search(searchText, onQueryChange = { }, onSearch = {})
+                    Search(searchText, onQueryChange = { searchText = it }, onSearch = {
+                        val searchDiary =
+                            diaryViewModel?.searchDiariesByKeywordFlow(useId, searchText)
+                        searchDiary?.observe(lifecycleOwner) {
+                            diaryList.value = it
+                            hasSearchResult = true
+                        }
+                    }, onCancel = {
+                        hasSearchResult = false
+                        searchText = ""
+                    })
                 }
-                LazyColumn(
+                Box(
                     Modifier
                         .padding(4.dp)
                         .fillMaxWidth()
                         .weight(1f)
                 ) {
-                    items(3) {
-                        DiaryItem("2023.12.14", "这是一个例子1", "南京", "TEXT", listOf("", ""))
-                        DiaryItem("2023.12.14", "这是一个例子2", "南京", "TEXT", listOf("", ""))
-                        DiaryItem("2023.12.14", "这是一个例子3", "南京", "TEXT", listOf("", ""))
+                    LazyColumn(
+                        Modifier.fillMaxSize()
+                    ) {
+
+                        val diary = diaryViewModel?.getDiariesFlow()
+                        diary!!.observe(lifecycleOwner) {
+                            if (!hasSearchResult) diaryList.value = it
+                        }
+                        items(diaryList.value.size) {
+                            val item = diaryList.value[it]
+                            DiaryItem(
+                                title = item.title,
+                                context = item.content,
+                                pos = item.position,
+                                type = item.type,
+                                imageUrls = emptyList<String>()
+                            )
+                        }
+
+                    }
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(10.dp)
+                    ) {
+                        DatePickerDialogButton(onDateSelected = {}, onDismissRequest = {})
                     }
                 }
+                InputDialog(useId, diaryViewModel!!) {
+                    val diary = diaryViewModel?.getDiariesFlow()
+                    diary!!.observe(lifecycleOwner) {
+                        if (!hasSearchResult) diaryList.value = it
+                    }
 
-                InputDialog()
-            }
-        },
-        floatingActionButton = {
-            DatePickerDialogButton(
-                onDateSelected = { newDate ->
-                    selectedDate = newDate
-                },
-                onDismissRequest = {
                 }
-            )
-        }
-    )
+
+            }
+        })
 
 }
 
@@ -181,13 +258,10 @@ fun DatePicker(onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit
                     )
                 }
 
-                TextButton(
-                    onClick = {
-                        onDateSelected(selDate.value)
-                        onDismissRequest()
-                    }
-                ) {
-                    //TODO - hardcode string
+                TextButton(onClick = {
+                    onDateSelected(selDate.value)
+                    onDismissRequest()
+                }) {
                     Text(
                         text = "OK",
                         style = MaterialTheme.typography.bodyMedium,
@@ -202,21 +276,17 @@ fun DatePicker(onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit
 
 @Composable
 fun DatePickerDialogButton(
-    onDateSelected: (LocalDate) -> Unit,
-    onDismissRequest: () -> Unit
+    onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit
 ) {
     var isDatePickerVisible by remember { mutableStateOf(false) }
     val selectedDate = remember { mutableStateOf(LocalDate.now()) }
-    FloatingActionButton(
-        onClick = { isDatePickerVisible = true },
-        content = {
-            Icon(
-                imageVector = Icons.Default.DateRange,
-                contentDescription = "Open Date Picker"
-            )
-        },
-        modifier = Modifier
-            .padding(end = 8.dp, bottom = 90.dp).size(70.dp) // 向上移动按钮并放在右下角
+    FloatingActionButton(onClick = { isDatePickerVisible = true }, content = {
+        Icon(
+            imageVector = Icons.Default.DateRange, contentDescription = "Open Date Picker"
+        )
+    }, modifier = Modifier
+        .padding(end = 8.dp, bottom = 90.dp)
+        .size(70.dp)
 
     )
     if (isDatePickerVisible) {
@@ -224,20 +294,16 @@ fun DatePickerDialogButton(
             onDismissRequest = {
                 isDatePickerVisible = false
                 onDismissRequest()
-            },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
+            }, properties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
-            DatePicker(
-                onDateSelected = {
-                    selectedDate.value = it
-                    isDatePickerVisible = false
-                    onDateSelected(it)
-                },
-                onDismissRequest = {
-                    isDatePickerVisible = false
-                    onDismissRequest()
-                }
-            )
+            DatePicker(onDateSelected = {
+                selectedDate.value = it
+                isDatePickerVisible = false
+                onDateSelected(it)
+            }, onDismissRequest = {
+                isDatePickerVisible = false
+                onDismissRequest()
+            })
         }
     }
 }
@@ -245,31 +311,24 @@ fun DatePickerDialogButton(
 @Composable
 fun CustomCalendarView(onDateSelected: (LocalDate) -> Unit) {
     // Adds view to Compose
-    AndroidView(
-        modifier = Modifier.wrapContentSize(),
-        factory = { context ->
-            CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom))
-        },
-        update = { view ->
-            view.setOnDateChangeListener { _, year, month, dayOfMonth ->
-                onDateSelected(
-                    LocalDate
-                        .now()
-                        .withMonth(month + 1)
-                        .withYear(year)
-                        .withDayOfMonth(dayOfMonth)
-                )
-            }
+    AndroidView(modifier = Modifier.wrapContentSize(), factory = { context ->
+        CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom))
+    }, update = { view ->
+        view.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            onDateSelected(
+                LocalDate.now().withMonth(month + 1).withYear(year).withDayOfMonth(dayOfMonth)
+            )
         }
-    )
+    })
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Search(
-    query: String, onQueryChange: (String) -> Unit, onSearch: () -> Unit
+    query: String, onQueryChange: (String) -> Unit, onSearch: () -> Unit, onCancel: () -> Unit
 ) {
+    val localFocusManager = LocalFocusManager.current
     var isExpanded by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
@@ -279,36 +338,66 @@ fun Search(
     ) {
         TextField(value = query, onValueChange = { newQuery ->
             onQueryChange(newQuery)
-        }, modifier = Modifier.weight(1f), // 占据剩余空间
+        }, modifier = Modifier.weight(1f),
             label = { Text(text = "Search...") }, keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Search
-            ), keyboardActions = KeyboardActions(onSearch = { onSearch() }), trailingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search",
-                    tint = Color.White
-                )
+            ), keyboardActions = KeyboardActions(onSearch = {
+                onSearch()
+                localFocusManager.clearFocus()
+            }), trailingIcon = {
+                if (query.isNotEmpty()) {
+                    Icon(imageVector = Icons.Default.Cancel,
+                        contentDescription = "Cancel",
+                        tint = Color.White,
+                        modifier = Modifier.clickable {
+                            onCancel()
+                        })
+                } else {
+                    Icon(imageVector = Icons.Default.Search,
+                        contentDescription = "Search",
+                        tint = Color.White,
+                        modifier = Modifier.clickable {
+                            onSearch()
+
+                        })
+                }
             })
 
     }
 }
 
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun Title() {
-    Row(
+fun Title(
+    action: Action
+) {
+    Box(
         modifier = Modifier
             .padding(start = 8.dp, end = 8.dp)
             .height(60.dp)
     ) {
+        // 定义边框样式
+
+        IconButton(
+            onClick = { action.toLogin() },
+            modifier = Modifier
+                .size(48.dp)
+                .align(Alignment.CenterStart)
+        ) {
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.baseline_logout_24),
+                contentDescription = "logout", tint = Color.White, modifier = Modifier.size(36.dp)
+            )
+        }
         Text(
             text = "Diary",
             style = MaterialTheme.typography.titleLarge.copy(
-                fontWeight = FontWeight.Bold, fontSize = 36.sp // 设置字体大小
+                fontWeight = FontWeight.Bold, fontSize = 36.sp
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.CenterVertically),
+                .align(Alignment.Center),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onPrimary
         )
@@ -316,46 +405,193 @@ fun Title() {
 
 }
 
+@Composable
+fun TimedDialog(
+    showDialog: MutableState<Boolean>,
+    durationMillis: Long,
+    title: String,
+    message: String,
+    onDismiss: () -> Unit
+) {
+    val visible = remember {
+        mutableStateOf(false)
+    }
+    LaunchedEffect(showDialog.value) {
+        if (showDialog.value) {
+            visible.value = true
+            delay(durationMillis)
+            visible.value = false
+            showDialog.value = false
+            onDismiss()
+        }
+    }
+
+    if (visible.value) {
+        Dialog(onDismissRequest = {}) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .background(MaterialTheme.colorScheme.primary)
+            ) {
+                Text(
+                    text = title,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = message, fontSize = 16.sp
+                )
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InputDialog() {
-    var text by rememberSaveable { mutableStateOf("") }
+fun InputDialog(
+    useId: Long, diaryViewModel: DiaryViewModel, onSent: () -> Unit
+) {
+    val context = LocalContext.current
+    val localFocusManager = LocalFocusManager.current
+    val text = rememberSaveable { mutableStateOf("") }
+    val isSending = remember { mutableStateOf(false) }
+    val sendingFailedDialogShown = remember { mutableStateOf(false) }
+    val area = rememberSaveable { mutableStateOf("") }
+    val locationListener: LocationListener = object : LocationListener {
+        override fun onLocationChanged(location: Location) {
+            diaryViewModel.viewModelScope.launch {
+                val geocoder = Geocoder(context, Locale.getDefault())
+                //               try {
+//                    val addresses =
+//                        geocoder.getFromLocation(location.latitude, location.longitude, 1)
+//
+//                    if (addresses != null) {
+//                        if (addresses.isNotEmpty()) {
+//                            val address = addresses[0]
+//                            area.value = address.locality
+//                        } else {
+//                            area.value = "unknown area"
+//                        }
+//                    }
+//                } catch (e: Exception) {
+//                    area.value = "unknown area"
+//                }
+                area.value = "unknown area"
+            }
+        }
+
+
+        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+        }
+
+        override fun onProviderEnabled(provider: String) {
+        }
+
+        override fun onProviderDisabled(provider: String) {
+        }
+    }
+    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+
+    if (area.value == "") {
+        if (ActivityCompat.checkSelfPermission(
+                context, Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context, Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            val requestPermissionLauncher = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                if (isGranted) {
+                    locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER, 1000,
+                        1.0f,
+                        locationListener
+                    )
+                }
+            }
+        } else {
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER, 1000,
+                1.0f,
+                locationListener
+            )
+        }
+    }
+
+    TimedDialog(showDialog = sendingFailedDialogShown,
+        durationMillis = 500,
+        title = "Failed",
+        message = "Failed to send",
+        onDismiss = {})
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
     ) {
+        val lifecycleOwner = LocalLifecycleOwner.current
         TextField(
-            value = text,
-            onValueChange = { text = it },
-            singleLine = false,
-            modifier = Modifier
-                .weight(1f) // 将文本输入框分配为 1 个权重，以填充剩余的空
-                .padding(8.dp),
-            shape = RoundedCornerShape(18.dp)
-
+            value = text.value, onValueChange = {
+                text.value = it
+                isSending.value = it.isNotBlank()
+            }, singleLine = false, modifier = Modifier
+                .weight(1f)
+                .padding(8.dp), shape = RoundedCornerShape(18.dp)
         )
-        IconButton(
-            onClick = { /*TODO*/ }, modifier = Modifier
-                .size(48.dp)
-                .background(
-                    MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp)
-                ) // 设置背景颜色
-                .clip(CircleShape) // 将按钮设置为圆形
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.baseline_keyboard_voice_24), // 使用自定义图标
-                contentDescription = "keyboard voice",
-                tint = Color.White,
-            )
+        if (isSending.value) {
+            IconButton(
+                onClick = {
+                    val res = diaryViewModel.addDiary(
+                        position = area.value, content = text.value, authorId = useId
+                    )
+                    res.observe(lifecycleOwner) {
+                        if (it == true) {
+                            text.value = ""
+                            isSending.value = false
+                            localFocusManager.clearFocus()
+                            onSent()
+                        } else {
+                            sendingFailedDialogShown.value = true
+                        }
+                    }
+                }, modifier = Modifier
+                    .size(48.dp)
+                    .background(
+                        MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp)
+                    )
+                    .clip(CircleShape)
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.baseline_send_24),
+                    contentDescription = "send",
+                    tint = Color.White
+                )
+            }
+        } else {
+            IconButton(
+                onClick = { /*TODO*/ }, modifier = Modifier
+                    .size(48.dp)
+                    .background(
+                        MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp)
+                    )
+                    .clip(CircleShape)
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.baseline_keyboard_voice_24),
+                    contentDescription = "keyboard voice",
+                    tint = Color.White,
+                )
+            }
         }
-        Spacer(modifier = Modifier.width(4.dp)) // 可选的空白间隔
+
+        Spacer(modifier = Modifier.width(4.dp))
     }
-
 }
-
 
 @Composable
 fun DiaryItem(
-    date: String, info: String, pos: String, type: String, imageUrls: List<String>
+    title: String, context: String, pos: String, type: String, imageUrls: List<String>
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -379,13 +615,11 @@ fun DiaryItem(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // 日期
                     Text(
-                        text = date,
+                        text = title,
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    // 类型
                     Text(
                         text = type,
                         style = MaterialTheme.typography.bodySmall,
@@ -393,26 +627,18 @@ fun DiaryItem(
                         modifier = Modifier.align(Alignment.CenterVertically)
                     )
                 }
-
-
                 Spacer(modifier = Modifier.height(8.dp))
-
-                // 信息
                 Text(
-                    text = info, style = MaterialTheme.typography.bodyMedium
+                    text = context, style = MaterialTheme.typography.bodyMedium
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
-                Spacer(modifier = Modifier.weight(1f)) // 推动位置信息到末尾, 因为是Colum, 所以没有竖直方向的布局
-                // 位置
+                Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = pos,
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.Gray,
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
-
             }
         }
     }

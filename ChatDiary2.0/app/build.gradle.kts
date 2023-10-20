@@ -1,7 +1,9 @@
 plugins {
     kotlin("kapt")
     id("com.android.application")
+    id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -10,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.chatdiary2"
-        minSdk = 28
+        minSdk = 30
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -48,10 +50,19 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    buildToolsVersion = "34.0.0"
 }
 
 dependencies {
-    implementation("com.google.dagger:hilt-android:2.48")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
+
+    implementation("androidx.room:room-common:2.5.2")
+    implementation("androidx.room:room-ktx:2.5.2")
+    implementation("androidx.tv:tv-material:1.0.0-alpha10")
+    // To use Kotlin Symbol Processing (KSP)
+    ksp("androidx.room:room-compiler:2.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("com.google.dagger:hilt-android:2.48.1")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("com.aallam.openai:openai-client:3.5.0")
@@ -84,4 +95,10 @@ dependencies {
 // Allow references to generated code
 kapt {
     correctErrorTypes = true
+    javacOptions {
+        // These options are normally set automatically via the Hilt Gradle plugin, but we
+        // set them manually to workaround a bug in the Kotlin 1.5.20
+        option("-Adagger.fastInit=ENABLED")
+        option("-Adagger.hilt.android.internal.disableAndroidSuperclassValidation=true")
+    }
 }
