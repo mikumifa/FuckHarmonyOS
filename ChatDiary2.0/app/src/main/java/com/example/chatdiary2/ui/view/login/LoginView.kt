@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -71,6 +72,17 @@ import com.example.chatdiary2.ui.theme.md_theme_light_outline
 import com.example.chatdiary2.ui.theme.md_theme_light_shadow
 
 @Composable
+fun LoadingComponent() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CircularProgressIndicator() // 显示一个进度条
+    }
+}
+
+@Composable
 fun LoginView(
     action: Action,
     loginViewModel: LoginViewModel = hiltViewModel(),
@@ -91,10 +103,14 @@ fun LoginView(
 
         val showDialogSuccess = remember { mutableStateOf(false) }
         val showDialogFailure = remember { mutableStateOf(false) }
+        val isLoading = remember { mutableStateOf(false) }
         ResultDialog(showDialogSuccess, "Login Success. Welcome!", "Success") {
             action.toDiary()
         }
         ResultDialog(showDialogFailure, "Login Failure. Error Login", "Failure") {}
+        if (isLoading.value) {
+            LoadingComponent()
+        }
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -111,7 +127,8 @@ fun LoginView(
                 passwordTextState.value = it
             }
             Spacer(modifier = Modifier.weight(1f))
-            ButtonComponent(value = stringResource(id = R.string.Login)) {
+            ButtonComponent(!isLoading.value, value = stringResource(id = R.string.Login)) {
+                isLoading.value = true
                 val loginUser =
                     loginViewModel.loginUser(emailTextState.value, passwordTextState.value)
                 loginUser.observe(lifecycleOwner) {
@@ -119,8 +136,11 @@ fun LoginView(
                         UserPref.savePassword(
                             it.id, emailTextState.value, passwordTextState.value, context
                         )
+                        isLoading.value = false
+
                         showDialogSuccess.value = true
                     } ?: run {
+                        isLoading.value = false
                         showDialogFailure.value = true
                     }
 
@@ -207,8 +227,10 @@ fun RegisterView(
         val showDialogSuccessMessage = remember { mutableStateOf("") }
         val showDialogFailure = remember { mutableStateOf(false) }
         val showDialogFailureMessage = remember { mutableStateOf("") }
-
-
+        val isLoading = remember { mutableStateOf(false) }
+        if (isLoading.value) {
+            LoadingComponent()
+        }
         ResultDialog(showDialogSuccess, showDialogSuccessMessage.value, "Success") {
             action.toLogin()
         }
@@ -233,16 +255,18 @@ fun RegisterView(
             }
             Spacer(modifier = Modifier.height(200.dp))
             Spacer(modifier = Modifier.weight(1f))
-            ButtonComponent(value = stringResource(id = R.string.register)) {
-
+            ButtonComponent(!isLoading.value, value = stringResource(id = R.string.register)) {
+                isLoading.value = false
                 val result = loginViewModel.registerUser(
                     nameTextState.value, passwordTextState.value, emailTextState.value
                 );
                 result.observe(lifecycleOwner) {
                     if (it.second) {
+                        isLoading.value = true
                         showDialogSuccess.value = true
                         showDialogSuccessMessage.value = it.first
                     } else {
+                        isLoading.value = true
                         showDialogFailure.value = true
                         showDialogFailureMessage.value = it.first
                     }
@@ -418,9 +442,10 @@ fun NormalTextField(
 
 
 @Composable
-fun ButtonComponent(value: String, onClick: () -> Unit) {
+fun ButtonComponent(enable: Boolean, value: String, onClick: () -> Unit) {
     Button(
         onClick = onClick,
+        enabled = enable,
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(48.dp),

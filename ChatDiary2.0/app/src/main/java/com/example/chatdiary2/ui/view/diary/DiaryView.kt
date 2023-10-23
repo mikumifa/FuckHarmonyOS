@@ -1,6 +1,7 @@
 package com.example.chatdiary2.ui.view.diary
 
 import EncryptionUtils
+import SpeechToTextUtil
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,6 +10,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.media.Image
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.widget.CalendarView
@@ -27,17 +29,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -46,6 +52,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -64,6 +71,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -93,17 +101,40 @@ import java.util.Locale
 
 @Preview
 @Composable
-fun DiaryViewPreview(
-) {
-    val navController = rememberNavController()
-    val actions = remember(navController) {
-        Action(navController)
-    }
-    DiaryView(
-        actions, diaryViewModel = null
-    )
+fun TimedDialogPreview() {
+    ErrorDialog("萨达 萨达大大打多少啊打算的阿三的")
 }
 
+@Composable
+fun ErrorDialog(text: String) {
+    Dialog(onDismissRequest = {}) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .background(MaterialTheme.colorScheme.errorContainer)
+                .width(200.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Error,
+                contentDescription = "",
+                modifier = Modifier
+                    .height(100.dp)
+                    .width(100.dp)
+                    .align(Alignment.CenterHorizontally),
+                tint = MaterialTheme.colorScheme.error
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = text,
+                fontSize = 25.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -120,6 +151,7 @@ fun DiaryView(
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     var diaryList = remember { mutableStateOf(emptyList<Diary>()) }
     var hasSearchResult by remember { mutableStateOf(false) }
+    var hasDateResult by remember { mutableStateOf(false) }
     Scaffold(
 
         content = {
@@ -138,8 +170,7 @@ fun DiaryView(
                             .padding(16.dp)
                     )
                     Search(searchText, onQueryChange = { searchText = it }, onSearch = {
-                        val searchDiary =
-                            diaryViewModel?.searchDiariesByKeywordFlow(useId, searchText)
+                        val searchDiary = diaryViewModel?.searchDiariesByKeywordFlow(searchText)
                         searchDiary?.observe(lifecycleOwner) {
                             diaryList.value = it
                             hasSearchResult = true
@@ -161,7 +192,7 @@ fun DiaryView(
 
                         val diary = diaryViewModel?.getDiariesFlow()
                         diary!!.observe(lifecycleOwner) {
-                            if (!hasSearchResult) diaryList.value = it
+                            if (!hasSearchResult && !hasDateResult) diaryList.value = it
                         }
                         items(diaryList.value.size) {
                             val item = diaryList.value[it]
@@ -180,7 +211,37 @@ fun DiaryView(
                             .align(Alignment.BottomEnd)
                             .padding(10.dp)
                     ) {
-                        DatePickerDialogButton(onDateSelected = {}, onDismissRequest = {})
+
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(10.dp)
+                    ) {
+                        if (!hasDateResult) {
+                            DatePickerDialogButton(onDateSelected = {
+                                hasDateResult = true
+                                val diary = diaryViewModel?.searchDiariesByDateFlow(it)
+                                diary!!.observe(lifecycleOwner) { data ->
+                                    diaryList.value = data
+                                }
+                            }, onDismissRequest = {})
+                        } else {
+                            FloatingActionButton(
+                                onClick = { hasDateResult = false },
+                                content = {
+                                    Icon(
+                                        imageVector = Icons.Default.Cancel,
+                                        contentDescription = "Cancel Date Search."
+                                    )
+                                },
+                                modifier = Modifier
+                                    .padding(end = 8.dp, bottom = 90.dp)
+                                    .size(70.dp)
+                            )
+                        }
+
                     }
                 }
                 InputDialog(useId, diaryViewModel!!) {
@@ -194,6 +255,12 @@ fun DiaryView(
             }
         })
 
+}
+
+@Preview
+@Composable
+fun DatePickerPreview() {
+    DatePicker({}, {})
 }
 
 @Composable
@@ -222,7 +289,7 @@ fun DatePicker(onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit
                 Text(
                     text = "Select date",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.size(24.dp))
@@ -230,7 +297,7 @@ fun DatePicker(onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit
                 Text(
                     text = selDate.value.format(DateTimeFormatter.ofPattern("MMM d, YYYY")),
                     style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onSurface
                 )
 
                 Spacer(modifier = Modifier.size(16.dp))
@@ -254,7 +321,7 @@ fun DatePicker(onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit
                     Text(
                         text = "Cancel",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -265,7 +332,7 @@ fun DatePicker(onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit
                     Text(
                         text = "OK",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -336,15 +403,20 @@ fun Search(
             .padding(start = 8.dp, end = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TextField(value = query, onValueChange = { newQuery ->
-            onQueryChange(newQuery)
-        }, modifier = Modifier.weight(1f),
-            label = { Text(text = "Search...") }, keyboardOptions = KeyboardOptions(
+        TextField(value = query,
+            onValueChange = { newQuery ->
+                onQueryChange(newQuery)
+            },
+            modifier = Modifier.weight(1f),
+            label = { Text(text = "Search...") },
+            keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Search
-            ), keyboardActions = KeyboardActions(onSearch = {
+            ),
+            keyboardActions = KeyboardActions(onSearch = {
                 onSearch()
                 localFocusManager.clearFocus()
-            }), trailingIcon = {
+            }),
+            trailingIcon = {
                 if (query.isNotEmpty()) {
                     Icon(imageVector = Icons.Default.Cancel,
                         contentDescription = "Cancel",
@@ -387,7 +459,9 @@ fun Title(
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.baseline_logout_24),
-                contentDescription = "logout", tint = Color.White, modifier = Modifier.size(36.dp)
+                contentDescription = "logout",
+                tint = Color.White,
+                modifier = Modifier.size(36.dp)
             )
         }
         Text(
@@ -405,13 +479,10 @@ fun Title(
 
 }
 
+
 @Composable
 fun TimedDialog(
-    showDialog: MutableState<Boolean>,
-    durationMillis: Long,
-    title: String,
-    message: String,
-    onDismiss: () -> Unit
+    showDialog: MutableState<Boolean>, durationMillis: Long, text: String, onDismiss: () -> Unit
 ) {
     val visible = remember {
         mutableStateOf(false)
@@ -427,24 +498,7 @@ fun TimedDialog(
     }
 
     if (visible.value) {
-        Dialog(onDismissRequest = {}) {
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .background(MaterialTheme.colorScheme.primary)
-            ) {
-                Text(
-                    text = title,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = message, fontSize = 16.sp
-                )
-            }
-        }
+        ErrorDialog(text)
     }
 }
 
@@ -453,12 +507,23 @@ fun TimedDialog(
 fun InputDialog(
     useId: Long, diaryViewModel: DiaryViewModel, onSent: () -> Unit
 ) {
+
     val context = LocalContext.current
     val localFocusManager = LocalFocusManager.current
     val text = rememberSaveable { mutableStateOf("") }
     val isSending = remember { mutableStateOf(false) }
     val sendingFailedDialogShown = remember { mutableStateOf(false) }
     val area = rememberSaveable { mutableStateOf("") }
+    var isRecording by remember { mutableStateOf(false) }
+    var isErrorShow = remember { mutableStateOf(false) }
+    var errorShowInfo by remember { mutableStateOf("") }
+    val speechToTextUtil = SpeechToTextUtil(LocalContext.current)
+    speechToTextUtil.setSpeechRecognitionListener(onSpeechRecognitionResult = {
+        text.value = it
+    }, onSpeechRecognitionError = {
+        isErrorShow.value = true
+        errorShowInfo = "语言识别失败"
+    })
     val locationListener: LocationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
             diaryViewModel.viewModelScope.launch {
@@ -495,6 +560,9 @@ fun InputDialog(
     val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
 
+
+
+
     if (area.value == "") {
         if (ActivityCompat.checkSelfPermission(
                 context, Manifest.permission.ACCESS_FINE_LOCATION
@@ -507,37 +575,37 @@ fun InputDialog(
             ) { isGranted: Boolean ->
                 if (isGranted) {
                     locationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER, 1000,
-                        1.0f,
-                        locationListener
+                        LocationManager.GPS_PROVIDER, 1000, 1.0f, locationListener
                     )
                 }
             }
         } else {
             locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER, 1000,
-                1.0f,
-                locationListener
+                LocationManager.GPS_PROVIDER, 1000, 1.0f, locationListener
             )
         }
     }
 
-    TimedDialog(showDialog = sendingFailedDialogShown,
-        durationMillis = 500,
-        title = "Failed",
-        message = "Failed to send",
+    TimedDialog(
+        showDialog = isErrorShow,
+        durationMillis = 1000,
+        text = errorShowInfo,
         onDismiss = {})
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
     ) {
         val lifecycleOwner = LocalLifecycleOwner.current
         TextField(
-            value = text.value, onValueChange = {
+            value = text.value,
+            onValueChange = {
                 text.value = it
                 isSending.value = it.isNotBlank()
-            }, singleLine = false, modifier = Modifier
+            },
+            singleLine = false,
+            modifier = Modifier
                 .weight(1f)
-                .padding(8.dp), shape = RoundedCornerShape(18.dp)
+                .padding(8.dp),
+            shape = RoundedCornerShape(18.dp)
         )
         if (isSending.value) {
             IconButton(
@@ -552,7 +620,8 @@ fun InputDialog(
                             localFocusManager.clearFocus()
                             onSent()
                         } else {
-                            sendingFailedDialogShown.value = true
+                            isErrorShow.value = true
+                            errorShowInfo = "发送失败"
                         }
                     }
                 }, modifier = Modifier
@@ -569,8 +638,19 @@ fun InputDialog(
                 )
             }
         } else {
-            IconButton(
-                onClick = { /*TODO*/ }, modifier = Modifier
+            IconToggleButton(
+                checked = isRecording, onCheckedChange = { isChecked ->
+                    // 在这里处理开始/停止录音的逻辑
+
+                    if (isChecked) {
+                        // 开始录音
+                        speechToTextUtil.startListening()
+                    } else {
+                        // 停止录音
+                        speechToTextUtil.stopListening()
+                    }
+                    isRecording = isChecked
+                }, modifier = Modifier
                     .size(48.dp)
                     .background(
                         MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp)
@@ -578,7 +658,8 @@ fun InputDialog(
                     .clip(CircleShape)
             ) {
                 Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.baseline_keyboard_voice_24),
+                    imageVector = if (!isRecording) ImageVector.vectorResource(R.drawable.baseline_keyboard_voice_24)
+                    else ImageVector.vectorResource(R.drawable.baseline_stop_24),
                     contentDescription = "keyboard voice",
                     tint = Color.White,
                 )
@@ -593,11 +674,11 @@ fun InputDialog(
 fun DiaryItem(
     title: String, context: String, pos: String, type: String, imageUrls: List<String>
 ) {
+    val scrollState = rememberScrollState()
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ), modifier = Modifier
-            .height(250.dp)
             .fillMaxWidth()
             .padding(8.dp)
     ) {
@@ -605,9 +686,11 @@ fun DiaryItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
+                .requiredHeightIn(max = 250.dp) // 设置最大高度为250dp
         ) {
             Column(
                 modifier = Modifier
+                    .verticalScroll(scrollState)
                     .fillMaxSize()
                     .padding(16.dp)
             ) {

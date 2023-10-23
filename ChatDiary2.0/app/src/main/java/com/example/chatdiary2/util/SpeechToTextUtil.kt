@@ -5,23 +5,26 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import java.util.*
+
 class SpeechToTextUtil(private val context: Context) {
-    interface SpeechRecognitionListener {
-        fun onSpeechRecognitionResult(result: String)
-        fun onSpeechRecognitionError(errorCode: Int)
-    }
+    var onSpeechRecognitionResult: ((String) -> Unit)? = null
+    var onSpeechRecognitionError: ((Int) -> Unit)? = null
 
     private var speechRecognizer: SpeechRecognizer? = null
-    private var listener: SpeechRecognitionListener? = null
 
-    fun setSpeechRecognitionListener(listener: SpeechRecognitionListener) {
-        this.listener = listener
+    fun setSpeechRecognitionListener(
+        onSpeechRecognitionResult: (String) -> Unit, onSpeechRecognitionError: (Int) -> Unit
+    ) {
+        this.onSpeechRecognitionResult = onSpeechRecognitionResult
+        this.onSpeechRecognitionError = onSpeechRecognitionError
     }
 
     fun startListening() {
         if (isSpeechRecognitionAvailable()) {
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            intent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
             speechRecognizer?.setRecognitionListener(object : RecognitionListener {
@@ -31,27 +34,32 @@ class SpeechToTextUtil(private val context: Context) {
                 override fun onBufferReceived(buffer: ByteArray?) {}
                 override fun onEndOfSpeech() {}
                 override fun onError(error: Int) {
-                    listener?.onSpeechRecognitionError(error)
+                    onSpeechRecognitionError?.let { it(error) }
                 }
+
                 override fun onResults(results: Bundle?) {
                     val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     if (matches != null && matches.isNotEmpty()) {
                         val recognizedText = matches[0]
-                        listener?.onSpeechRecognitionResult(recognizedText)
+                        onSpeechRecognitionResult?.let { it(recognizedText) }
                     }
                 }
+
                 override fun onPartialResults(partialResults: Bundle?) {}
                 override fun onEvent(eventType: Int, params: Bundle?) {}
             })
             speechRecognizer?.startListening(intent)
         }
     }
+
     fun stopListening() {
         speechRecognizer?.stopListening()
     }
+
     fun destroy() {
         speechRecognizer?.destroy()
     }
+
     private fun isSpeechRecognitionAvailable(): Boolean {
         val packageManager = context.packageManager
         return packageManager?.let {

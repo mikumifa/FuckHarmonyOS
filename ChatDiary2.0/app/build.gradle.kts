@@ -7,6 +7,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("release") {
+            storeFile = file("C:\\Users\\mikumifa\\Documents\\Code\\TXT\\android.jks")
+            storePassword = "ldxy041015"
+            keyAlias = "key0"
+            keyPassword = "ldxy041015"
+        }
+    }
     namespace = "com.example.chatdiary2"
     compileSdk = 34
 
@@ -30,7 +38,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField ("String", "BASE_URL", "\"http://8.130.127.94:8080\"")
+            signingConfig = signingConfigs.getByName("release")
         }
+        debug {
+            buildConfigField ("String", "BASE_URL", "\"http://10.0.2.2:8080\"")
+        }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -41,6 +55,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"

@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         requestPermissions(arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION), 100)
         requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 100)
-
+        requestPermissions(arrayOf(android.Manifest.permission.RECORD_AUDIO), 100)
         val dexOutputDir: File = codeCacheDir
         dexOutputDir.setReadOnly()
         setContent {

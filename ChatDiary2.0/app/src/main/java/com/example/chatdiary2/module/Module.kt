@@ -4,12 +4,14 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.room.Room
 import androidx.room.TypeConverter
-import com.example.chatdiary2.config.BuildConfig
+import com.example.chatdiary2.config.ConfigBuild
 import com.example.chatdiary2.config.Constants
 import com.example.chatdiary2.service.DiaryService
 import com.example.chatdiary2.service.UserService
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,6 +22,7 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.DateFormat
 import java.util.Date
 import javax.inject.Singleton
 
@@ -47,7 +50,7 @@ object Module {
         val builder = OkHttpClient.Builder().addInterceptor(addCookieInterceptor)
             .addInterceptor(receivedCookiesInterceptor)
 
-        if (BuildConfig.DEBUG) {
+        if (ConfigBuild.DEBUG) {
             builder.addInterceptor(HttpLoggingInterceptor())
             builder.addInterceptor(HttpLoggingInterceptor { message ->
                 val strLength: Int = message.length
