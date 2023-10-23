@@ -68,6 +68,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.chatdiary2.R
 import com.example.chatdiary2.nav.Action
+import com.example.chatdiary2.nav.Destination
 import com.example.chatdiary2.ui.theme.md_theme_light_outline
 import com.example.chatdiary2.ui.theme.md_theme_light_shadow
 
@@ -105,7 +106,12 @@ fun LoginView(
         val showDialogFailure = remember { mutableStateOf(false) }
         val isLoading = remember { mutableStateOf(false) }
         ResultDialog(showDialogSuccess, "Login Success. Welcome!", "Success") {
-            action.toDiary()
+            action.toDiary() {
+                popUpTo(Destination.Login) {
+                    inclusive = true
+                }
+
+            }
         }
         ResultDialog(showDialogFailure, "Login Failure. Error Login", "Failure") {}
         if (isLoading.value) {
@@ -177,7 +183,12 @@ fun LoginView(
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Normal
                 ), onClick = {
-                    action.toRegister()
+                    action.toRegister() {
+                        popUpTo(Destination.Login) {
+                            inclusive = true
+                        }
+
+                    }
                 })
             }
             Spacer(modifier = Modifier.height(80.dp))
@@ -232,7 +243,11 @@ fun RegisterView(
             LoadingComponent()
         }
         ResultDialog(showDialogSuccess, showDialogSuccessMessage.value, "Success") {
-            action.toLogin()
+            action.toLogin() {
+                popUpTo(action.navController.graph.startDestinationId) {
+                    inclusive = true
+                }
+            }
         }
         ResultDialog(showDialogFailure, showDialogFailureMessage.value, "Failure") {
 
@@ -256,17 +271,17 @@ fun RegisterView(
             Spacer(modifier = Modifier.height(200.dp))
             Spacer(modifier = Modifier.weight(1f))
             ButtonComponent(!isLoading.value, value = stringResource(id = R.string.register)) {
-                isLoading.value = false
+                isLoading.value = true
                 val result = loginViewModel.registerUser(
                     nameTextState.value, passwordTextState.value, emailTextState.value
                 );
                 result.observe(lifecycleOwner) {
                     if (it.second) {
-                        isLoading.value = true
+                        isLoading.value = false
                         showDialogSuccess.value = true
                         showDialogSuccessMessage.value = it.first
                     } else {
-                        isLoading.value = true
+                        isLoading.value = false
                         showDialogFailure.value = true
                         showDialogFailureMessage.value = it.first
                     }
@@ -302,7 +317,11 @@ fun RegisterView(
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Normal
                 ), onClick = {
-                    action.toLogin()
+                    action.toLogin() {
+                        popUpTo(Destination.Register) {
+                            inclusive = true
+                        }
+                    }
                 })
             }
             Spacer(modifier = Modifier.height(80.dp))
