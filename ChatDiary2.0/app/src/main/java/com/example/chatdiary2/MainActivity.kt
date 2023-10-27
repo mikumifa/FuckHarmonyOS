@@ -8,6 +8,7 @@ import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.remember
+import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -17,6 +18,7 @@ import com.example.chatdiary2.ui.theme.ChatDiary2Theme
 import com.example.chatdiary2.ui.view.diary.DiaryView
 import com.example.chatdiary2.ui.view.login.LoginView
 import com.example.chatdiary2.ui.view.login.RegisterView
+import com.example.chatdiary2.ui.view.main.MainComponent
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
@@ -55,11 +57,14 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(Destination.Diary) {
                     ChatDiary2Theme {
-
                         DiaryView(action = actions)
                     }
                 }
-
+                composable(Destination.Main) {
+                    ChatDiary2Theme {
+                        MainComponent(action = actions)
+                    }
+                }
             }
         }
 

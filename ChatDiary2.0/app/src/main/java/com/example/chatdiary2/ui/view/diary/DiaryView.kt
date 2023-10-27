@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -178,9 +179,7 @@ fun ErrorDialog(text: String) {
 }
 
 data class DrawerMenu(
-    val icon: ImageVector,
-    val title: String,
-    val onClick: (actions: Action) -> Unit
+    val icon: ImageVector, val title: String, val onClick: (actions: Action) -> Unit
 )
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -198,146 +197,113 @@ fun DiaryView(
     var diaryList = remember { mutableStateOf(emptyList<Diary>()) }
     var hasSearchResult by remember { mutableStateOf(false) }
     var hasDateResult by remember { mutableStateOf(false) }
-    val showBottomBar = remember { mutableStateOf(true) }
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val items = listOf(Icons.Default.Close, Icons.Default.Clear, Icons.Default.Call)
-    val selectedItem = remember { mutableStateOf(items[0]) }
-    val scope = rememberCoroutineScope()
-    val selectedIndex = remember { mutableStateOf(0) }
-    val value = arrayOf(
-        BarItem(Icons.Default.Note, "Diary") {
+    Scaffold(topBar = {
+        TopBar("Diary", {
+            IconButton(onClick = { action.navController.navigateUp() }) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Localized description"
+                )
+            }
+        }, {
+            IconButton(onClick = { /* do something */ }) {
+                Icon(
+                    imageVector = Icons.Filled.MoreHoriz,
+                    contentDescription = "Localized description"
+                )
+            }
+        })
 
-            Column(
-                modifier = Modifier
+    }, content = {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.background)
+        ) {
+            Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.surfaceVariant)) {
+                Search(searchText, onQueryChange = { searchText = it }, onSearch = {
+                    val searchDiary = diaryViewModel?.searchDiariesByKeywordFlow(searchText)
+                    searchDiary?.observe(lifecycleOwner) {
+                        diaryList.value = it
+                        hasSearchResult = true
+                    }
+                }, onCancel = {
+                    hasSearchResult = false
+                    searchText = ""
+                }
+                )
+            }
+            Box(
+                Modifier
+                    .padding(4.dp)
                     .fillMaxWidth()
-                    .padding(it)
-                    .background(color = MaterialTheme.colorScheme.background)
+                    .weight(1f)
             ) {
-                Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.surfaceVariant)) {
-                    Search(searchText, onQueryChange = { searchText = it }, onSearch = {
-                        val searchDiary = diaryViewModel?.searchDiariesByKeywordFlow(searchText)
-                        searchDiary?.observe(lifecycleOwner) {
-                            diaryList.value = it
-                            hasSearchResult = true
-                        }
-                    }, onCancel = {
-                        hasSearchResult = false
-                        searchText = ""
-                    }, showBottomBar
-                    )
-                }
-                Box(
-                    Modifier
-                        .padding(4.dp)
-                        .fillMaxWidth()
-                        .weight(1f)
+                LazyColumn(
+                    Modifier.fillMaxSize()
                 ) {
-                    LazyColumn(
-                        Modifier.fillMaxSize()
-                    ) {
 
-                        val diary = diaryViewModel?.getDiariesFlow()
-                        diary!!.observe(lifecycleOwner) {
-                            if (!hasSearchResult && !hasDateResult) diaryList.value = it
-                        }
-                        items(diaryList.value.size) {
-                            val item = diaryList.value[it]
-                            DiaryItem(
-                                title = item.title,
-                                context = item.content,
-                                pos = item.position,
-                                type = item.type,
-                                imageUrls = emptyList<String>()
-                            )
-                        }
-
-                    }
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(10.dp)
-                    ) {
-
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(10.dp)
-                    ) {
-                        if (!hasDateResult) {
-                            DatePickerDialogButton(onDateSelected = {
-                                hasDateResult = true
-                                val diary = diaryViewModel?.searchDiariesByDateFlow(it)
-                                diary!!.observe(lifecycleOwner) { data ->
-                                    diaryList.value = data
-                                }
-                            }, onDismissRequest = {})
-                        } else {
-                            FloatingActionButton(
-                                onClick = { hasDateResult = false },
-                                content = {
-                                    Icon(
-                                        imageVector = Icons.Default.Cancel,
-                                        contentDescription = "Cancel Date Search."
-                                    )
-                                },
-                                modifier = Modifier
-                                    .padding(end = 8.dp, bottom = 90.dp)
-                                    .size(70.dp)
-                            )
-                        }
-
-                    }
-                }
-                InputDialog(useId, diaryViewModel!!, showBottomBar = showBottomBar, onSent = {
                     val diary = diaryViewModel?.getDiariesFlow()
                     diary!!.observe(lifecycleOwner) {
-                        if (!hasSearchResult) diaryList.value = it
+                        if (!hasSearchResult && !hasDateResult) diaryList.value = it
                     }
-                })
-            }
+                    items(diaryList.value.size) {
+                        val item = diaryList.value[it]
+                        DiaryItem(
+                            title = item.title,
+                            context = item.content,
+                            pos = item.position,
+                            type = item.type,
+                            imageUrls = emptyList<String>()
+                        )
+                    }
 
-        },
-        BarItem(Icons.Default.Home, "Home") {
-
-        },
-        BarItem(Icons.Default.Person, "Profile") {
-
-        }
-    )
-
-    ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
-        DrawerContent(action) {}
-    }, content = {
-        Scaffold(topBar = {
-
-            TopBar("Diary", {
-                IconButton(onClick = {
-                    scope.launch { drawerState.open() }
-                }) {
-                    Icon(
-                        imageVector = Icons.Filled.Menu,
-                        contentDescription = "Localized description"
-                    )
                 }
-            }, {
-                IconButton(onClick = { /* do something */ }) {
-                    Icon(
-                        imageVector = Icons.Filled.MoreHoriz,
-                        contentDescription = "Localized description"
-                    )
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(10.dp)
+                ) {
+
+                }
+// 暂时舍弃
+//                Box(
+//                    modifier = Modifier
+//                        .align(Alignment.BottomEnd)
+//                        .padding(10.dp)
+//                ) {
+//                    if (!hasDateResult) {
+//                        DatePickerDialogButton(onDateSelected = {
+//                            hasDateResult = true
+//                            val diary = diaryViewModel?.searchDiariesByDateFlow(it)
+//                            diary!!.observe(lifecycleOwner) { data ->
+//                                diaryList.value = data
+//                            }
+//                        }, onDismissRequest = {})
+//                    } else {
+//                        FloatingActionButton(onClick = { hasDateResult = false }, content = {
+//                            Icon(
+//                                imageVector = Icons.Default.Cancel,
+//                                contentDescription = "Cancel Date Search."
+//                            )
+//                        }, modifier = Modifier
+//                            .padding(end = 8.dp, bottom = 90.dp)
+//                            .size(70.dp)
+//                        )
+//                    }
+//
+//                }
+            }
+            InputDialog(useId, diaryViewModel!!, onSent = {
+                val diary = diaryViewModel?.getDiariesFlow()
+                diary!!.observe(lifecycleOwner) {
+                    if (!hasSearchResult) diaryList.value = it
                 }
             })
-
-        }, bottomBar = {
-            if (showBottomBar.value) {
-                BottomBar(action, selectedIndex, value)
-            }
-        }, content = {
-            value[selectedIndex.value].context(it)
-        })
+        }
     })
+
+
 }
 
 @Preview
@@ -480,8 +446,8 @@ fun Search(
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit,
     onCancel: () -> Unit,
-    showBottomBar: MutableState<Boolean>
-) {
+
+    ) {
     val localFocusManager = LocalFocusManager.current
     var isExpanded by remember { mutableStateOf(false) }
     Row(
@@ -496,10 +462,7 @@ fun Search(
             },
             modifier = Modifier
                 .weight(1f)
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .onFocusChanged {
-                    showBottomBar.value = !it.isFocused
-                },
+                .background(MaterialTheme.colorScheme.primaryContainer),
             label = {
                 Text(
                     text = "Search...",
@@ -570,7 +533,6 @@ fun InputDialog(
     useId: Long,
     diaryViewModel: DiaryViewModel,
     onSent: () -> Unit,
-    showBottomBar: MutableState<Boolean>
 ) {
 
     val context = LocalContext.current
@@ -683,7 +645,6 @@ fun InputDialog(
                     .padding(4.dp)
                     .onFocusChanged {
                         isToolbarShow.value = it.isFocused
-                        showBottomBar.value = !it.isFocused
                         if (!it.isFocused) {
                             keyboardController?.hide()
                         }

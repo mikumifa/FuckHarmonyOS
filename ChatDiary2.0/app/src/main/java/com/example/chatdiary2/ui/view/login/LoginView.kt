@@ -106,7 +106,7 @@ fun LoginView(
         val showDialogFailure = remember { mutableStateOf(false) }
         val isLoading = remember { mutableStateOf(false) }
         ResultDialog(showDialogSuccess, "Login Success. Welcome!", "Success") {
-            action.toDiary() {
+            action.toMain() {
                 popUpTo(Destination.Login) {
                     inclusive = true
                 }
