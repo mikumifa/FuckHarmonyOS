@@ -84,6 +84,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberTopAppBarState
@@ -124,27 +125,52 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.compose.rememberNavController
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import com.example.chatdiary2.R
 import com.example.chatdiary2.data.Diary
 import com.example.chatdiary2.nav.Action
-import com.example.chatdiary2.nav.Destination
-import com.example.chatdiary2.ui.view.nav.BarItem
-import com.example.chatdiary2.ui.view.nav.BottomBar
-import com.example.chatdiary2.ui.view.nav.TopBar
-import com.example.chatdiary2.ui.view.sideDrawer.DrawerContent
-import com.example.chatdiary2.ui.view.sideDrawer.DrawerMenu
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun TimedDialogPreview() {
     ErrorDialog("萨达 萨达大大打多少啊打算的阿三的")
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+fun TopBarPreview() {
+
+    TopAppBar(title = {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                "Diary",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            val currentDate =
+                SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(Date())
+            Text(
+                currentDate,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+
+    })
 }
 
 @Composable
@@ -186,7 +212,9 @@ data class DrawerMenu(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiaryView(
-    action: Action, diaryViewModel: DiaryViewModel? = hiltViewModel()
+    action: Action,
+    diaryViewModel: DiaryViewModel? = hiltViewModel(),
+    myDate: LocalDate = LocalDate.now()
 ) {
     val context = LocalContext.current
     var lifecycleOwner = LocalLifecycleOwner.current
@@ -198,14 +226,34 @@ fun DiaryView(
     var hasSearchResult by remember { mutableStateOf(false) }
     var hasDateResult by remember { mutableStateOf(false) }
     Scaffold(topBar = {
-        TopBar("Diary", {
+        TopAppBar(title = {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    "Diary",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                val currentDate =
+                    SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(Date())
+                Text(
+                    currentDate,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }, navigationIcon = {
             IconButton(onClick = { action.navController.navigateUp() }) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Localized description"
                 )
             }
-        }, {
+        }, actions = {
             IconButton(onClick = { /* do something */ }) {
                 Icon(
                     imageVector = Icons.Filled.MoreHoriz,
@@ -219,10 +267,12 @@ fun DiaryView(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = MaterialTheme.colorScheme.background)
+                .padding(paddingValues = it)
         ) {
             Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.surfaceVariant)) {
                 Search(searchText, onQueryChange = { searchText = it }, onSearch = {
-                    val searchDiary = diaryViewModel?.searchDiariesByKeywordFlow(searchText)
+                    val searchDiary =
+                        diaryViewModel?.searchDiariesByKeywordFlowAndDate(searchText, myDate)
                     searchDiary?.observe(lifecycleOwner) {
                         diaryList.value = it
                         hasSearchResult = true
@@ -243,7 +293,7 @@ fun DiaryView(
                     Modifier.fillMaxSize()
                 ) {
 
-                    val diary = diaryViewModel?.getDiariesFlow()
+                    val diary = diaryViewModel?.searchDiariesByDateFlow(myDate)
                     diary!!.observe(lifecycleOwner) {
                         if (!hasSearchResult && !hasDateResult) diaryList.value = it
                     }
@@ -266,37 +316,10 @@ fun DiaryView(
                 ) {
 
                 }
-// 暂时舍弃
-//                Box(
-//                    modifier = Modifier
-//                        .align(Alignment.BottomEnd)
-//                        .padding(10.dp)
-//                ) {
-//                    if (!hasDateResult) {
-//                        DatePickerDialogButton(onDateSelected = {
-//                            hasDateResult = true
-//                            val diary = diaryViewModel?.searchDiariesByDateFlow(it)
-//                            diary!!.observe(lifecycleOwner) { data ->
-//                                diaryList.value = data
-//                            }
-//                        }, onDismissRequest = {})
-//                    } else {
-//                        FloatingActionButton(onClick = { hasDateResult = false }, content = {
-//                            Icon(
-//                                imageVector = Icons.Default.Cancel,
-//                                contentDescription = "Cancel Date Search."
-//                            )
-//                        }, modifier = Modifier
-//                            .padding(end = 8.dp, bottom = 90.dp)
-//                            .size(70.dp)
-//                        )
-//                    }
-//
-//                }
             }
             InputDialog(useId, diaryViewModel!!, onSent = {
-                val diary = diaryViewModel?.getDiariesFlow()
-                diary!!.observe(lifecycleOwner) {
+                val diary = diaryViewModel.searchDiariesByDateFlow(myDate)
+                diary.observe(lifecycleOwner) {
                     if (!hasSearchResult) diaryList.value = it
                 }
             })

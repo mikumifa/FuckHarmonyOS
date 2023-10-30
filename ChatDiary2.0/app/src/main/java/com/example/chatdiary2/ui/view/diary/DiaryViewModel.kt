@@ -86,6 +86,33 @@ class DiaryViewModel @Inject constructor(private val diaryService: DiaryService)
         return resultLiveData
     }
 
+    fun searchDiariesByKeywordFlowAndDate(
+        keyword: String,
+        targetDate: LocalDate
+    ): MutableLiveData<List<Diary>> {
+        val resultLiveData = MutableLiveData<List<Diary>>()
+        viewModelScope.launch {
+            flow {
+                emit(diaryService.getDiaries())
+            }.collect {
+                val filteredDiaries = it.data?.filter { diary ->
+                    diary.content.contains(keyword, ignoreCase = true) &&
+                            if (diary.timestamp != null) {
+                                val diaryDate =
+                                    diary.timestamp.toInstant().atZone(ZoneId.systemDefault())
+                                        .toLocalDate()
+                                diaryDate == targetDate
+                            } else {
+                                false
+                            }
+                }
+                val sortedData = filteredDiaries?.sortedByDescending { data -> data.timestamp }
+                resultLiveData.value = sortedData
+            }
+        }
+        return resultLiveData
+    }
+
     fun searchDiariesByDateFlow(targetDate: LocalDate): MutableLiveData<List<Diary>> {
         val resultLiveData = MutableLiveData<List<Diary>>()
         viewModelScope.launch {
