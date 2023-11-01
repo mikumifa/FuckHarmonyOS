@@ -1,7 +1,10 @@
 package com.example.chatdiary2.ui.view.main
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Home
@@ -20,7 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import com.example.chatdiary2.nav.Action
+import com.example.chatdiary2.ui.view.chat.ChatScreen
 import com.example.chatdiary2.ui.view.nav.BarItem
 import com.example.chatdiary2.ui.view.nav.BottomBar
 import com.example.chatdiary2.ui.view.nav.TopBar
@@ -36,14 +41,15 @@ fun MainComponent(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val selectedIndex = remember { mutableStateOf(0) }
-    val value =
-        arrayOf(
-            BarItem(Icons.Default.Note, "Diary") { DiaryIn(action = action, it) },
-            BarItem(Icons.Default.Home, "Home") {
+    val value = arrayOf(BarItem(Icons.Default.Note, "Diary") { DiaryIn(action = action, it) },
+        BarItem(Icons.Default.Chat, "Chat") {
+            Box(modifier = Modifier.padding(it)) {
+                ChatScreen(action = action)
+            }
+        },
+        BarItem(Icons.Default.Person, "Profile") {
 
-            }, BarItem(Icons.Default.Person, "Profile") {
-
-            })
+        })
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
         DrawerContent(action) {}
     }, content = {

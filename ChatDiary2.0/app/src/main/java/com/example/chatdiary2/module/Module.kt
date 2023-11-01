@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.room.TypeConverter
 import com.example.chatdiary2.config.ConfigBuild
 import com.example.chatdiary2.config.Constants
+import com.example.chatdiary2.service.ChatService
 import com.example.chatdiary2.service.DiaryService
 import com.example.chatdiary2.service.UserService
 import com.google.gson.FieldNamingPolicy
@@ -24,6 +25,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.text.DateFormat
 import java.util.Date
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -47,7 +49,11 @@ object Module {
         val addCookieInterceptor = AddCookieInterceptor(sharedPreferences)
         val receivedCookiesInterceptor = ReceivedCookiesInterceptor(sharedPreferences)
 
-        val builder = OkHttpClient.Builder().addInterceptor(addCookieInterceptor)
+        val builder = OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS)  // 设置连接超时为60秒
+            .readTimeout(60, TimeUnit.SECONDS)     // 设置读取超时为60秒
+            .writeTimeout(60, TimeUnit.SECONDS)    // 设置写入超时为60秒
+            .addInterceptor(addCookieInterceptor)
             .addInterceptor(receivedCookiesInterceptor)
 
         if (ConfigBuild.DEBUG) {
@@ -78,6 +84,10 @@ object Module {
     @Provides
     fun provideDiaryService(retrofit: Retrofit): DiaryService =
         retrofit.create(DiaryService::class.java)
+
+    @Provides
+    fun provideChatService(retrofit: Retrofit): ChatService =
+        retrofit.create(ChatService::class.java)
 }
 
 class Converters {

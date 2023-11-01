@@ -73,7 +73,7 @@ import com.example.chatdiary2.ui.theme.md_theme_light_outline
 import com.example.chatdiary2.ui.theme.md_theme_light_shadow
 
 @Composable
-fun LoadingComponent() {
+private fun LoadingComponent() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

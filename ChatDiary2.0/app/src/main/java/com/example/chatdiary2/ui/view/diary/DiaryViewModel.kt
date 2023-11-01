@@ -11,7 +11,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -20,7 +22,6 @@ data class DiaryRequest(
     val title: String,
     val content: String,
     val timestamp: String,
-
     val position: String,
     val type: String,
 )
@@ -31,9 +32,8 @@ class DiaryViewModel @Inject constructor(private val diaryService: DiaryService)
     fun addDiary(
         type: String = "TXT", position: String, content: String, authorId: Long
     ): MutableLiveData<Boolean> {
-        val dateFormat = SimpleDateFormat("MMM dd, yyyy hh:mm:ss a", Locale.US)
-        val currentDate = SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(Date())
-        // Create a SimpleDateFormat object with the desired pattern
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS",Locale.US)
+        val currentDate = SimpleDateFormat("MMM d, yyyy", Locale.US).format(Date())
         val newDiary = DiaryRequest(
             title = currentDate,
             content = content,
@@ -48,7 +48,6 @@ class DiaryViewModel @Inject constructor(private val diaryService: DiaryService)
             }.onSuccess {
                 result.value = true
             }.onFailure {
-                val error = it.message
                 result.value = false
             }
         }
@@ -97,13 +96,12 @@ class DiaryViewModel @Inject constructor(private val diaryService: DiaryService)
             }.collect {
                 val filteredDiaries = it.data?.filter { diary ->
                     diary.content.contains(keyword, ignoreCase = true) &&
-                            if (diary.timestamp != null) {
-                                val diaryDate =
-                                    diary.timestamp.toInstant().atZone(ZoneId.systemDefault())
-                                        .toLocalDate()
+                            run {
+                                val formatter =
+                                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS",Locale.US)
+                                val diaryDateTime = LocalDateTime.parse(diary.timestamp, formatter)
+                                val diaryDate = diaryDateTime.toLocalDate()
                                 diaryDate == targetDate
-                            } else {
-                                false
                             }
                 }
                 val sortedData = filteredDiaries?.sortedByDescending { data -> data.timestamp }
@@ -120,12 +118,12 @@ class DiaryViewModel @Inject constructor(private val diaryService: DiaryService)
                 emit(diaryService.getDiaries())
             }.collect {
                 val filteredDiaries = it.data?.filter { diary ->
-                    if (diary.timestamp != null) {
-                        val diaryDate =
-                            diary.timestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                    run {
+                        val formatter =
+                            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+                        val diaryDateTime = LocalDateTime.parse(diary.timestamp, formatter)
+                        val diaryDate = diaryDateTime.toLocalDate()
                         diaryDate == targetDate
-                    } else {
-                        false
                     }
 
 
