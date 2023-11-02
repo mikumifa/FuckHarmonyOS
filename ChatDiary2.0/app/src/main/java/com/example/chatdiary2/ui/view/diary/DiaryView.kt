@@ -12,6 +12,8 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.media.Image
 import android.os.Bundle
+import android.text.Selection
+import android.text.Spannable
 import android.view.ContextThemeWrapper
 import android.widget.CalendarView
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -82,6 +84,7 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -123,8 +126,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -567,7 +572,7 @@ fun InputDialog(
 
     val context = LocalContext.current
     val localFocusManager = LocalFocusManager.current
-    val text = rememberSaveable { mutableStateOf("") }
+    var text by remember { mutableStateOf(TextFieldValue()) }
     val isSending = remember { mutableStateOf(false) }
     val area = rememberSaveable { mutableStateOf("") }
     var isRecording by remember { mutableStateOf(false) }
@@ -580,7 +585,7 @@ fun InputDialog(
 
     var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
     speechToTextUtil.setSpeechRecognitionListener(onSpeechRecognitionResult = {
-        text.value = it
+        text = text.copy(text = it)
     }, onSpeechRecognitionError = {
         isErrorShow.value = true
         errorShowInfo = "语言识别失败"
@@ -625,8 +630,7 @@ fun InputDialog(
         }
     }
 
-    TimedDialog(
-        showDialog = isErrorShow,
+    TimedDialog(showDialog = isErrorShow,
         durationMillis = 1000,
         text = errorShowInfo,
         onDismiss = {})
@@ -647,41 +651,36 @@ fun InputDialog(
                     contentDescription = "send",
                 )
             }
-            TextField(
-                value = text.value,
-                onValueChange = {
-                    text.value = it
-                    isSending.value = it.isNotBlank()
-                },
+            OutlinedTextField(value = text, onValueChange = {
+                text = it
+                isSending.value = it.text.isNotBlank()
+            },
 
-                singleLine = false,
-                modifier = Modifier
+                singleLine = false, modifier = Modifier
                     .weight(1f)
                     .onFocusChanged {
-                        if (textFieldFocusState!=it.isFocused) {
+                        if (textFieldFocusState != it.isFocused) {
                             currentInputSelector = InputSelector.NONE
                         }
-                        textFieldFocusState=it.isFocused
+                        textFieldFocusState = it.isFocused
                     }
                     .padding(4.dp),
 
-                shape = RoundedCornerShape(18.dp),
-                colors = TextFieldDefaults.textFieldColors(
+                shape = RoundedCornerShape(18.dp), colors = TextFieldDefaults.textFieldColors(
                     disabledTextColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent
-                )
-            )
+                ))
             if (isSending.value) {
                 IconButton(
                     onClick = {
                         val res = diaryViewModel.addDiary(
-                            position = area.value, content = text.value, authorId = useId
+                            position = area.value, content = text.text, authorId = useId
                         )
                         res.observe(lifecycleOwner) {
                             if (it == true) {
-                                text.value = ""
+                                text = TextFieldValue()
                                 isSending.value = false
                                 onSent()
                             } else {
@@ -765,7 +764,15 @@ fun InputDialog(
             }
             SelectorExpanded(
                 onTextAdded = {
-                    text.value = text.value + it
+                    val currentText = text.text
+                    val cursorPosition = text.selection.end
+                    val newText =
+                        currentText.substring(0, cursorPosition) + it + currentText.substring(
+                            cursorPosition
+                        )
+                    text = text.copy(
+                        text = newText, selection = TextRange(cursorPosition + it.length)
+                    )
                     isSending.value = it.isNotBlank()
                 }, currentSelector = currentInputSelector
             )

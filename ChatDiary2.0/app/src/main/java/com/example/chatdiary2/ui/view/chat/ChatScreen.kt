@@ -39,6 +39,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -68,10 +69,12 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -361,7 +364,8 @@ fun UserInput(
     resetScroll: () -> Unit,
     modifier: Modifier
 ) {
-    val text = rememberSaveable { mutableStateOf("") }
+    var text by remember { mutableStateOf(TextFieldValue()) }
+    //   val text = rememberSaveable { mutableStateOf("") }
     val isSending = remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
     var isRecording by remember { mutableStateOf(false) }
@@ -373,7 +377,7 @@ fun UserInput(
     var textFieldFocusState by remember { mutableStateOf(false) }
     var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
     speechToTextUtil.setSpeechRecognitionListener(onSpeechRecognitionResult = {
-        text.value = it
+        text = TextFieldValue(it)
     }, onSpeechRecognitionError = {
         isErrorShow.value = true
         errorShowInfo = "语言识别失败"
@@ -442,17 +446,19 @@ fun UserInput(
                     contentDescription = "send",
                 )
             }
-            TextField(
-                value = text.value,
+            OutlinedTextField(
+                value = text,
                 onValueChange = {
-                    text.value = it
-                    isSending.value = it.isNotBlank()
+                    text = it
+                    isSending.value = it.text.isNotBlank()
                 },
 
                 singleLine = false,
                 modifier = Modifier
                     .weight(1f)
                     .onFocusChanged {
+
+
                         if (textFieldFocusState != it.isFocused) {
                             currentInputSelector = InputSelector.NONE
                         }
@@ -489,18 +495,18 @@ fun UserInput(
                     IconButton(
                         onClick = {
                             isLoading.value = true
-                            val isSuccess = sendingMessage(text.value)
+                            val isSuccess = sendingMessage(text.text)
                             isSuccess.observe(lifecycleOwner) {
                                 if (it) {
                                     onSent()
                                     isLoading.value = false
-                                    text.value = ""
+                                    text = TextFieldValue()
                                 } else {
                                     isLoading.value = false
                                     isErrorShow.value = true
                                     errorShowInfo = "发送错误"
                                 }
-                                isSending.value = text.value.isNotBlank()
+                                isSending.value = text.text.isNotBlank()
 
                             }
                         }, modifier = Modifier
@@ -546,7 +552,15 @@ fun UserInput(
         }
         SelectorExpanded(
             onTextAdded = {
-                text.value = text.value + it
+                val currentText = text.text
+                val cursorPosition = text.selection.end
+                val newText = currentText.substring(0, cursorPosition) + it + currentText.substring(
+                    cursorPosition
+                )
+                text = text.copy(
+                    text = newText,
+                    selection = TextRange(cursorPosition + it.length)
+                )
                 isSending.value = it.isNotBlank()
             }, currentSelector = currentInputSelector
         )
