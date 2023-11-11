@@ -1,0 +1,91 @@
+<mxfile host="65bd71144e">
+    <diagram id="PRa4ZY6j3v9GEAto6A6K" name="Page-1">
+        <mxGraphModel dx="2347" dy="801" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="3" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="60" y="210" width="120" height="520" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="340" y="210" width="120" height="520" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="650" y="200" width="120" height="520" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="StateFlow&amp;lt;DiaryStates&amp;gt;" style="shape=flexArrow;endArrow=classic;html=1;entryX=-0.017;entryY=0.169;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.992;exitY=0.146;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="460.03999999999996" y="285.9200000000001" as="sourcePoint"/>
+                        <mxPoint x="648.96" y="287.8800000000001" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="7" value="" style="shape=flexArrow;endArrow=classic;html=1;entryX=-0.017;entryY=0.169;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.992;exitY=0.146;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="461.08" y="360.00000000000006" as="sourcePoint"/>
+                        <mxPoint x="650" y="361.9600000000001" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="13" value="StateFlow&amp;lt;UserState&amp;gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="7">
+                    <mxGeometry x="-0.2602" y="4" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="8" value="" style="shape=flexArrow;endArrow=classic;html=1;entryX=-0.017;entryY=0.169;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.992;exitY=0.146;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="459.99999999999994" y="510" as="sourcePoint"/>
+                        <mxPoint x="648.92" y="511.96000000000004" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="14" value="ChatMessageState" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="8">
+                    <mxGeometry x="-0.1108" y="1" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="10" value="data" style="shape=flexArrow;endArrow=classic;html=1;exitX=0.992;exitY=0.146;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="179.99999999999994" y="469.02" as="sourcePoint"/>
+                        <mxPoint x="340" y="470" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="16" value="" style="shape=flexArrow;endArrow=classic;html=1;entryX=1;entryY=0.885;entryDx=0;entryDy=0;entryPerimeter=0;exitX=-0.05;exitY=0.904;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="5" target="4">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="580" y="690" as="sourcePoint"/>
+                        <mxPoint x="630" y="640" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="17" value="Events" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="16">
+                    <mxGeometry x="-0.1848" y="4" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="18" value="日记相关UI" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="670" y="270" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="用户相关UI" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="670" y="350" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="AI交流UI" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="670" y="500" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="日记相关UI" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="360" y="270" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="用户相关UI" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="360" y="350" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="24" value="聊天相关UI" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="360" y="490" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="Retrofit2" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="90" y="445" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="UI Layer" style="swimlane;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="290" y="150" width="550" height="625" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="UI Layer" style="swimlane;whiteSpace=wrap;html=1;fillColor=none;" vertex="1" parent="1">
+                    <mxGeometry x="-20" y="170" width="240" height="605" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
