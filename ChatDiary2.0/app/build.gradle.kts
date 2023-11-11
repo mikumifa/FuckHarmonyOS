@@ -38,7 +38,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField ("String", "BASE_URL", "\"http://8.130.127.94:8080\"")
+            buildConfigField ("String", "BASE_URL", "\"http://124.70.150.192:8080\"")
             signingConfig = signingConfigs.getByName("release")
         }
         debug {
