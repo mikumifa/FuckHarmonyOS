@@ -3,10 +3,12 @@ package com.example.chatdiary2
 import EncryptionUtils
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.remember
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.navigation.compose.NavHost
@@ -15,7 +17,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.chatdiary2.nav.Action
 import com.example.chatdiary2.nav.Destination
 import com.example.chatdiary2.ui.theme.ChatDiary2Theme
+import com.example.chatdiary2.ui.view.diary.DiaryListContent
 import com.example.chatdiary2.ui.view.diary.DiaryView
+import com.example.chatdiary2.ui.view.diary.SeeAllScreen
 import com.example.chatdiary2.ui.view.login.LoginView
 import com.example.chatdiary2.ui.view.login.RegisterView
 import com.example.chatdiary2.ui.view.main.MainComponent
@@ -24,6 +28,7 @@ import java.io.File
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestPermissions(arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION), 100)
@@ -63,6 +68,11 @@ class MainActivity : ComponentActivity() {
                 composable(Destination.Main) {
                     ChatDiary2Theme {
                         MainComponent(action = actions)
+                    }
+                }
+                composable(Destination.seeAllDiary) {
+                    ChatDiary2Theme {
+                        SeeAllScreen(action = actions)
                     }
                 }
             }

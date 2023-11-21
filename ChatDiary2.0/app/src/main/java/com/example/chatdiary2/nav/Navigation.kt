@@ -17,6 +17,7 @@ object Destination {
     const val Login = "login"
     const val Register = "register"
     const val Diary = "diary"
+    const val seeAllDiary = "see_all_diary"
 }
 
 class Action(val navController: NavController) {

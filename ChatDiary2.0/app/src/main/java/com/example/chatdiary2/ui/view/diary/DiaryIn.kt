@@ -63,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.chatdiary2.R
 import com.example.chatdiary2.nav.Action
+import com.example.chatdiary2.nav.Destination
 import com.example.chatdiary2.ui.theme.ChatDiary2Theme
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -73,7 +74,6 @@ fun DiaryIn(action: Action, paddingValues: PaddingValues) {
 
     ChatDiary2Theme {
         HomeScreen(action, paddingValues);
-
     }
 }
 
@@ -139,7 +139,7 @@ fun Content(action: Action) {
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.headlineSmall
             )
-            TextButton(onClick = {}) {
+            TextButton(onClick = {action.navController.navigate(Destination.seeAllDiary)}) {
                 Text(
                     text = "See all", color = MaterialTheme.colorScheme.primary
                 )
@@ -150,8 +150,6 @@ fun Content(action: Action) {
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
-
-
         }
         val diaryVoList = listOf<dayDiaryVo>(
             dayDiaryVo(Date(), "example title", "example postion"),
@@ -162,161 +160,164 @@ fun Content(action: Action) {
             dayDiaryVo(Date(), "example title", "example postion"),
             dayDiaryVo(Date(), "example title", "example postion"),
         )
-
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
-        ) {
-            LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                content = {
-                    items(diaryVoList.size) { item ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth(0.4f)
-                                .padding(10.dp)
-                                .clip(RoundedCornerShape(24.dp))
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 20.dp)
-                                    .background(color = MaterialTheme.colorScheme.secondaryContainer),
-                                horizontalAlignment = CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                diaryVoList[item].image(
-                                    Modifier.size(100.dp),
-                                )
-
-                                Text(
-                                    modifier = Modifier
-                                        .padding(start = 8.dp, end = 8.dp), // 可选：添加额外的边距
-                                    text = diaryVoList[item].title,
-                                    fontWeight = FontWeight.Bold,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    maxLines = 1, // 设置为1，以显示单行文本
-                                    overflow = TextOverflow.Ellipsis, // 使用省略号表示文本溢出
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                                )
-
-                                Text(
-                                    modifier = Modifier
-                                        .padding(start = 8.dp, end = 8.dp),
-                                    text = diaryVoList[item].position,
-                                    fontWeight = FontWeight.Normal,
-                                    style = MaterialTheme.typography.labelMedium,
-                                    maxLines = 1, // 设置为1，以显示单行文本
-                                    overflow = TextOverflow.Ellipsis, // 使用省略号表示文本溢出
-                                    color = Color.Gray
-                                )
-
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(20.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    Text(
-                                        text = buildAnnotatedString {
-                                            withStyle(
-                                                style = SpanStyle(
-                                                    MaterialTheme.colorScheme.onSecondaryContainer,
-                                                    fontWeight = FontWeight.Bold
-                                                )
-                                            ) {
-                                                append(dateToYearMonthDayString(diaryVoList[item].date))
-                                            }
-                                        },
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onTertiaryContainer
-
-                                    )
-
-
-                                    Box(
-                                        modifier = Modifier
-                                            .clip(CircleShape)
-                                            .background(MaterialTheme.colorScheme.tertiaryContainer)
-                                            .padding(4.dp)
-                                            .clickable { },
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        var isExpanded by remember { mutableStateOf(false) }
-                                        Icon(
-                                            modifier = Modifier
-                                                .size(20.dp, 20.dp)
-                                                .clickable { isExpanded = true },
-                                            imageVector = Icons.Default.MoreHoriz,
-                                            contentDescription = "more",
-                                            tint = MaterialTheme.colorScheme.onTertiaryContainer
-                                        )
-                                        DropdownMenu(
-                                            modifier = Modifier.background(
-                                                MaterialTheme.colorScheme.primary,
-                                                shape = RoundedCornerShape(8.dp)
-                                            ),
-                                            expanded = isExpanded,
-                                            onDismissRequest = { isExpanded = false },
-                                        ) {
-                                            DropdownMenuItem(
-                                                leadingIcon = {
-                                                    Icon(
-                                                        modifier = Modifier
-                                                            .size(20.dp, 20.dp),
-                                                        imageVector = Icons.Default.Edit,
-                                                        contentDescription = "edit",
-                                                        tint = MaterialTheme.colorScheme.onPrimary
-                                                    )
-                                                },
-                                                text = {
-                                                    Text("Edit",
-                                                        color =MaterialTheme.colorScheme.onPrimary )
-                                                }, onClick = {
-                                                    // 处理修改操作
-                                                    isExpanded = false
-                                                })
-                                            DropdownMenuItem(
-
-                                                leadingIcon = {
-                                                    Icon(
-                                                        modifier = Modifier
-                                                            .size(20.dp, 20.dp),
-
-                                                        imageVector = Icons.Default.Delete,
-                                                        contentDescription = "delete",
-                                                        tint = MaterialTheme.colorScheme.onPrimary
-                                                    )
-                                                },
-                                                text = {
-                                                    Text("Delete",
-                                                        color =MaterialTheme.colorScheme.onPrimary)
-                                                },
-                                                onClick = {
-                                                    // 处理删除操作
-                                                    isExpanded = false
-                                                })
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                })
-        }
-
+        DiaryListContent(modifier =Modifier.weight(1f), diaryVoList = diaryVoList)
 
     }
 }
 
+@Composable
+fun DiaryListContent(modifier: Modifier = Modifier, diaryVoList: List<dayDiaryVo>) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            content = {
+                items(diaryVoList.size) { item ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.4f)
+                            .padding(10.dp)
+                            .clip(RoundedCornerShape(24.dp))
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(color = MaterialTheme.colorScheme.secondaryContainer),
+                            horizontalAlignment = CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            diaryVoList[item].image(
+                                Modifier.size(100.dp),
+                            )
+
+                            Text(
+                                modifier = Modifier
+                                    .padding(start = 8.dp, end = 8.dp), // 可选：添加额外的边距
+                                text = diaryVoList[item].title,
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.bodyLarge,
+                                maxLines = 1, // 设置为1，以显示单行文本
+                                overflow = TextOverflow.Ellipsis, // 使用省略号表示文本溢出
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+
+                            Text(
+                                modifier = Modifier
+                                    .padding(start = 8.dp, end = 8.dp),
+                                text = diaryVoList[item].position,
+                                fontWeight = FontWeight.Normal,
+                                style = MaterialTheme.typography.labelMedium,
+                                maxLines = 1, // 设置为1，以显示单行文本
+                                overflow = TextOverflow.Ellipsis, // 使用省略号表示文本溢出
+                                color = Color.Gray
+                            )
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(20.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = buildAnnotatedString {
+                                        withStyle(
+                                            style = SpanStyle(
+                                                MaterialTheme.colorScheme.onSecondaryContainer,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        ) {
+                                            append(dateToYearMonthDayString(diaryVoList[item].date))
+                                        }
+                                    },
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onTertiaryContainer
+
+                                )
+
+
+                                Box(
+                                    modifier = Modifier
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.tertiaryContainer)
+                                        .padding(4.dp)
+                                        .clickable { },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    var isExpanded by remember { mutableStateOf(false) }
+                                    Icon(
+                                        modifier = Modifier
+                                            .size(20.dp, 20.dp)
+                                            .clickable { isExpanded = true },
+                                        imageVector = Icons.Default.MoreHoriz,
+                                        contentDescription = "more",
+                                        tint = MaterialTheme.colorScheme.onTertiaryContainer
+                                    )
+                                    DropdownMenu(
+                                        modifier = Modifier.background(
+                                            MaterialTheme.colorScheme.primary,
+                                            shape = RoundedCornerShape(8.dp)
+                                        ),
+                                        expanded = isExpanded,
+                                        onDismissRequest = { isExpanded = false },
+                                    ) {
+                                        DropdownMenuItem(
+                                            leadingIcon = {
+                                                Icon(
+                                                    modifier = Modifier
+                                                        .size(20.dp, 20.dp),
+                                                    imageVector = Icons.Default.Edit,
+                                                    contentDescription = "edit",
+                                                    tint = MaterialTheme.colorScheme.onPrimary
+                                                )
+                                            },
+                                            text = {
+                                                Text(
+                                                    "Edit",
+                                                    color = MaterialTheme.colorScheme.onPrimary
+                                                )
+                                            }, onClick = {
+                                                // 处理修改操作
+                                                isExpanded = false
+                                            })
+                                        DropdownMenuItem(
+
+                                            leadingIcon = {
+                                                Icon(
+                                                    modifier = Modifier
+                                                        .size(20.dp, 20.dp),
+
+                                                    imageVector = Icons.Default.Delete,
+                                                    contentDescription = "delete",
+                                                    tint = MaterialTheme.colorScheme.onPrimary
+                                                )
+                                            },
+                                            text = {
+                                                Text(
+                                                    "Delete",
+                                                    color = MaterialTheme.colorScheme.onPrimary
+                                                )
+                                            },
+                                            onClick = {
+                                                // 处理删除操作
+                                                isExpanded = false
+                                            })
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+            })
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
