@@ -33,28 +33,28 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun HappyDaySummary(modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().padding(start = 28.dp,end = 28.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
             Text(
                 "伤心",
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.headlineLarge
             )
             Text(
-                "1天",
-                style = MaterialTheme.typography.bodySmall
+                "  1天",
+                style = MaterialTheme.typography.headlineSmall
             )
         }
         Spacer(modifier = Modifier.width(16.dp))
         Column {
             Text(
                 "快乐",
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.headlineLarge
             )
             Text(
-                "1天",
-                style = MaterialTheme.typography.bodySmall
+                "  1天",
+                style = MaterialTheme.typography.headlineSmall
             )
         }
     }

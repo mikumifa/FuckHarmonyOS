@@ -60,7 +60,7 @@ fun TableScreen(
         }
         val scrollState = rememberScrollState()
         Box(
-            modifier = Modifier.padding(top = 18.dp, bottom = 18.dp, end = 4.dp).background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(18.dp))
+            modifier = Modifier.padding(4.dp).background(MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(18.dp))
         ) {
             TimeGraph(
                 happyData = happyDataState,
