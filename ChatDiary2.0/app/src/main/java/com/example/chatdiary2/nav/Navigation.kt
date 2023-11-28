@@ -11,6 +11,7 @@ import com.example.chatdiary2.nav.Destination.Register
 
 
 object Destination {
+    const val assertPicker = "asset_picker"
     const val Main = "Main"
     const val About = "about"
     const val Articles = "articles"

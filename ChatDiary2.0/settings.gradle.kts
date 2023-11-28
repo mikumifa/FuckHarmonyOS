@@ -15,4 +15,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "chatDiary2"
 include(":app")
- 

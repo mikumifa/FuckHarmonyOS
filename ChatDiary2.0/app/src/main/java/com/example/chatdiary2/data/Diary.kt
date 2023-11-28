@@ -13,6 +13,7 @@ data class Diary(
     val timestamp: String,
     val position: String,
     val type: String,
+    val images: List<String>
 )
 
 

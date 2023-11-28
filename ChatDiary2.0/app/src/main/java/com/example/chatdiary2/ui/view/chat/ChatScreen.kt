@@ -130,8 +130,7 @@ fun ChatItemBubble(
 
     Column {
         Surface(
-            color = backgroundBubbleColor,
-            shape = ChatBubbleShape
+            color = backgroundBubbleColor, shape = ChatBubbleShape
         ) {
             ClickableMessage(
                 message = message,
@@ -149,41 +148,31 @@ fun ClickableMessage(
     val uriHandler = LocalUriHandler.current
 
     val styledMessage = messageFormatter(
-        text = message.content,
-        primary = isUserMe
+        text = message.content, primary = isUserMe
     )
 
-    ClickableText(
-        text = styledMessage,
+    ClickableText(text = styledMessage,
         style = MaterialTheme.typography.bodyLarge.copy(color = LocalContentColor.current),
         modifier = Modifier.padding(16.dp),
         onClick = {
-            styledMessage
-                .getStringAnnotations(start = it, end = it)
-                .firstOrNull()
+            styledMessage.getStringAnnotations(start = it, end = it).firstOrNull()
                 ?.let { annotation ->
                     when (annotation.tag) {
                         SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
                         else -> Unit
                     }
                 }
-        }
-    )
+        })
 }
 
 @Composable
 fun Messages(
-    messages: List<Message>,
-    scrollState: LazyListState,
-    modifier: Modifier = Modifier
+    messages: List<Message>, scrollState: LazyListState, modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
         val authorMe = "Me"
         LazyColumn(
-            reverseLayout = true,
-            state = scrollState,
-            modifier = Modifier
-                .fillMaxSize()
+            reverseLayout = true, state = scrollState, modifier = Modifier.fillMaxSize()
         ) {
             for (index in messages.indices) {
                 val prevAuthor = messages.getOrNull(index - 1)?.isUserMe
@@ -207,9 +196,7 @@ fun Messages(
 
 @Composable
 fun Message(
-    msg: Message,
-    isFirstMessageByAuthor: Boolean,
-    isLastMessageByAuthor: Boolean
+    msg: Message, isFirstMessageByAuthor: Boolean, isLastMessageByAuthor: Boolean
 ) {
     val borderColor = if (msg.isUserMe) {
         MaterialTheme.colorScheme.primary
@@ -296,9 +283,7 @@ fun AuthorAndTextMessage(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationContent(
-    action: Action,
-    modifier: Modifier = Modifier,
-    uiState: ChatViewModel = hiltViewModel()
+    action: Action, modifier: Modifier = Modifier, uiState: ChatViewModel = hiltViewModel()
 
 ) {
 
@@ -310,19 +295,15 @@ fun ConversationContent(
     var messageList by remember { mutableStateOf(emptyList<Message>()) }
 
     Column(
-        Modifier
-            .fillMaxSize()
+        Modifier.fillMaxSize()
     ) {
 
-        val messages =
-            uiState.getMessageFlow()
+        val messages = uiState.getMessageFlow()
         messages.observe(lifecycleOwner) {
             messageList = it
         }
         Messages(
-            messages = messageList,
-            modifier = Modifier.weight(1f),
-            scrollState = scrollState
+            messages = messageList, modifier = Modifier.weight(1f), scrollState = scrollState
         )
         val sendingMessage: (String) -> MutableLiveData<Boolean> = { content ->
             val res = uiState.addChat(
@@ -334,20 +315,16 @@ fun ConversationContent(
             }
             result
         }
-        UserInput(
-            sendingMessage = sendingMessage,
-            onSent = {
-                val messages =
-                    uiState.getMessageFlow()
-                messages.observe(lifecycleOwner) {
-                    messageList = it
-                }
-            },
-            resetScroll = {
-                scope.launch {
-                    scrollState.scrollToItem(0)
-                }
-            },
+        UserInput(sendingMessage = sendingMessage, onSent = {
+            val messages = uiState.getMessageFlow()
+            messages.observe(lifecycleOwner) {
+                messageList = it
+            }
+        }, resetScroll = {
+            scope.launch {
+                scrollState.scrollToItem(0)
+            }
+        },
 
             modifier = Modifier
                 .navigationBarsPadding()
@@ -386,8 +363,7 @@ fun UserInput(
 //        LoadingComponent()
 //
 //    }
-    TimedDialog(
-        showDialog = isErrorShow,
+    TimedDialog(showDialog = isErrorShow,
         durationMillis = 1000,
         text = errorShowInfo,
         onDismiss = {})
@@ -420,7 +396,7 @@ fun UserInput(
                             contentDescription = "Localized description",
                         )
                     }
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = {   }) {
                         Icon(
                             Icons.Filled.Image,
                             contentDescription = "Localized description",
@@ -446,15 +422,12 @@ fun UserInput(
                     contentDescription = "send",
                 )
             }
-            OutlinedTextField(
-                value = text,
-                onValueChange = {
-                    text = it
-                    isSending.value = it.text.isNotBlank()
-                },
+            OutlinedTextField(value = text, onValueChange = {
+                text = it
+                isSending.value = it.text.isNotBlank()
+            },
 
-                singleLine = false,
-                modifier = Modifier
+                singleLine = false, modifier = Modifier
                     .weight(1f)
                     .onFocusChanged {
 
@@ -466,24 +439,20 @@ fun UserInput(
                     }
                     .padding(4.dp),
 
-                shape = RoundedCornerShape(18.dp),
-                colors = TextFieldDefaults.textFieldColors(
+                shape = RoundedCornerShape(18.dp), colors = TextFieldDefaults.textFieldColors(
                     disabledTextColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent
-                )
-            )
+                ))
             if (isLoading.value) {
                 Box(
                     modifier = Modifier
                         .size(48.dp)
                         .background(
-                            MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(12.dp)
+                            MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp)
                         )
-                        .clip(CircleShape),
-                    contentAlignment = Alignment.Center
+                        .clip(CircleShape), contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(32.dp), // 调整圆环的大小
@@ -558,20 +527,21 @@ fun UserInput(
                     cursorPosition
                 )
                 text = text.copy(
-                    text = newText,
-                    selection = TextRange(cursorPosition + it.length)
+                    text = newText, selection = TextRange(cursorPosition + it.length)
                 )
                 isSending.value = it.isNotBlank()
-            }, currentSelector = currentInputSelector
-        )
+            },
+            currentSelector = currentInputSelector,
+
+
+            )
     }
 }
 
 
 @Composable
 fun messageFormatter(
-    text: String,
-    primary: Boolean
+    text: String, primary: Boolean
 ): AnnotatedString {
     val tokens = symbolPattern.findAll(text)
 
@@ -579,12 +549,11 @@ fun messageFormatter(
 
         var cursorPosition = 0
 
-        val codeSnippetBackground =
-            if (primary) {
-                MaterialTheme.colorScheme.secondary
-            } else {
-                MaterialTheme.colorScheme.surface
-            }
+        val codeSnippetBackground = if (primary) {
+            MaterialTheme.colorScheme.secondary
+        } else {
+            MaterialTheme.colorScheme.surface
+        }
 
         for (token in tokens) {
             append(text.slice(cursorPosition until token.range.first))
@@ -638,47 +607,40 @@ private fun getSymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value.trim('*'),
                 spanStyle = SpanStyle(fontWeight = FontWeight.Bold)
-            ),
-            null
+            ), null
         )
 
         '_' -> SymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value.trim('_'),
                 spanStyle = SpanStyle(fontStyle = FontStyle.Italic)
-            ),
-            null
+            ), null
         )
 
         '~' -> SymbolAnnotation(
             AnnotatedString(
                 text = matchResult.value.trim('~'),
                 spanStyle = SpanStyle(textDecoration = TextDecoration.LineThrough)
-            ),
-            null
+            ), null
         )
 
         '`' -> SymbolAnnotation(
             AnnotatedString(
-                text = matchResult.value.trim('`'),
-                spanStyle = SpanStyle(
+                text = matchResult.value.trim('`'), spanStyle = SpanStyle(
                     fontFamily = FontFamily.Monospace,
                     fontSize = 12.sp,
                     background = codeSnippetBackground,
                     baselineShift = BaselineShift(0.2f)
                 )
-            ),
-            null
+            ), null
         )
 
         'h' -> SymbolAnnotation(
             AnnotatedString(
-                text = matchResult.value,
-                spanStyle = SpanStyle(
+                text = matchResult.value, spanStyle = SpanStyle(
                     color = if (primary) colorScheme.inversePrimary else colorScheme.primary
                 )
-            ),
-            StringAnnotation(
+            ), StringAnnotation(
                 item = matchResult.value,
                 start = matchResult.range.first,
                 end = matchResult.range.last,

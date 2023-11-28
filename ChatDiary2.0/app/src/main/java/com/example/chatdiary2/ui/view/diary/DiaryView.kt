@@ -10,19 +10,18 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.media.Image
 import android.os.Bundle
-import android.text.Selection
-import android.text.Spannable
+import android.provider.MediaStore
+import android.util.Log
 import android.view.ContextThemeWrapper
 import android.widget.CalendarView
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -39,6 +38,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -46,32 +46,22 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.IndeterminateCheckBox
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.filled.Note
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DrawerValue
+
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -79,23 +69,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -104,7 +85,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -115,19 +95,15 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
@@ -140,9 +116,13 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
+import coil.compose.AsyncImage
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.example.chatdiary2.R
 import com.example.chatdiary2.data.Diary
 import com.example.chatdiary2.nav.Action
+import com.example.chatdiary2.nav.Destination
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -221,7 +201,7 @@ data class DrawerMenu(
 )
 
 enum class InputSelector {
-    NONE, MAP, EMOJI, PICTURE
+    NONE, MAP, EMOJI, IMAGE
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -310,13 +290,17 @@ fun DiaryView(
                     }
                     items(diaryList.value.size) {
                         val item = diaryList.value[it]
-                        DiaryItem(
-                            title = item.title,
-                            context = item.content,
-                            pos = item.position,
-                            type = item.type,
-                            imageUrls = emptyList<String>()
-                        )
+                        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
+                        dateFormat.parse(item.timestamp)?.let { date ->
+                            DiaryItem(
+                                title = item.title,
+                                context = item.content,
+                                pos = item.position,
+                                type = item.type,
+                                imageUrls = item.images,
+                                time = date,
+                            )
+                        }
                     }
 
                 }
@@ -329,12 +313,14 @@ fun DiaryView(
                 }
             }
 
-            InputDialog(useId, diaryViewModel!!, onSent = {
-                val diary = diaryViewModel.searchDiariesByDateFlow(myDate)
-                diary.observe(lifecycleOwner) {
-                    if (!hasSearchResult) diaryList.value = it
-                }
-            })
+            InputDialog(
+                useId, diaryViewModel!!, onSent = {
+                    val diary = diaryViewModel.searchDiariesByDateFlow(myDate)
+                    diary.observe(lifecycleOwner) {
+                        if (!hasSearchResult) diaryList.value = it
+                    }
+                }, actions = action
+            )
         }
     })
 
@@ -565,25 +551,22 @@ fun TimedDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputDialog(
-    useId: Long,
-    diaryViewModel: DiaryViewModel,
-    onSent: () -> Unit,
+    useId: Long, diaryViewModel: DiaryViewModel, onSent: () -> Unit, actions: Action
 ) {
-
     val context = LocalContext.current
     val localFocusManager = LocalFocusManager.current
     var text by remember { mutableStateOf(TextFieldValue()) }
     val isSending = remember { mutableStateOf(false) }
     val area = rememberSaveable { mutableStateOf("") }
     var isRecording by remember { mutableStateOf(false) }
-    var isErrorShow = remember { mutableStateOf(false) }
+    val isErrorShow = remember { mutableStateOf(false) }
     var errorShowInfo by remember { mutableStateOf("") }
     val speechToTextUtil = SpeechToTextUtil(LocalContext.current)
     val isToolbarShow = remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     var textFieldFocusState by remember { mutableStateOf(false) }
-
     var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
+    val lifecycleOwner = LocalLifecycleOwner.current
     speechToTextUtil.setSpeechRecognitionListener(onSpeechRecognitionResult = {
         text = text.copy(text = it)
     }, onSpeechRecognitionError = {
@@ -606,7 +589,50 @@ fun InputDialog(
         override fun onProviderDisabled(provider: String) {}
     }
     val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    val keyboardController = LocalSoftwareKeyboardController.current
+    var selectedImageUris: List<String> by remember {
+        mutableStateOf(emptyList())
+    }
+    val imagePickerForMultipleImages = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 3)
+    ) { uris ->
+        if (uris.isNotEmpty()) {
+            selectedImageUris = uris.map {
+                val projection = arrayOf(MediaStore.MediaColumns.DATA)
+                val cursor = context.contentResolver.query(it, projection, null, null, null)
+                val columnIndex = cursor?.getColumnIndex(MediaStore.MediaColumns.DATA)
+                try {
+                    if (cursor != null) {
+                        cursor.moveToFirst()
+                        val filePath = columnIndex?.let { cursor.getString(it) }
+                        cursor.close()
+                        filePath!!
+                    } else ""
+                } catch (exception: Exception) {
+                    ""
+                }
+
+
+            }
+            Log.d("myPicTAG", "ImagePicker: $selectedImageUris")
+            val res = diaryViewModel.uploadImage(
+                position = area.value,
+                uris = selectedImageUris,
+            )
+            res.observe(lifecycleOwner) {
+                if (it == true) {
+                    text = TextFieldValue()
+                    isSending.value = false
+                    onSent()
+                } else {
+                    isErrorShow.value = true
+                    errorShowInfo = "发送失败"
+                }
+            }
+        } else {
+            Log.w("myPicTAG", "ImagePicker: No Selected Images")
+        }
+    }
+
     if (area.value == "") {
         if (ActivityCompat.checkSelfPermission(
                 context, Manifest.permission.ACCESS_FINE_LOCATION
@@ -630,7 +656,8 @@ fun InputDialog(
         }
     }
 
-    TimedDialog(showDialog = isErrorShow,
+    TimedDialog(
+        showDialog = isErrorShow,
         durationMillis = 1000,
         text = errorShowInfo,
         onDismiss = {})
@@ -754,7 +781,13 @@ fun InputDialog(
                             contentDescription = "Localized description",
                         )
                     }
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = {
+                        imagePickerForMultipleImages.launch(
+                            PickVisualMediaRequest(
+                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                            )
+                        )
+                    }) {
                         Icon(
                             Icons.Filled.Image,
                             contentDescription = "Localized description",
@@ -774,7 +807,8 @@ fun InputDialog(
                         text = newText, selection = TextRange(cursorPosition + it.length)
                     )
                     isSending.value = it.isNotBlank()
-                }, currentSelector = currentInputSelector
+                },
+                currentSelector = currentInputSelector,
             )
         }
 
@@ -782,8 +816,25 @@ fun InputDialog(
 }
 
 @Composable
+@Preview
+fun DiaryItemPreview(
+) {
+    DiaryItem(
+        title = "title", context = "context", pos = "pos", type = "type", imageUrls = listOf(
+            "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg",
+            "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg",
+            "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg",
+            "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg",
+            "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg",
+            "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg"
+        ),
+        time = Date()
+    )
+}
+
+@Composable
 fun DiaryItem(
-    title: String, context: String, pos: String, type: String, imageUrls: List<String>
+    title: String, context: String, pos: String, type: String, imageUrls: List<String>?, time: Date
 ) {
     val scrollState = rememberScrollState()
     Card(
@@ -797,7 +848,7 @@ fun DiaryItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
-                .requiredHeightIn(max = 250.dp) // 设置最大高度为250dp
+                .requiredHeightIn(max = 300.dp) // 设置最大高度为250dp
         ) {
             Column(
                 modifier = Modifier
@@ -825,15 +876,47 @@ fun DiaryItem(
                 Text(
                     text = context, style = MaterialTheme.typography.bodyMedium
                 )
+                if (imageUrls != null) {
+                    HorizontalImageList(imageUrls = imageUrls, modifier = Modifier)
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = pos,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray,
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Bottom,
+                ) {
+                    Text(
+                        text = pos,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray,
+                    )
+
+                    val dateFormat = SimpleDateFormat("HH:mm", Locale.CHINA)
+                    Text(
+                        text = dateFormat.format(time),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray,
+                    )
+                }
                 Spacer(modifier = Modifier.height(8.dp))
             }
+        }
+    }
+}
+
+@Composable
+fun HorizontalImageList(imageUrls: List<String>, modifier: Modifier = Modifier) {
+    LazyRow(
+        modifier = modifier
+            .height(180.dp)
+            .fillMaxWidth()
+    ) {
+        items(imageUrls.size) { idx ->
+            val imageUrl = imageUrls[idx]
+            AsyncImage(
+                model = imageUrl, contentDescription = imageUrl, modifier = Modifier.height(160.dp).padding(end = 2.dp, start = 2.dp),
+            )
         }
     }
 }
@@ -869,13 +952,20 @@ fun ExtendedSelectorInnerButton(
 
 @Composable
 fun SelectorExpanded(
-    currentSelector: InputSelector, onTextAdded: (String) -> Unit
+    currentSelector: InputSelector,
+    onTextAdded: (String) -> Unit,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     if (currentSelector == InputSelector.NONE) return
     val focusRequester = FocusRequester()
     SideEffect {
         if (currentSelector == InputSelector.EMOJI) {
+            keyboard?.hide()
+        }
+        if (currentSelector == InputSelector.IMAGE) {
+            keyboard?.hide()
+        }
+        if (currentSelector == InputSelector.MAP) {
             keyboard?.hide()
         }
     }
