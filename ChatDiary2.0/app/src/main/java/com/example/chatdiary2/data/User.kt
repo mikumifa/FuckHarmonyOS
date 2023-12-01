@@ -6,5 +6,9 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 data class UserVO(
-    var email: String, var username: String, var id: Long, var userInfo: String
+    var email: String,
+    var username: String,
+    var id: Long,
+    var userInfo: String?,
+    var avatarUrl: String?
 )

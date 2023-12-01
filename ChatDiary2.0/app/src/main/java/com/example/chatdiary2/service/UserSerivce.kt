@@ -1,12 +1,14 @@
 package com.example.chatdiary2.service
 
 import com.example.chatdiary2.data.UserVO
-import retrofit2.Call
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 
 
 interface UserService {
@@ -31,14 +33,18 @@ interface UserService {
     @PUT("/v1/user/name")
     suspend fun editName(@Body request: EditUserNameRequest?): CommonResponse<Void?>
 
+    @Multipart
+    @POST("/v1/user/avatar")
+    suspend fun uploadImage(@Part image: MultipartBody.Part): CommonResponse<Void?>
+
 }
 
 data class EditUserInfoRequest(
-    val useInfo: String
+    val userInfo: String
 )
 
 data class EditUserNameRequest(
-   val username: String
+    val username: String
 )
 
 data class EditUserPasswordRequest(

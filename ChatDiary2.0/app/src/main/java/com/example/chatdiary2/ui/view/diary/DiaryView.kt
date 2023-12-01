@@ -595,7 +595,7 @@ fun InputDialog(
         mutableStateOf(emptyList())
     }
     val imagePickerForMultipleImages = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 3)
+        contract = ActivityResultContracts.PickMultipleVisualMedia()
     ) { uris ->
         if (uris.isNotEmpty()) {
             selectedImageUris = uris.map {

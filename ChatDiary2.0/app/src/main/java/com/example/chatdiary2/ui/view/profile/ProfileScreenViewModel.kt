@@ -1,5 +1,6 @@
 package com.example.chatdiary2.ui.view.profile
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,10 @@ import com.example.chatdiary2.service.EditUserPasswordRequest
 import com.example.chatdiary2.service.UserService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -48,7 +53,6 @@ class ProfileScreenViewModel @Inject constructor(private val userService: UserSe
                 } else {
                     res.value = Pair(it.msg, false)
                 }
-                res.value = Pair("可能网络有问题", it.httpCode == HttpCode.SUCCESS)
             }.onFailure {
                 res.value = Pair("可能网络有问题", false)
 
@@ -70,7 +74,6 @@ class ProfileScreenViewModel @Inject constructor(private val userService: UserSe
                 } else {
                     res.value = Pair(it.msg, false)
                 }
-                res.value = Pair("请求成功", it.httpCode == HttpCode.SUCCESS)
             }.onFailure {
                 res.value = Pair("可能网络有问题", false)
 
@@ -96,5 +99,28 @@ class ProfileScreenViewModel @Inject constructor(private val userService: UserSe
         return res
     }
 
+    fun uploadImage(
+         uri: String
+    ): MutableLiveData<Boolean> {
+        val result = MutableLiveData<Boolean>()
+        viewModelScope.launch {
+            kotlin.runCatching {
+                val file = File(uri)
+                val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+                val urlImage = MultipartBody.Part.createFormData("image", file.name, requestFile)
+                userService.uploadImage(
+                    image = urlImage
+                )
+            }.onSuccess {
+                Log.w("sendImage", it.toString())
+                result.value = true
+            }.onFailure {
+                Log.w("sendImage", it.toString())
+                result.value = false
+            }
+        }
+        return result
+
+    }
 
 }

@@ -1,5 +1,10 @@
 package com.example.chatdiary2.ui.view.profile
 
+import android.provider.MediaStore
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -43,16 +48,21 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import com.example.chatdiary2.data.UserVO
 import com.example.chatdiary2.nav.Action
 import com.example.chatdiary2.ui.view.login.ButtonComponent
 import com.example.chatdiary2.ui.view.login.LoadingComponent
@@ -81,7 +91,7 @@ fun ProfileScreenPreview() {
 @Composable
 @ExperimentalMaterial3Api
 fun profileScreen(
-    action:Action,
+    action: Action,
     profileViewModel: ProfileScreenViewModel = hiltViewModel(),
 ) {
     val showBottomSheet = remember { mutableStateOf(false) }
@@ -96,7 +106,17 @@ fun profileScreen(
     val showDialog = remember { mutableStateOf(false) }
     val dialogMessage = remember { mutableStateOf("") }
     val dialogTitle = remember { mutableStateOf("") }
-
+    val userVOState = remember {
+        mutableStateOf(
+            UserVO(
+                email = "加载中",
+                username = "记载中",
+                id = 0L,
+                userInfo = "记载中",
+                avatarUrl = null
+            )
+        )
+    }
     ResultDialog(showDialog, dialogMessage.value, dialogTitle.value) {
 
     }
@@ -132,7 +152,38 @@ fun profileScreen(
                 .imePadding()
 
         ) {
-            TopProfileLayout()
+
+            val userVOLiveData = profileViewModel.getUserInfo()
+            userVOLiveData.observe(lifecycleOwner) {
+                it?.let {
+                    userVOState.value = it
+                    if (userVOState.value.userInfo == null) {
+                        userVOState.value.userInfo = "签名啥也没写哦。"
+                    }
+                }
+                if (it == null) {
+                    showDialog.value = true
+                    dialogMessage.value = "加载用户信息失败"
+                    dialogTitle.value = "失败"
+                }
+            }
+            TopProfileLayout(userVOState.value) { filePath ->
+                Log.d("myPicTAG", "ImagePicker: $filePath")
+                val res = profileViewModel.uploadImage(
+                    uri = filePath,
+                )
+                res.observe(lifecycleOwner) {
+                    if (it == true) {
+                        showDialog.value = true
+                        dialogMessage.value = "上传图片成功"
+                        dialogTitle.value = "成功"
+                    } else {
+                        showDialog.value = true
+                        dialogMessage.value = "上传图片失败"
+                        dialogTitle.value = "失败"
+                    }
+                }
+            }
             ImageTextContent(icon = {
                 Icon(Icons.Filled.Edit, contentDescription = "edit username")
             },
@@ -274,7 +325,7 @@ private fun BottomSheetEditor(
             }
             Spacer(modifier = Modifier.height(40.dp))
             Box(modifier = Modifier.padding(start = 48.dp, end = 48.dp)) {
-                ButtonComponent(enable = false, value = "点击修改", onClick = onClick)
+                ButtonComponent(enable = true, value = "点击修改", onClick = onClick)
             }
             Spacer(modifier = Modifier.height(80.dp))
 
@@ -304,7 +355,37 @@ fun ProfileContent(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun TopProfileLayout() {
+fun TopProfileLayout(
+    user: UserVO, sendMessage: (String) -> Unit
+) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val imagePickerForImage = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+
+    ) {
+        if (it != null) {
+            val projection = arrayOf(MediaStore.MediaColumns.DATA)
+            val cursor = context.contentResolver.query(it!!, projection, null, null, null)
+            val columnIndex = cursor?.getColumnIndex(MediaStore.MediaColumns.DATA)
+            val filePath = try {
+                if (cursor != null) {
+                    cursor.moveToFirst()
+                    val filePath = columnIndex?.let { cursor.getString(it) }
+                    cursor.close()
+                    filePath!!
+                } else ""
+            } catch (exception: Exception) {
+                ""
+            }
+            sendMessage(filePath)
+        }
+
+
+    }
+
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -312,28 +393,42 @@ fun TopProfileLayout() {
         shape = RoundedCornerShape(8),
     ) {
         Column(modifier = Modifier.padding(10.dp)) {
-
-
-            Icon(
-                imageVector = Icons.Filled.Paid,
-                contentDescription = "Icons",
+            val imageUrl =
+                if (user.avatarUrl == null) "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701202402704.jpg"
+                else user.avatarUrl
+            AsyncImage(model = imageUrl,
+                contentDescription = imageUrl,
                 modifier = Modifier
-                    .clip(CircleShape)
-                    .size(200.dp)
+                    .height(200.dp)
+                    .padding(end = 2.dp, start = 2.dp)
                     .align(Alignment.CenterHorizontally)
-            )
+                    .clickable {
+
+                        imagePickerForImage.launch(
+                            PickVisualMediaRequest(
+                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                            )
+                        )
+                    })
 
             Text(
-                text = "app_name",
+                text = user.username,
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .align(Alignment.CenterHorizontally)
             )
+            Text(
+                modifier = Modifier
+                    .padding(vertical = 5.dp)
+                    .align(Alignment.CenterHorizontally),
+                text = user.email,
+                style = MaterialTheme.typography.bodySmall,
+            )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 modifier = Modifier.padding(vertical = 5.dp),
-                text = my_description,
+                text = user.userInfo!!,
                 style = MaterialTheme.typography.bodySmall,
             )
         }
@@ -361,33 +456,5 @@ fun ImageTextContent(
         icon()
         Spacer(modifier = Modifier.width(8.dp))
         text()
-    }
-}
-
-
-@Composable
-fun profileListItem(
-    icon: @Composable () -> Unit,
-    info: String,
-) {
-    Row(
-        modifier = Modifier.padding(5.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        icon()
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 4.dp)
-                .weight(1f)
-        ) {
-            Text(
-                text = info, style = MaterialTheme.typography.labelLarge
-            )
-        }
-        Icon(
-            imageVector = Icons.Filled.Edit,
-            contentDescription = null,
-            modifier = Modifier.padding(4.dp)
-        )
     }
 }

@@ -55,7 +55,7 @@ fun MainComponent(
             TableScreen(modifier = Modifier.padding(it), onDrawerClicked = { -> })
         })
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
-        DrawerContent(action) {}
+        DrawerContent(actions = action) {}
     }, content = {
         Scaffold(topBar = {
             TopBar(value[selectedIndex.value].text, {
