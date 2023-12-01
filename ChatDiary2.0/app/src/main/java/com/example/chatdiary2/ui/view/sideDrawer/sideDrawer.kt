@@ -43,13 +43,12 @@ object Menus {
     val list = arrayOf(
 
         DrawerMenu(Icons.Filled.Face, "Articles") {
-
+            it.navController.navigate(Destination.profile)
         },
         //DrawerMenu(Icons.Filled.Settings, "Settings", Destination.Settings),
         DrawerMenu(Icons.Filled.Info, "About Us") {
 
-        },
-        DrawerMenu(Icons.Filled.Logout, "Log Out") {
+        }, DrawerMenu(Icons.Filled.Logout, "Log Out") {
             it.toLogin() {
                 it.navController.currentBackStackEntry?.destination?.let { it1 ->
                     popUpTo(it1.id) {
@@ -57,30 +56,24 @@ object Menus {
                     }
                 }
             }
-        }
-    )
+        })
 }
 
 data class DrawerMenu(
-    val icon: ImageVector,
-    val title: String,
-    val onClick: (actions: Action) -> Unit
+    val icon: ImageVector, val title: String, val onClick: (actions: Action) -> Unit
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerContent(
-    actions: Action,
-    menus: Array<DrawerMenu> = Menus.list,
-    onMenuClick: (String) -> Unit
+    actions: Action, menus: Array<DrawerMenu> = Menus.list, onMenuClick: (String) -> Unit
 ) {
     Spacer(modifier = Modifier.height(12.dp))
 
     Column(
         modifier = Modifier
             .background(
-                MaterialTheme.colorScheme.primaryContainer,
-                shape = RoundedCornerShape(16.dp)
+                MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(16.dp)
             )
             .fillMaxWidth(0.8f)
             .fillMaxHeight()
@@ -106,8 +99,7 @@ fun DrawerContent(
         }
         Spacer(modifier = Modifier.height(12.dp))
         menus.forEach {
-            NavigationDrawerItem(
-                label = { Text(text = it.title) },
+            NavigationDrawerItem(label = { Text(text = it.title) },
                 icon = { Icon(imageVector = it.icon, contentDescription = null) },
                 selected = false,
                 onClick = {

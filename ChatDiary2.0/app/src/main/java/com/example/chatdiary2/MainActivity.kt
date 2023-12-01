@@ -9,8 +9,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,6 +22,7 @@ import com.example.chatdiary2.ui.view.diary.SeeAllScreen
 import com.example.chatdiary2.ui.view.login.LoginView
 import com.example.chatdiary2.ui.view.login.RegisterView
 import com.example.chatdiary2.ui.view.main.MainComponent
+import com.example.chatdiary2.ui.view.profile.profileScreen
 
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -34,8 +34,7 @@ data class SelectedImage(
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-
+    @OptIn(ExperimentalMaterial3Api::class)
     @SuppressLint("MutableCollectionMutableState")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,6 +87,11 @@ class MainActivity : ComponentActivity() {
                 }
                 composable(Destination.assertPicker) {
 
+                }
+                composable(Destination.profile) {
+                    ChatDiary2Theme {
+                        profileScreen(action = actions)
+                    }
                 }
             }
         }

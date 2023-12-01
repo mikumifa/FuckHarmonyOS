@@ -20,15 +20,31 @@ interface UserService {
     suspend fun logout(): CommonResponse<Void?>
 
     @GET("/v1/user")
-    suspend fun userInfo(): CommonResponse<Void?>
+    suspend fun userInfo(): CommonResponse<UserVO?>
 
-    @PUT("/v1/user")
+    @PUT("/v1/user/info")
     suspend fun editInfo(@Body request: EditUserInfoRequest?): CommonResponse<Void?>
+
+    @PUT("/v1/user/password")
+    suspend fun editPassword(@Body request: EditUserPasswordRequest?): CommonResponse<Void?>
+
+    @PUT("/v1/user/name")
+    suspend fun editName(@Body request: EditUserNameRequest?): CommonResponse<Void?>
+
 }
 
 data class EditUserInfoRequest(
-    val username: String, val email: String
+    val useInfo: String
 )
+
+data class EditUserNameRequest(
+   val username: String
+)
+
+data class EditUserPasswordRequest(
+    val password: String
+)
+
 
 data class RegisterRequest(
     val username: String, val email: String, val password: String

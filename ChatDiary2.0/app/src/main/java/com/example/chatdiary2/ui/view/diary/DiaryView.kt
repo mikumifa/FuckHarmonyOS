@@ -210,7 +210,8 @@ enum class InputSelector {
 fun DiaryView(
     action: Action,
     diaryViewModel: DiaryViewModel? = hiltViewModel(),
-    myDate: LocalDate = LocalDate.now()
+    myDate: LocalDate = LocalDate.now(),
+    haveInputDialog: Boolean = true,
 ) {
     val context = LocalContext.current
     var lifecycleOwner = LocalLifecycleOwner.current
@@ -312,15 +313,17 @@ fun DiaryView(
 
                 }
             }
+            if (haveInputDialog) {
+                InputDialog(
+                    useId, diaryViewModel!!, onSent = {
+                        val diary = diaryViewModel.searchDiariesByDateFlow(myDate)
+                        diary.observe(lifecycleOwner) {
+                            if (!hasSearchResult) diaryList.value = it
+                        }
+                    }, actions = action
+                )
 
-            InputDialog(
-                useId, diaryViewModel!!, onSent = {
-                    val diary = diaryViewModel.searchDiariesByDateFlow(myDate)
-                    diary.observe(lifecycleOwner) {
-                        if (!hasSearchResult) diaryList.value = it
-                    }
-                }, actions = action
-            )
+            }
         }
     })
 
@@ -554,7 +557,6 @@ fun InputDialog(
     useId: Long, diaryViewModel: DiaryViewModel, onSent: () -> Unit, actions: Action
 ) {
     val context = LocalContext.current
-    val localFocusManager = LocalFocusManager.current
     var text by remember { mutableStateOf(TextFieldValue()) }
     val isSending = remember { mutableStateOf(false) }
     val area = rememberSaveable { mutableStateOf("") }
@@ -656,8 +658,7 @@ fun InputDialog(
         }
     }
 
-    TimedDialog(
-        showDialog = isErrorShow,
+    TimedDialog(showDialog = isErrorShow,
         durationMillis = 1000,
         text = errorShowInfo,
         onDismiss = {})
@@ -827,8 +828,7 @@ fun DiaryItemPreview(
             "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg",
             "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg",
             "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg"
-        ),
-        time = Date()
+        ), time = Date()
     )
 }
 
@@ -876,7 +876,7 @@ fun DiaryItem(
                 Text(
                     text = context, style = MaterialTheme.typography.bodyMedium
                 )
-                if (imageUrls != null) {
+                if (imageUrls != null && imageUrls.isNotEmpty()) {
                     HorizontalImageList(imageUrls = imageUrls, modifier = Modifier)
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -915,7 +915,11 @@ fun HorizontalImageList(imageUrls: List<String>, modifier: Modifier = Modifier) 
         items(imageUrls.size) { idx ->
             val imageUrl = imageUrls[idx]
             AsyncImage(
-                model = imageUrl, contentDescription = imageUrl, modifier = Modifier.height(160.dp).padding(end = 2.dp, start = 2.dp),
+                model = imageUrl,
+                contentDescription = imageUrl,
+                modifier = Modifier
+                    .height(160.dp)
+                    .padding(end = 2.dp, start = 2.dp),
             )
         }
     }

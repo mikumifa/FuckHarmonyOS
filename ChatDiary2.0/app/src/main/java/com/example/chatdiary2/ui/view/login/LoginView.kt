@@ -73,7 +73,7 @@ import com.example.chatdiary2.ui.theme.md_theme_light_outline
 import com.example.chatdiary2.ui.theme.md_theme_light_shadow
 
 @Composable
-private fun LoadingComponent() {
+fun LoadingComponent() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -105,7 +105,7 @@ fun LoginView(
         val showDialogSuccess = remember { mutableStateOf(false) }
         val showDialogFailure = remember { mutableStateOf(false) }
         val isLoading = remember { mutableStateOf(false) }
-        ResultDialog(showDialogSuccess, "Login Success. Welcome!", "Success") {
+        ResultDialog(showDialogSuccess, "登录成功，欢迎", "Success") {
             action.toMain() {
                 popUpTo(Destination.Login) {
                     inclusive = true
@@ -113,7 +113,7 @@ fun LoginView(
 
             }
         }
-        ResultDialog(showDialogFailure, "Login Failure. Error Login", "Failure") {}
+        ResultDialog(showDialogFailure, "登录失败", "Failure") {}
         if (isLoading.value) {
             LoadingComponent()
         }
@@ -484,7 +484,9 @@ fun ButtonComponent(enable: Boolean, value: String, onClick: () -> Unit) {
                 ), contentAlignment = Alignment.Center
         ) {
             Text(
-                text = value, fontSize = 18.sp, fontWeight = FontWeight.Bold
+                text = value,
+                fontSize = 18.sp,
+                style = TextStyle(color = MaterialTheme.colorScheme.onPrimary)
             )
         }
     }
