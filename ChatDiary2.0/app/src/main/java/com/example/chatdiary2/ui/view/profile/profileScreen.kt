@@ -173,10 +173,10 @@ fun profileScreen(
                     uri = filePath,
                 )
                 res.observe(lifecycleOwner) {
-                    if (it == true) {
+                    if (it!=null) {
                         showDialog.value = true
-                        dialogMessage.value = "上传图片成功"
-                        dialogTitle.value = "成功"
+                        dialogMessage.value = it
+                        dialogTitle.value = "结果"
                     } else {
                         showDialog.value = true
                         dialogMessage.value = "上传图片失败"

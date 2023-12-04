@@ -101,8 +101,8 @@ class ProfileScreenViewModel @Inject constructor(private val userService: UserSe
 
     fun uploadImage(
          uri: String
-    ): MutableLiveData<Boolean> {
-        val result = MutableLiveData<Boolean>()
+    ): MutableLiveData<String> {
+        val result = MutableLiveData<String>()
         viewModelScope.launch {
             kotlin.runCatching {
                 val file = File(uri)
@@ -113,10 +113,10 @@ class ProfileScreenViewModel @Inject constructor(private val userService: UserSe
                 )
             }.onSuccess {
                 Log.w("sendImage", it.toString())
-                result.value = true
+                result.value = it.data
             }.onFailure {
                 Log.w("sendImage", it.toString())
-                result.value = false
+                result.value = null
             }
         }
         return result

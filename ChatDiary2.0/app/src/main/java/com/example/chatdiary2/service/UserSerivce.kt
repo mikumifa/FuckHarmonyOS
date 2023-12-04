@@ -35,7 +35,7 @@ interface UserService {
 
     @Multipart
     @POST("/v1/user/avatar")
-    suspend fun uploadImage(@Part image: MultipartBody.Part): CommonResponse<Void?>
+    suspend fun uploadImage(@Part image: MultipartBody.Part): CommonResponse<String?>
 
 }
 
