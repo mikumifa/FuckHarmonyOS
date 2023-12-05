@@ -15,12 +15,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.chatdiary2.nav.Action
 import java.util.Date
@@ -37,47 +42,17 @@ fun SeeAllScreenPreview() {
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun SeeAllScreen(action: Action) {
-    val diaryVoList = listOf<dayDiaryVo>(
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title  long longlong", "example postion long long"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
-        dayDiaryVo(Date(), "example title", "example postion"),
+fun SeeAllScreen(action: Action, diaryViewModel: DiaryViewModel = hiltViewModel()) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val isErrorShow = remember { mutableStateOf(false) }
+    var errorShowInfo by remember { mutableStateOf("") }
 
-        )
+    TimedDialog(
+        showDialog = isErrorShow,
+        durationMillis = 1000,
+        text = errorShowInfo,
+        onDismiss = {})
+
     Scaffold(modifier = Modifier.semantics {
         testTagsAsResourceId = true
     },
@@ -106,7 +81,18 @@ fun SeeAllScreen(action: Action) {
                 .padding(it)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            DiaryListContent(Modifier.weight(1f), diaryVoList)
+
+            val genData = diaryViewModel.getGenData(Int.MAX_VALUE.toLong())
+            genData.observe(lifecycleOwner) { list ->
+                if (list != null) diaryViewModel.genDiaryList.value = list
+                else {
+                    isErrorShow.value = true
+                    errorShowInfo = "获取日记数据信息失败，请检查网络"
+                }
+            }
+
+
+            DiaryListContent(action, Modifier.weight(1f), diaryViewModel.genDiaryList.value)
         }
     }
 }

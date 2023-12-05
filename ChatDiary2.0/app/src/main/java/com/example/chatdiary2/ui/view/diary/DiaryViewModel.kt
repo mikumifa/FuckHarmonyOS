@@ -3,6 +3,8 @@ package com.example.chatdiary2.ui.view.diary
 
 import android.net.Uri
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,6 +37,7 @@ data class DiaryRequest(
 @HiltViewModel
 class DiaryViewModel @Inject constructor(private val diaryService: DiaryService) : ViewModel() {
 
+    val genDiaryList = mutableStateOf(emptyList<dayDiaryVo>())
 
     fun addDiary(
         type: String = "TXT", position: String, content: String, authorId: Long
@@ -164,6 +167,22 @@ class DiaryViewModel @Inject constructor(private val diaryService: DiaryService)
         }
         return result
 
+    }
+
+    fun getGenData(number: Long): MutableLiveData<List<dayDiaryVo>?> {
+        val result = MutableLiveData<List<dayDiaryVo>?>()
+        viewModelScope.launch {
+            kotlin.runCatching {
+                diaryService.getDiaryGenList(number)
+            }.onSuccess {
+                Log.w("sendImage", it.toString())
+                result.value = it.data
+            }.onFailure {
+                Log.w("sendImage", it.toString())
+                result.value = null
+            }
+        }
+        return result
     }
 
 }

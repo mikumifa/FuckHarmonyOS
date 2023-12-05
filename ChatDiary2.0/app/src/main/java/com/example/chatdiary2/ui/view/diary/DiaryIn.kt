@@ -52,6 +52,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -60,7 +61,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.chatdiary2.R
 import com.example.chatdiary2.nav.Action
 import com.example.chatdiary2.nav.Destination
@@ -70,17 +73,28 @@ import java.util.Date
 
 
 @Composable
-fun DiaryIn(action: Action, paddingValues: PaddingValues) {
-
+fun DiaryIn(action: Action, paddingValues: PaddingValues, diaryViewModel: DiaryViewModel) {
     ChatDiary2Theme {
-        HomeScreen(action, paddingValues);
+        HomeScreen(action, paddingValues, diaryViewModel);
     }
 }
 
 
 @Composable
-fun HomeScreen(action: Action, paddingValues: PaddingValues) {
+fun HomeScreen(
+    action: Action, paddingValues: PaddingValues, diaryViewModel: DiaryViewModel = hiltViewModel()
+) {
     var navController = action.navController
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val isErrorShow = remember { mutableStateOf(false) }
+    var errorShowInfo by remember { mutableStateOf("") }
+
+    TimedDialog(showDialog = isErrorShow,
+        durationMillis = 1000,
+        text = errorShowInfo,
+        onDismiss = {})
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -103,7 +117,15 @@ fun HomeScreen(action: Action, paddingValues: PaddingValues) {
             Spacer(modifier = Modifier.height(30.dp))
             Title()
             Spacer(modifier = Modifier.height(20.dp))
-            Content(action)
+            val genData = diaryViewModel.getGenData(7)
+            genData.observe(lifecycleOwner) {
+                if (it != null) diaryViewModel.genDiaryList.value = it;
+                else {
+                    isErrorShow.value = true
+                    errorShowInfo = "获取日记数据信息失败，请检查网络"
+                }
+            }
+            Content(action, diaryViewModel.genDiaryList.value)
         }
 
     }
@@ -125,7 +147,7 @@ fun Title() {
 }
 
 @Composable
-fun Content(action: Action) {
+fun Content(action: Action, diaryVoList: List<dayDiaryVo>) {
     Column(modifier = Modifier.fillMaxSize()) {
         Header(action)
         Spacer(modifier = Modifier.height(16.dp))
@@ -139,7 +161,7 @@ fun Content(action: Action) {
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.headlineSmall
             )
-            TextButton(onClick = {action.navController.navigate(Destination.seeAllDiary)}) {
+            TextButton(onClick = { action.navController.navigate(Destination.seeAllDiary) }) {
                 Text(
                     text = "See all", color = MaterialTheme.colorScheme.primary
                 )
@@ -151,27 +173,18 @@ fun Content(action: Action) {
                 )
             }
         }
-        val diaryVoList = listOf<dayDiaryVo>(
-            dayDiaryVo(Date(), "example title", "example postion"),
-            dayDiaryVo(Date(), "example title  long longlong", "example postion long long"),
-            dayDiaryVo(Date(), "example title", "example postion"),
-            dayDiaryVo(Date(), "example title", "example postion"),
-            dayDiaryVo(Date(), "example title", "example postion"),
-            dayDiaryVo(Date(), "example title", "example postion"),
-            dayDiaryVo(Date(), "example title", "example postion"),
-        )
-        DiaryListContent(modifier =Modifier.weight(1f), diaryVoList = diaryVoList)
+        DiaryListContent(action = action, modifier = Modifier.weight(1f), diaryVoList = diaryVoList)
 
     }
 }
 
 @Composable
-fun DiaryListContent(modifier: Modifier = Modifier, diaryVoList: List<dayDiaryVo>) {
+fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList: List<dayDiaryVo>) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
-        LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.fillMaxSize(),
+        LazyVerticalGrid(columns = GridCells.Fixed(2),
+            modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(10.dp),
             content = {
                 items(diaryVoList.size) { item ->
@@ -181,24 +194,30 @@ fun DiaryListContent(modifier: Modifier = Modifier, diaryVoList: List<dayDiaryVo
                             .padding(10.dp)
                             .clip(RoundedCornerShape(24.dp))
                             .border(
-                                width = 1.dp,
-                                color = MaterialTheme.colorScheme.primary
+                                width = 1.dp, color = MaterialTheme.colorScheme.primary
                             )
                     ) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(color = MaterialTheme.colorScheme.secondaryContainer),
+                                .background(color = MaterialTheme.colorScheme.secondaryContainer)
+                                .clickable {
+                                    action.navController.navigate(Destination.DiaryGenDetails + "/${item}")
+                                },
                             horizontalAlignment = CenterHorizontally,
                             verticalArrangement = Arrangement.Center
                         ) {
-                            diaryVoList[item].image(
-                                Modifier.size(100.dp),
+                            val imageUrl = diaryVoList[item].images.getOrElse(0) {
+                                "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg"
+                            }
+                            AsyncImage(
+                                model = imageUrl,
+                                contentDescription = imageUrl,
+                                modifier = Modifier.height(160.dp)
                             )
 
                             Text(
-                                modifier = Modifier
-                                    .padding(start = 8.dp, end = 8.dp), // 可选：添加额外的边距
+                                modifier = Modifier.padding(start = 8.dp, end = 8.dp), // 可选：添加额外的边距
                                 text = diaryVoList[item].title,
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.bodyLarge,
@@ -208,9 +227,8 @@ fun DiaryListContent(modifier: Modifier = Modifier, diaryVoList: List<dayDiaryVo
                             )
 
                             Text(
-                                modifier = Modifier
-                                    .padding(start = 8.dp, end = 8.dp),
-                                text = diaryVoList[item].position,
+                                modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+                                text = diaryVoList[item].content,
                                 fontWeight = FontWeight.Normal,
                                 style = MaterialTheme.typography.labelMedium,
                                 maxLines = 1, // 设置为1，以显示单行文本
@@ -267,44 +285,37 @@ fun DiaryListContent(modifier: Modifier = Modifier, diaryVoList: List<dayDiaryVo
                                         expanded = isExpanded,
                                         onDismissRequest = { isExpanded = false },
                                     ) {
-                                        DropdownMenuItem(
-                                            leadingIcon = {
-                                                Icon(
-                                                    modifier = Modifier
-                                                        .size(20.dp, 20.dp),
-                                                    imageVector = Icons.Default.Edit,
-                                                    contentDescription = "edit",
-                                                    tint = MaterialTheme.colorScheme.onPrimary
-                                                )
-                                            },
-                                            text = {
-                                                Text(
-                                                    "Edit",
-                                                    color = MaterialTheme.colorScheme.onPrimary
-                                                )
-                                            }, onClick = {
-                                                // 处理修改操作
-                                                isExpanded = false
-                                            })
+                                        DropdownMenuItem(leadingIcon = {
+                                            Icon(
+                                                modifier = Modifier.size(20.dp, 20.dp),
+                                                imageVector = Icons.Default.Edit,
+                                                contentDescription = "edit",
+                                                tint = MaterialTheme.colorScheme.onPrimary
+                                            )
+                                        }, text = {
+                                            Text(
+                                                "Edit", color = MaterialTheme.colorScheme.onPrimary
+                                            )
+                                        }, onClick = {
+                                            // 处理修改操作
+                                            isExpanded = false
+                                        })
                                         DropdownMenuItem(
 
                                             leadingIcon = {
                                                 Icon(
-                                                    modifier = Modifier
-                                                        .size(20.dp, 20.dp),
+                                                    modifier = Modifier.size(20.dp, 20.dp),
 
                                                     imageVector = Icons.Default.Delete,
                                                     contentDescription = "delete",
                                                     tint = MaterialTheme.colorScheme.onPrimary
                                                 )
-                                            },
-                                            text = {
+                                            }, text = {
                                                 Text(
                                                     "Delete",
                                                     color = MaterialTheme.colorScheme.onPrimary
                                                 )
-                                            },
-                                            onClick = {
+                                            }, onClick = {
                                                 // 处理删除操作
                                                 isExpanded = false
                                             })
@@ -366,18 +377,8 @@ fun Header(action: Action) {
 }
 
 data class dayDiaryVo(
-    val date: Date,
+    val date: Date, val id: Long, val content: String, val title: String, val images: List<String>
 
-    val title: String,
-    val position: String,
-    val image: @Composable (modifier: Modifier) -> Unit = {
-        Image(
-            modifier = it,
-            imageVector = Icons.Default.BrokenImage,
-            contentDescription = "",
-            contentScale = ContentScale.Fit
-        )
-    },
 )
 
 @SuppressLint("SimpleDateFormat")

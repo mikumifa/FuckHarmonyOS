@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import com.example.chatdiary2.nav.Action
 import com.example.chatdiary2.ui.view.chat.ChatScreen
 import com.example.chatdiary2.ui.view.diary.DiaryIn
+import com.example.chatdiary2.ui.view.diary.DiaryViewModel
 import com.example.chatdiary2.ui.view.nav.BarItem
 import com.example.chatdiary2.ui.view.nav.BottomBar
 import com.example.chatdiary2.ui.view.nav.TopBar
@@ -37,14 +38,15 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainComponent(
-    action: Action
+    action: Action,
+    diaryViewModel: DiaryViewModel
 ) {
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val selectedIndex = remember { mutableStateOf(0) }
     val value = arrayOf(
-        BarItem(Icons.Default.Note, "Diary") { DiaryIn(action = action, it) },
+        BarItem(Icons.Default.Note, "Diary") { DiaryIn(action = action, it,diaryViewModel) },
         BarItem(Icons.Default.Chat, "Chat") {
             Box(modifier = Modifier.padding(it)) {
                 ChatScreen(action = action)

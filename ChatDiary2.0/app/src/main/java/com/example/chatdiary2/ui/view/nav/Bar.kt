@@ -44,29 +44,24 @@ import androidx.compose.ui.unit.dp
 import com.example.chatdiary2.nav.Action
 
 data class BarItem(
-    val icon: ImageVector,
-    val text: String,
-    val context: @Composable (it: PaddingValues) -> Unit
+    val icon: ImageVector, val text: String, val context: @Composable (it: PaddingValues) -> Unit
 )
-
 
 
 @Composable
 fun BottomBar(
 
-    action: Action,
-    selectedIndex: MutableState<Int>,
-    navList: Array<BarItem>
+    action: Action, selectedIndex: MutableState<Int>, navList: Array<BarItem>
 ) {
     BottomNavigation(elevation = 10.dp) {
         navList.forEachIndexed { index, it ->
-            BottomNavigationItem(icon =
-            { Icon(imageVector = it.icon, "") },
+            BottomNavigationItem(icon = { Icon(imageVector = it.icon, "") },
                 label = { Text(text = it.text) },
                 selected = (selectedIndex.value == index),
                 onClick = {
                     selectedIndex.value = index
-                })
+                },
+                modifier = Modifier.weight(1f))
         }
     }
 
@@ -75,19 +70,14 @@ fun BottomBar(
 @Preview
 @Composable
 fun BottomNavigationItemPreview() {
-    BottomNavigationItem(
-        icon = {
-            // Add your icon Composable here
-            Icon(
-                imageVector = Icons.Default.Favorite,
-                contentDescription = "Navigation Icon"
-            )
-        },
-        label = {
-            Text(text = "Home")
-        },
-        selected = true,
-        onClick = { /* Handle the click event here */ }
+    BottomNavigationItem(icon = {
+        // Add your icon Composable here
+        Icon(
+            imageVector = Icons.Default.Favorite, contentDescription = "Navigation Icon"
+        )
+    }, label = {
+        Text(text = "Home")
+    }, selected = true, onClick = { /* Handle the click event here */ }, modifier = Modifier
     )
 }
 
@@ -96,11 +86,11 @@ fun BottomNavigationItem(
     icon: @Composable () -> Unit,
     label: @Composable () -> Unit,
     selected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = Modifier.clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
+        modifier = modifier.clickable(onClick = onClick), contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -135,9 +125,7 @@ fun TopBar(
         ),
         title = {
             Text(
-                info,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                info, maxLines = 1, overflow = TextOverflow.Ellipsis
             )
         },
         navigationIcon = navigationIcon,
@@ -150,12 +138,10 @@ fun BottomNavigation(
     modifier: Modifier = Modifier,
     elevation: Dp = 4.dp,
     backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
-    content: @Composable () -> Unit
+    content: @Composable RowScope.() -> Unit
 ) {
     Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = backgroundColor,
-        tonalElevation = elevation
+        modifier = modifier.fillMaxWidth(), color = backgroundColor, tonalElevation = elevation
     ) {
         Row(
             modifier = Modifier
