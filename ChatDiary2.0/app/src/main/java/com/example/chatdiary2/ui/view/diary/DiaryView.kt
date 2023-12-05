@@ -228,10 +228,10 @@ fun DiaryView(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    "Diary", maxLines = 1, overflow = TextOverflow.Ellipsis
+                    "日记", maxLines = 1, overflow = TextOverflow.Ellipsis
                 )
                 val currentDate =
-                    SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(Date())
+                    SimpleDateFormat("MMM d, yyyy", Locale.CHINA).format(Date())
                 Text(
                     currentDate,
                     maxLines = 1,

@@ -131,7 +131,7 @@ fun profileScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Profile")
+                    Text(text = "个人信息")
                 },
                 navigationIcon = {
                     IconButton(onClick = {
