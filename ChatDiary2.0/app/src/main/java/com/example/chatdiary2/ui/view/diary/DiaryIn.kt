@@ -89,7 +89,8 @@ fun HomeScreen(
     val isErrorShow = remember { mutableStateOf(false) }
     var errorShowInfo by remember { mutableStateOf("") }
 
-    TimedDialog(showDialog = isErrorShow,
+    TimedDialog(
+        showDialog = isErrorShow,
         durationMillis = 1000,
         text = errorShowInfo,
         onDismiss = {})
@@ -139,7 +140,7 @@ fun Title() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "What would you like to\n" + "write diaries?\uD83D\uDE0B",
+            text = "你想要写一个日记吗？\uD83D\uDE0B",
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             style = MaterialTheme.typography.headlineSmall
         )
@@ -157,13 +158,13 @@ fun Content(action: Action, diaryVoList: List<dayDiaryVo>) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Every Day",
+                text = "日记列表",
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.headlineSmall
             )
             TextButton(onClick = { action.navController.navigate(Destination.seeAllDiary) }) {
                 Text(
-                    text = "See all", color = MaterialTheme.colorScheme.primary
+                    text = "全部", color = MaterialTheme.colorScheme.primary
                 )
                 Icon(
                     imageVector = Icons.Outlined.KeyboardArrowRight,
@@ -274,52 +275,52 @@ fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList:
                                             .size(20.dp, 20.dp)
                                             .clickable { isExpanded = true },
                                         imageVector = Icons.Default.MoreHoriz,
-                                        contentDescription = "more",
+                                        contentDescription = "更多",
                                         tint = MaterialTheme.colorScheme.onTertiaryContainer
                                     )
-                                    DropdownMenu(
-                                        modifier = Modifier.background(
-                                            MaterialTheme.colorScheme.primary,
-                                            shape = RoundedCornerShape(8.dp)
-                                        ),
-                                        expanded = isExpanded,
-                                        onDismissRequest = { isExpanded = false },
-                                    ) {
-                                        DropdownMenuItem(leadingIcon = {
-                                            Icon(
-                                                modifier = Modifier.size(20.dp, 20.dp),
-                                                imageVector = Icons.Default.Edit,
-                                                contentDescription = "edit",
-                                                tint = MaterialTheme.colorScheme.onPrimary
-                                            )
-                                        }, text = {
-                                            Text(
-                                                "Edit", color = MaterialTheme.colorScheme.onPrimary
-                                            )
-                                        }, onClick = {
-                                            // 处理修改操作
-                                            isExpanded = false
-                                        })
-                                        DropdownMenuItem(
-
-                                            leadingIcon = {
-                                                Icon(
-                                                    modifier = Modifier.size(20.dp, 20.dp),
-
-                                                    imageVector = Icons.Default.Delete,
-                                                    contentDescription = "delete",
-                                                    tint = MaterialTheme.colorScheme.onPrimary
-                                                )
-                                            }, text = {
-                                                Text(
-                                                    "Delete",
-                                                    color = MaterialTheme.colorScheme.onPrimary
-                                                )
-                                            }, onClick = {
-                                                // 处理删除操作
-                                                isExpanded = false
-                                            })
-                                    }
+//                                    DropdownMenu(
+//                                        modifier = Modifier.background(
+//                                            MaterialTheme.colorScheme.primary,
+//                                            shape = RoundedCornerShape(8.dp)
+//                                        ),
+//                                        expanded = isExpanded,
+//                                        onDismissRequest = { isExpanded = false },
+//                                    ) {
+//                                        DropdownMenuItem(leadingIcon = {
+//                                            Icon(
+//                                                modifier = Modifier.size(20.dp, 20.dp),
+//                                                imageVector = Icons.Default.Edit,
+//                                                contentDescription = "编辑",
+//                                                tint = MaterialTheme.colorScheme.onPrimary
+//                                            )
+//                                        }, text = {
+//                                            Text(
+//                                                "Edit", color = MaterialTheme.colorScheme.onPrimary
+//                                            )
+//                                        }, onClick = {
+//                                            // 处理修改操作
+//                                            isExpanded = false
+//                                        })
+//                                        DropdownMenuItem(
+//
+//                                            leadingIcon = {
+//                                                Icon(
+//                                                    modifier = Modifier.size(20.dp, 20.dp),
+//
+//                                                    imageVector = Icons.Default.Delete,
+//                                                    contentDescription = "删除",
+//                                                    tint = MaterialTheme.colorScheme.onPrimary
+//                                                )
+//                                            }, text = {
+//                                                Text(
+//                                                    "Delete",
+//                                                    color = MaterialTheme.colorScheme.onPrimary
+//                                                )
+//                                            }, onClick = {
+//                                                // 处理删除操作
+//                                                isExpanded = false
+//                                            })
+//                                    }
                                 }
 
                             }
@@ -364,7 +365,7 @@ fun Header(action: Action) {
                             .align(Alignment.CenterHorizontally)
                     )
                     Text(
-                        text = "Start",
+                        text = "写日记",
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                         style = MaterialTheme.typography.headlineSmall,
                         modifier = Modifier.align(Alignment.CenterHorizontally)

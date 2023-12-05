@@ -105,7 +105,7 @@ fun LoginView(
         val showDialogSuccess = remember { mutableStateOf(false) }
         val showDialogFailure = remember { mutableStateOf(false) }
         val isLoading = remember { mutableStateOf(false) }
-        ResultDialog(showDialogSuccess, "登录成功，欢迎", "Success") {
+        ResultDialog(showDialogSuccess, "登录成功，欢迎", "成功") {
             action.toMain() {
                 popUpTo(Destination.Login) {
                     inclusive = true
@@ -113,18 +113,18 @@ fun LoginView(
 
             }
         }
-        ResultDialog(showDialogFailure, "登录失败", "Failure") {}
+        ResultDialog(showDialogFailure, "登录失败", "失败") {}
         if (isLoading.value) {
             LoadingComponent()
         }
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            LoginHead(title = stringResource(R.string.login_your_acount))
+            LoginHead(title = "登录你的账号")
 
             Spacer(modifier = Modifier.height(10.dp))
             NormalTextField(
-                headImageVec = Icons.Filled.Email, stringResource(R.string.email), emailTextState
+                headImageVec = Icons.Filled.Email, "邮箱", emailTextState
             ) {
                 emailTextState.value = it
             }
@@ -133,7 +133,7 @@ fun LoginView(
                 passwordTextState.value = it
             }
             Spacer(modifier = Modifier.weight(1f))
-            ButtonComponent(!isLoading.value, value = stringResource(id = R.string.Login)) {
+            ButtonComponent(!isLoading.value, value = "登录") {
                 isLoading.value = true
                 val loginUser =
                     loginViewModel.loginUser(emailTextState.value, passwordTextState.value)
@@ -163,7 +163,7 @@ fun LoginView(
             ) {
 
                 Text(
-                    text = stringResource(id = R.string.Dont_have_acount),
+                    text = "还没有账户？ 创建一个！",
                     style = TextStyle(
                         fontSize = 12.sp,
                         color = Color.Black,
@@ -171,7 +171,7 @@ fun LoginView(
                         textAlign = TextAlign.Center
                     ),
                 )
-                val rightText = stringResource(id = R.string.register)
+                val rightText = "注册"
                 ClickableText(text = buildAnnotatedString {
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
                         pushStringAnnotation(tag = rightText, annotation = rightText)
@@ -242,26 +242,26 @@ fun RegisterView(
         if (isLoading.value) {
             LoadingComponent()
         }
-        ResultDialog(showDialogSuccess, showDialogSuccessMessage.value, "Success") {
+        ResultDialog(showDialogSuccess, showDialogSuccessMessage.value, "成功") {
             action.toLogin() {
                 popUpTo(action.navController.graph.startDestinationId) {
                     inclusive = true
                 }
             }
         }
-        ResultDialog(showDialogFailure, showDialogFailureMessage.value, "Failure") {
+        ResultDialog(showDialogFailure, showDialogFailureMessage.value, "失败") {
 
         }
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            LoginHead(title = stringResource(R.string.creat_acount))
+            LoginHead(title = "注册一个账号")
             Spacer(modifier = Modifier.height(10.dp))
-            NormalTextField(Icons.Filled.AccountBox, stringResource(R.string.name), nameTextState) {
+            NormalTextField(Icons.Filled.AccountBox, "用户名", nameTextState) {
                 nameTextState.value = it
             }
             Spacer(modifier = Modifier.height(10.dp))
-            NormalTextField(Icons.Filled.Email, stringResource(R.string.email), emailTextState) {
+            NormalTextField(Icons.Filled.Email, "邮箱", emailTextState) {
                 emailTextState.value = it
             }
             Spacer(modifier = Modifier.height(10.dp))
@@ -270,7 +270,7 @@ fun RegisterView(
             }
             Spacer(modifier = Modifier.height(200.dp))
             Spacer(modifier = Modifier.weight(1f))
-            ButtonComponent(!isLoading.value, value = stringResource(id = R.string.register)) {
+            ButtonComponent(!isLoading.value, value = "注册") {
                 isLoading.value = true
                 val result = loginViewModel.registerUser(
                     nameTextState.value, passwordTextState.value, emailTextState.value
@@ -297,7 +297,7 @@ fun RegisterView(
             ) {
 
                 Text(
-                    text = stringResource(id = R.string.have_acount),
+                    text = "已经有一个账户？",
                     style = TextStyle(
                         fontSize = 12.sp,
                         color = Color.Black,
@@ -305,7 +305,7 @@ fun RegisterView(
                         textAlign = TextAlign.Center
                     ),
                 )
-                val rightText = stringResource(id = R.string.Login)
+                val rightText = "登录"
                 ClickableText(text = buildAnnotatedString {
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
                         pushStringAnnotation(tag = rightText, annotation = rightText)
@@ -340,7 +340,7 @@ fun LoginHead(title: String) {
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 40.dp),
-            text = stringResource(R.string.hey_there),
+            text = "欢迎！",
             textAlign = TextAlign.Center,
             style = TextStyle(
                 fontSize = 24.sp, fontWeight = FontWeight.Normal, fontStyle = FontStyle.Normal
@@ -371,7 +371,7 @@ fun PasswordField(
         modifier = Modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.small),
-        label = { Text(text = stringResource(id = R.string.password)) },
+        label = { Text(text = "密码") },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             focusedLabelColor = MaterialTheme.colorScheme.primary,
@@ -392,7 +392,7 @@ fun PasswordField(
         leadingIcon = {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.baseline_password_24),
-                contentDescription = stringResource(R.string.password)
+                contentDescription = "密码"
             )
         },
         trailingIcon = {
@@ -403,9 +403,9 @@ fun PasswordField(
             }
 
             val description = if (passwordVisible.value) {
-                stringResource(id = R.string.hide_password)
+                "隐藏密码"
             } else {
-                stringResource(id = R.string.show_password)
+                "显示密码"
             }
 
             IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
@@ -439,7 +439,7 @@ fun NormalTextField(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         keyboardOptions = KeyboardOptions(
-            keyboardType = if (label == "email") KeyboardType.Email else KeyboardType.Ascii,
+            keyboardType = if (label == "邮箱") KeyboardType.Email else KeyboardType.Ascii,
             imeAction = ImeAction.Next
         ),
         singleLine = true,

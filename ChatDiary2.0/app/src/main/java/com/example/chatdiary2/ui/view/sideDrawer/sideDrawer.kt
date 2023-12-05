@@ -56,13 +56,13 @@ import com.example.chatdiary2.nav.Destination
 object Menus {
     val list = arrayOf(
 
-        DrawerMenu(Icons.Filled.Face, "Articles") {
+        DrawerMenu(Icons.Filled.Face, "个人信息") {
             it.navController.navigate(Destination.profile)
         },
         //DrawerMenu(Icons.Filled.Settings, "Settings", Destination.Settings),
-        DrawerMenu(Icons.Filled.Info, "About Us") {
+        DrawerMenu(Icons.Filled.Info, "关于我们") {
 
-        }, DrawerMenu(Icons.Filled.Logout, "Log Out") {
+        }, DrawerMenu(Icons.Filled.Logout, "登出") {
             it.toLogin() {
                 it.navController.currentBackStackEntry?.destination?.let { it1 ->
                     popUpTo(it1.id) {
@@ -90,9 +90,9 @@ fun DrawerContent(
         mutableStateOf(
             UserVO(
                 email = "加载中",
-                username = "记载中",
+                username = "加载中",
                 id = 0L,
-                userInfo = "记载中",
+                userInfo = "加载中",
                 avatarUrl = null
             )
         )

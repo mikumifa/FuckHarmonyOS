@@ -110,9 +110,9 @@ fun profileScreen(
         mutableStateOf(
             UserVO(
                 email = "加载中",
-                username = "记载中",
+                username = "加载中",
                 id = 0L,
-                userInfo = "记载中",
+                userInfo = "加载中",
                 avatarUrl = null
             )
         )

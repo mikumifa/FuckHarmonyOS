@@ -46,14 +46,14 @@ fun MainComponent(
     val scope = rememberCoroutineScope()
     val selectedIndex = remember { mutableStateOf(0) }
     val value = arrayOf(
-        BarItem(Icons.Default.Note, "Diary") { DiaryIn(action = action, it,diaryViewModel) },
-        BarItem(Icons.Default.Chat, "Chat") {
+        BarItem(Icons.Default.Note, "日记") { DiaryIn(action = action, it, diaryViewModel) },
+        BarItem(Icons.Default.Chat, "聊天") {
             Box(modifier = Modifier.padding(it)) {
                 ChatScreen(action = action)
             }
         },
 
-        BarItem(Icons.Filled.BrightnessHigh, "Happy") {
+        BarItem(Icons.Filled.BrightnessHigh, "统计") {
             TableScreen(modifier = Modifier.padding(it), onDrawerClicked = { -> })
         })
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
