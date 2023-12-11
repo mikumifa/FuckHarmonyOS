@@ -82,7 +82,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.chatdiary2.R
-import com.example.chatdiary2.nav.Action
+import com.example.chatdiary2.ui.nav.Action
 import com.example.chatdiary2.service.Message
 import com.example.chatdiary2.ui.view.diary.DiaryViewModel
 import com.example.chatdiary2.ui.view.diary.InputSelector

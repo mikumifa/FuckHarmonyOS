@@ -65,8 +65,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.chatdiary2.R
-import com.example.chatdiary2.nav.Action
-import com.example.chatdiary2.nav.Destination
+import com.example.chatdiary2.ui.nav.Action
+import com.example.chatdiary2.ui.nav.Destination
 import com.example.chatdiary2.ui.theme.ChatDiary2Theme
 import java.text.SimpleDateFormat
 import java.util.Date

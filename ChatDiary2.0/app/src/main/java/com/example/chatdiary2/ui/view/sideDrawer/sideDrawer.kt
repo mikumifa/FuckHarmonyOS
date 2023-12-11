@@ -1,5 +1,7 @@
 package com.example.chatdiary2.ui.view.sideDrawer
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.drawable.shapes.Shape
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -50,8 +52,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.chatdiary2.data.UserVO
-import com.example.chatdiary2.nav.Action
-import com.example.chatdiary2.nav.Destination
+import com.example.chatdiary2.ui.nav.Action
+import com.example.chatdiary2.ui.nav.Destination
 
 object Menus {
     val list = arrayOf(
@@ -62,7 +64,11 @@ object Menus {
         //DrawerMenu(Icons.Filled.Settings, "Settings", Destination.Settings),
         DrawerMenu(Icons.Filled.Info, "关于我们") {
 
-        }, DrawerMenu(Icons.Filled.Logout, "登出") {
+        },
+        DrawerMenu(Icons.Filled.Logout, "应用锁") {
+            it.navController.navigate(Destination.lock)
+        },
+        DrawerMenu(Icons.Filled.Logout, "登出") {
             it.toLogin() {
                 it.navController.currentBackStackEntry?.destination?.let { it1 ->
                     popUpTo(it1.id) {
@@ -70,7 +76,8 @@ object Menus {
                     }
                 }
             }
-        })
+        },
+    )
 }
 
 data class DrawerMenu(

@@ -24,10 +24,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.example.chatdiary2.nav.Action
+import com.example.chatdiary2.ui.nav.Action
 import com.example.chatdiary2.ui.view.chat.ChatScreen
 import com.example.chatdiary2.ui.view.diary.DiaryIn
 import com.example.chatdiary2.ui.view.diary.DiaryViewModel
+import com.example.chatdiary2.ui.view.login.LoginViewModel
 import com.example.chatdiary2.ui.view.nav.BarItem
 import com.example.chatdiary2.ui.view.nav.BottomBar
 import com.example.chatdiary2.ui.view.nav.TopBar
@@ -39,7 +40,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainComponent(
     action: Action,
-    diaryViewModel: DiaryViewModel
+    diaryViewModel: DiaryViewModel,
 ) {
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)

@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.chatdiary2.nav.Action
+import com.example.chatdiary2.ui.nav.Action
 import com.example.chatdiary2.ui.theme.ChatDiary2Theme
 import com.example.chatdiary2.ui.view.diary.DiaryViewModel
 import com.example.chatdiary2.ui.view.diary.HorizontalImageList

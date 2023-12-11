@@ -10,6 +10,8 @@ import com.example.chatdiary2.config.Constants
 import com.example.chatdiary2.service.ChatService
 import com.example.chatdiary2.service.DiaryService
 import com.example.chatdiary2.service.UserService
+import com.example.chatdiary2.util.secure.PreferenceStore
+import com.example.chatdiary2.util.secure.SecurityPreferences
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -39,22 +41,33 @@ object Module {
             .addConverterFactory(GsonConverterFactory.create()).build()
     }
 
+
+    @Singleton
     @Provides
     fun provideSharedPreferences(application: Application): SharedPreferences {
         return application.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
     }
+    @Singleton
+    @Provides
+    fun provideSecurityPreferenceStore(sharedPreferences: SharedPreferences): PreferenceStore {
+        return PreferenceStore(sharedPreferences = sharedPreferences)
+    }
+    @Singleton
+    @Provides
+    fun provideSecurityPreferences(preferenceStore: PreferenceStore): SecurityPreferences {
+        return SecurityPreferences(preferenceStore);
+    }
+
 
     @Provides
     fun provideOkHttpClient(sharedPreferences: SharedPreferences): OkHttpClient {
         val addCookieInterceptor = AddCookieInterceptor(sharedPreferences)
         val receivedCookiesInterceptor = ReceivedCookiesInterceptor(sharedPreferences)
 
-        val builder = OkHttpClient.Builder()
-            .connectTimeout(60, TimeUnit.SECONDS)  // 设置连接超时为60秒
+        val builder = OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS)  // 设置连接超时为60秒
             .readTimeout(60, TimeUnit.SECONDS)     // 设置读取超时为60秒
             .writeTimeout(60, TimeUnit.SECONDS)    // 设置写入超时为60秒
-            .addInterceptor(addCookieInterceptor)
-            .addInterceptor(receivedCookiesInterceptor)
+            .addInterceptor(addCookieInterceptor).addInterceptor(receivedCookiesInterceptor)
 
         if (ConfigBuild.DEBUG) {
             builder.addInterceptor(HttpLoggingInterceptor())
@@ -90,17 +103,6 @@ object Module {
         retrofit.create(ChatService::class.java)
 }
 
-class Converters {
-    @TypeConverter
-    fun fromTimestamp(value: Long?): Date? {
-        return value?.let { Date(it) }
-    }
-
-    @TypeConverter
-    fun dateToTimestamp(date: Date?): Long? {
-        return date?.time
-    }
-}
 
 class AddCookieInterceptor(private val sharedPreferences: SharedPreferences) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {

@@ -121,8 +121,8 @@ import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.example.chatdiary2.R
 import com.example.chatdiary2.data.Diary
-import com.example.chatdiary2.nav.Action
-import com.example.chatdiary2.nav.Destination
+import com.example.chatdiary2.ui.nav.Action
+import com.example.chatdiary2.ui.nav.Destination
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat

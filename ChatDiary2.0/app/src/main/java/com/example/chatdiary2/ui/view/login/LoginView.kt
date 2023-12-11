@@ -67,8 +67,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.chatdiary2.R
-import com.example.chatdiary2.nav.Action
-import com.example.chatdiary2.nav.Destination
+import com.example.chatdiary2.ui.nav.Action
+import com.example.chatdiary2.ui.nav.Destination
 import com.example.chatdiary2.ui.theme.md_theme_light_outline
 import com.example.chatdiary2.ui.theme.md_theme_light_shadow
 

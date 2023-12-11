@@ -68,12 +68,16 @@ android {
     buildToolsVersion = "34.0.0"
 }
 
-dependencies {
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha03")
 
+dependencies {
+    implementation("androidx.lifecycle:lifecycle-process:2.6.2")
+    implementation("com.airbnb.android:lottie-compose:4.0.0")
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.room:room-common:2.5.2")
     implementation("androidx.room:room-ktx:2.5.2")
     implementation("androidx.tv:tv-material:1.0.0-alpha10")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     // To use Kotlin Symbol Processing (KSP)
     ksp("androidx.room:room-compiler:2.5.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
@@ -107,6 +111,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+    implementation("androidx.biometric:biometric-ktx:1.2.0-alpha05")
+
 
 }
 // Allow references to generated code

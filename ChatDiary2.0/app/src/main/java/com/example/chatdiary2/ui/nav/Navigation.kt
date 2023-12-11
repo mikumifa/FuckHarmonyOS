@@ -1,17 +1,19 @@
-package com.example.chatdiary2.nav
+package com.example.chatdiary2.ui.nav
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
-import com.example.chatdiary2.nav.Destination.About
-import com.example.chatdiary2.nav.Destination.Articles
-import com.example.chatdiary2.nav.Destination.Diary
-import com.example.chatdiary2.nav.Destination.Login
-import com.example.chatdiary2.nav.Destination.Main
-import com.example.chatdiary2.nav.Destination.Register
+import com.example.chatdiary2.ui.nav.Destination.About
+import com.example.chatdiary2.ui.nav.Destination.Articles
+import com.example.chatdiary2.ui.nav.Destination.Diary
+import com.example.chatdiary2.ui.nav.Destination.Login
+import com.example.chatdiary2.ui.nav.Destination.Main
+import com.example.chatdiary2.ui.nav.Destination.Register
 
 
 object Destination {
-    const val DiaryGenDetails="detailGenDiary"
+    const val Start = "Start"
+    const val lock = "lock"
+    const val DiaryGenDetails = "detailGenDiary"
     const val profile = "profile"
     const val assertPicker = "asset_picker"
     const val Main = "Main"

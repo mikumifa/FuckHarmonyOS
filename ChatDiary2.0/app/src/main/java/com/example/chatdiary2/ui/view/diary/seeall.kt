@@ -27,7 +27,7 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import com.example.chatdiary2.nav.Action
+import com.example.chatdiary2.ui.nav.Action
 import java.util.Date
 
 @Composable

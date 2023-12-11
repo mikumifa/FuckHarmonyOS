@@ -41,7 +41,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.chatdiary2.nav.Action
+import com.example.chatdiary2.ui.nav.Action
 
 data class BarItem(
     val icon: ImageVector, val text: String, val context: @Composable (it: PaddingValues) -> Unit

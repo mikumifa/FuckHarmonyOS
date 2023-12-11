@@ -63,7 +63,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.chatdiary2.data.UserVO
-import com.example.chatdiary2.nav.Action
+import com.example.chatdiary2.ui.nav.Action
+import com.example.chatdiary2.ui.view.common.ImageTextContent
 import com.example.chatdiary2.ui.view.login.ButtonComponent
 import com.example.chatdiary2.ui.view.login.LoadingComponent
 import com.example.chatdiary2.ui.view.login.NormalTextField
@@ -436,25 +437,3 @@ fun TopProfileLayout(
     }
 }
 
-@Composable
-fun ImageTextContent(
-    icon: @Composable () -> Unit, text: @Composable () -> Unit, onClick: () -> Unit, // 点击事件的回调
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .padding(4.dp)
-            .background(
-                color = MaterialTheme.colorScheme.secondaryContainer,
-                shape = RoundedCornerShape(8.dp)
-            )
-            .fillMaxWidth()
-            .height(48.dp)
-            .clickable { onClick() }, // 添加点击事件
-        horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
-    ) {
-        icon()
-        Spacer(modifier = Modifier.width(8.dp))
-        text()
-    }
-}

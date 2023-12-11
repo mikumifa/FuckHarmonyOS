@@ -1,10 +1,5 @@
 package com.example.chatdiary2.data
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
-import java.util.Date
-
 
 data class Diary(
     val id: Long,
