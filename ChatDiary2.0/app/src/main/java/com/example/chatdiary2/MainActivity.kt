@@ -97,8 +97,8 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
                 composable(Destination.Start) {
                     AutoLoginScreen(
                         action = action,
-                        password = savedUsername,
-                        email = savedPassword,
+                        password = savedPassword,
+                        email = savedUsername,
                         loginViewModel = loginViewModel
                     )
                 }
