@@ -75,9 +75,9 @@ import com.example.chatdiary2.data.table.HappyType
 import com.example.chatdiary2.data.table.HappyValue
 import com.example.chatdiary2.data.table.HappyWeakData
 import com.example.chatdiary2.data.table.happyData
-import com.example.chatdiary2.ui.theme.md_theme_dark_onPrimaryContainer
-import com.example.chatdiary2.ui.theme.md_theme_light_outlineVariant
 import com.example.chatdiary2.ui.view.table.TimeGraphScope.timeGraphBar
+import eu.kanade.presentation.theme.colorscheme.md_theme_dark_onPrimaryContainer
+import eu.kanade.presentation.theme.colorscheme.md_theme_light_outlineVariant
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

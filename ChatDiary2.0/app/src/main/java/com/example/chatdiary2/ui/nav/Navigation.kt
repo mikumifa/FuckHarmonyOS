@@ -11,6 +11,7 @@ import com.example.chatdiary2.ui.nav.Destination.Register
 
 
 object Destination {
+    const val Appearance = "Appearance"
     const val Start = "Start"
     const val lock = "lock"
     const val DiaryGenDetails = "detailGenDiary"

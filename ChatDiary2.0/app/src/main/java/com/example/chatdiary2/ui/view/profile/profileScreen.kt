@@ -335,7 +335,7 @@ private fun BottomSheetEditor(
 }
 
 @Composable
-private fun ProfileStyledText(
+fun ProfileStyledText(
     text: String, color: Color = MaterialTheme.colorScheme.onPrimaryContainer
 ) {
     Text(

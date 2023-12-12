@@ -25,7 +25,8 @@ import androidx.navigation.navArgument
 import com.example.chatdiary2.delegate.SecureActivityDelegate
 import com.example.chatdiary2.ui.nav.Action
 import com.example.chatdiary2.ui.nav.Destination
-import com.example.chatdiary2.ui.theme.ChatDiary2Theme
+import com.example.chatdiary2.ui.theme.ChatDiaryTheme
+import com.example.chatdiary2.ui.theme.UiPreferences
 import com.example.chatdiary2.ui.view.diary.DiaryView
 import com.example.chatdiary2.ui.view.diary.DiaryViewModel
 import com.example.chatdiary2.ui.view.diary.SeeAllScreen
@@ -36,6 +37,7 @@ import com.example.chatdiary2.ui.view.login.LoginViewModel
 import com.example.chatdiary2.ui.view.login.RegisterView
 import com.example.chatdiary2.ui.view.main.MainComponent
 import com.example.chatdiary2.ui.view.profile.profileScreen
+import com.example.chatdiary2.ui.view.settings.appearance.AppearanceScreen
 import com.example.chatdiary2.ui.view.settings.lock.LockScreen
 import com.example.chatdiary2.util.secure.PreferenceStore
 import com.example.chatdiary2.util.secure.SecurityPreferences
@@ -49,10 +51,17 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
 
+    @Inject
+    lateinit var preferenceStore: PreferenceStore
+
+    @Inject
+    lateinit var preferences: SecurityPreferences
+
     @OptIn(ExperimentalMaterial3Api::class)
     @SuppressLint("MutableCollectionMutableState", "CommitPrefEdits")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super<ComponentActivity>.onCreate(savedInstanceState)
         requestPermissions(arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION), 100)
         requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 100)
@@ -70,6 +79,7 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
             }
             val diaryViewModel by viewModels<DiaryViewModel>()
             val loginViewModel by viewModels<LoginViewModel>()
+            val uiPreferences = UiPreferences(preferenceStore)
 
             val sharedPreferences: SharedPreferences =
                 getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
@@ -80,6 +90,7 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
             NavHost(
                 navController = navController,
                 startDestination = if (isLoggedIn) Destination.Start else Destination.Login
+//                startDestination = Destination.Appearance
             ) {
                 composable(Destination.Login) {
                     sharedPreferences.edit().putBoolean("isLoggedIn", false)
@@ -105,13 +116,22 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
                 composable(Destination.Register) {
                     RegisterView(action = action)
                 }
+
                 composable(Destination.Diary) {
-                    ChatDiary2Theme {
+                    ChatDiaryTheme() {
                         DiaryView(action = action, diaryViewModel = diaryViewModel)
                     }
                 }
+
+                composable(Destination.Appearance) {
+                    ChatDiaryTheme() {
+
+                        AppearanceScreen(action = action)
+                    }
+                }
                 composable(Destination.Main) {
-                    ChatDiary2Theme {
+                    ChatDiaryTheme() {
+
                         MainComponent(
                             action = action,
                             diaryViewModel = diaryViewModel,
@@ -119,20 +139,19 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
                     }
                 }
                 composable(Destination.seeAllDiary) {
-                    ChatDiary2Theme {
+                    ChatDiaryTheme() {
+
                         SeeAllScreen(action = action, diaryViewModel = diaryViewModel)
                     }
                 }
-                composable(Destination.assertPicker) {
-
-                }
                 composable(Destination.profile) {
-                    ChatDiary2Theme {
+                    ChatDiaryTheme() {
                         profileScreen(action = action)
                     }
                 }
                 composable(Destination.lock) {
-                    ChatDiary2Theme {
+                    ChatDiaryTheme() {
+
                         LockScreen(action = action)
                     }
                 }
@@ -141,7 +160,7 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
                     arguments = listOf(navArgument("param") { type = NavType.IntType })
                 ) { entry ->
                     val param = entry.arguments?.getInt("param")
-                    ChatDiary2Theme {
+                    ChatDiaryTheme() {
                         GenDiaryScreen(
                             action = action, idx = param!!, diaryViewModel = diaryViewModel
                         )
@@ -152,11 +171,6 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
 
     }
 
-    @Inject
-    lateinit var preferenceStore: PreferenceStore
-
-    @Inject
-    lateinit var preferences: SecurityPreferences
     override fun onStart(owner: LifecycleOwner) {
         Log.d("lifecycle", "onStart: start")
         SecureActivityDelegate.onApplicationStart(preferences = preferences)
