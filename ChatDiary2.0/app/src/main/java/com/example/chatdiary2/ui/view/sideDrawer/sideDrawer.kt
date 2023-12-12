@@ -25,7 +25,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Looks
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -65,8 +67,11 @@ object Menus {
         DrawerMenu(Icons.Filled.Info, "关于我们") {
 
         },
-        DrawerMenu(Icons.Filled.Logout, "应用锁") {
+        DrawerMenu(Icons.Filled.Lock, "应用锁") {
             it.navController.navigate(Destination.lock)
+        },
+        DrawerMenu(Icons.Filled.Looks, "外观与语言") {
+            it.navController.navigate(Destination.Appearance)
         },
         DrawerMenu(Icons.Filled.Logout, "登出") {
             it.toLogin() {

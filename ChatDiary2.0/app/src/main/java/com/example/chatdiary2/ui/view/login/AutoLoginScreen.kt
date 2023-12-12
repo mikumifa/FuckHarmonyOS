@@ -17,8 +17,10 @@ import androidx.lifecycle.lifecycleScope
 import com.example.chatdiary2.R
 import com.example.chatdiary2.ui.nav.Action
 import com.example.chatdiary2.ui.view.common.AnimatedPreloader
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun AutoLoginScreen(
@@ -29,12 +31,13 @@ fun AutoLoginScreen(
     val loginUser = loginViewModel.loginUser(email, password)
     loginUser.observe(lifecycleOwner) {
         lifecycleOwner.lifecycleScope.launch {
-            it?.let {
-                delay(1000)
-                action.toMain() {}
-            } ?: run {
-                delay(1000)
-                action.toLogin() {}
+            delay(1000)
+            withContext(Dispatchers.Main) {
+                it?.let {
+                    action.toMain() {}
+                } ?: run {
+                    action.toLogin() {}
+                }
             }
         }
     }

@@ -72,6 +72,7 @@ android {
 dependencies {
     implementation("androidx.lifecycle:lifecycle-process:2.6.2")
     implementation("com.airbnb.android:lottie-compose:4.0.0")
+    implementation("com.google.android.material:material:1.10.0")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.room:room-common:2.5.2")

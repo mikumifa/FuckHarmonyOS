@@ -69,8 +69,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.chatdiary2.R
 import com.example.chatdiary2.ui.nav.Action
 import com.example.chatdiary2.ui.nav.Destination
-import com.example.chatdiary2.ui.theme.md_theme_light_outline
-import com.example.chatdiary2.ui.theme.md_theme_light_shadow
+import eu.kanade.presentation.theme.colorscheme.md_theme_light_outline
+import eu.kanade.presentation.theme.colorscheme.md_theme_light_shadow
 
 @Composable
 fun LoadingComponent() {

@@ -384,18 +384,6 @@ fun UserInput(
                         )
 
                     }
-                    IconButton(onClick = { /* do something */ }) {
-                        Icon(
-                            Icons.Filled.Edit,
-                            contentDescription = "Localized description",
-                        )
-                    }
-                    IconButton(onClick = { /* do something */ }) {
-                        Icon(
-                            Icons.Filled.Mic,
-                            contentDescription = "Localized description",
-                        )
-                    }
                     IconButton(onClick = {   }) {
                         Icon(
                             Icons.Filled.Image,

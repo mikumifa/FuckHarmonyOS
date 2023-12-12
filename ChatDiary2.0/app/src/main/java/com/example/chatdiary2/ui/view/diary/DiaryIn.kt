@@ -24,16 +24,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BrokenImage
 import androidx.compose.material.icons.filled.Chat
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -67,16 +62,13 @@ import coil.compose.AsyncImage
 import com.example.chatdiary2.R
 import com.example.chatdiary2.ui.nav.Action
 import com.example.chatdiary2.ui.nav.Destination
-import com.example.chatdiary2.ui.theme.ChatDiary2Theme
 import java.text.SimpleDateFormat
 import java.util.Date
 
 
 @Composable
 fun DiaryIn(action: Action, paddingValues: PaddingValues, diaryViewModel: DiaryViewModel) {
-    ChatDiary2Theme {
         HomeScreen(action, paddingValues, diaryViewModel);
-    }
 }
 
 
@@ -108,7 +100,7 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .offset(0.dp, (-30).dp),
             painter = painterResource(id = R.drawable.bg_main),
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primaryContainer),
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.secondaryContainer),
             contentDescription = "Header Background",
             contentScale = ContentScale.FillWidth
         )
@@ -141,7 +133,7 @@ fun Title() {
     ) {
         Text(
             text = "你想要写一个日记吗？\uD83D\uDE0B",
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
             style = MaterialTheme.typography.headlineSmall
         )
     }
@@ -278,49 +270,6 @@ fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList:
                                         contentDescription = "更多",
                                         tint = MaterialTheme.colorScheme.onTertiaryContainer
                                     )
-//                                    DropdownMenu(
-//                                        modifier = Modifier.background(
-//                                            MaterialTheme.colorScheme.primary,
-//                                            shape = RoundedCornerShape(8.dp)
-//                                        ),
-//                                        expanded = isExpanded,
-//                                        onDismissRequest = { isExpanded = false },
-//                                    ) {
-//                                        DropdownMenuItem(leadingIcon = {
-//                                            Icon(
-//                                                modifier = Modifier.size(20.dp, 20.dp),
-//                                                imageVector = Icons.Default.Edit,
-//                                                contentDescription = "编辑",
-//                                                tint = MaterialTheme.colorScheme.onPrimary
-//                                            )
-//                                        }, text = {
-//                                            Text(
-//                                                "Edit", color = MaterialTheme.colorScheme.onPrimary
-//                                            )
-//                                        }, onClick = {
-//                                            // 处理修改操作
-//                                            isExpanded = false
-//                                        })
-//                                        DropdownMenuItem(
-//
-//                                            leadingIcon = {
-//                                                Icon(
-//                                                    modifier = Modifier.size(20.dp, 20.dp),
-//
-//                                                    imageVector = Icons.Default.Delete,
-//                                                    contentDescription = "删除",
-//                                                    tint = MaterialTheme.colorScheme.onPrimary
-//                                                )
-//                                            }, text = {
-//                                                Text(
-//                                                    "Delete",
-//                                                    color = MaterialTheme.colorScheme.onPrimary
-//                                                )
-//                                            }, onClick = {
-//                                                // 处理删除操作
-//                                                isExpanded = false
-//                                            })
-//                                    }
                                 }
 
                             }
@@ -351,14 +300,14 @@ fun Header(action: Action) {
             IconButton(modifier = Modifier
                 .align(CenterHorizontally)
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.tertiaryContainer),
+                .background(MaterialTheme.colorScheme.primaryContainer),
                 onClick = { action.toDiary() {} }) {
 
                 Column {
                     Icon(
                         imageVector = Icons.Default.Chat,
                         contentDescription = "",
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier
                             .height(80.dp)
                             .width(100.dp)
@@ -366,7 +315,7 @@ fun Header(action: Action) {
                     )
                     Text(
                         text = "写日记",
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                         style = MaterialTheme.typography.headlineSmall,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
