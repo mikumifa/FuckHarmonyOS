@@ -165,5 +165,6 @@
     <!--AppThemeItem.kt-->
     <string name="choose_theme_ch">"选择"</string>
     <string name="choose_theme_en">"Choose theme"</string>
+
 </resources>
 
