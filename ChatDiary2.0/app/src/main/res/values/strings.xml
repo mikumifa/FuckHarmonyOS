@@ -1,16 +1,170 @@
 <resources>
     <string name="app_name">chatDiary2</string>
-    <string name="creat_acount">Create an Account</string>
-    <string name="hey_there">Hey there,</string>
-    <string name="hide_password">hide password</string>
-    <string name="show_password">show password\n</string>
-    <string name="password">password</string>
-    <string name="email">email</string>
-    <string name="login">login</string>
-    <string name="Dont_have_acount">"Don't have an account yet? "</string>
-    <string name="register">Register</string>
-    <string name="login_your_acount">Login your Acount</string>
-    <string name="name">name</string>
-    <string name="have_acount">"Already have an account? "</string>
-    <string name="Login">Login</string>
+
+    <!--LoginView-->
+    <string name="login_success_ch">"登录成功，欢迎！"</string>
+    <string name="login_success_en">"Login success, welcome!"</string>
+    <string name="title_success_ch">"成功"</string><!--profileScreen.kt中相同-->
+    <string name="title_success_en">"Success"</string>
+    <string name="login_failed_ch">"登录失败"</string>
+    <string name="login_failed_en">"Login failed"</string>
+    <string name="title_failed_ch">"失败"</string><!--profileScreen.kt中相同-->
+    <string name="title_failed_en">"Login failed"</string>
+    <string name="login_your_account_ch">"登录你的账号"</string>
+    <string name="login_your_account_en">"Login to Your Account"</string>
+    <string name="email_ch">"邮箱"</string>
+    <string name="email_en">"Email"</string>
+    <string name="login_ch">"登录"</string>
+    <string name="login_en">"Login"</string>
+    <string name="dont_have_account_ch">"还没有账户？创建一个！"</string>
+    <string name="dont_have_account_en">"Don't have an account yet? Create one!"</string>
+    <string name="register_ch">"注册"</string>
+    <string name="register_en">"Register"</string>
+    <string name="create_account_ch">"注册一个账号"</string>
+    <string name="create_account_en">"Create an Account"</string>
+    <string name="name_ch">"用户名"</string>
+    <string name="name_en">"Name"</string>
+    <string name="have_account_ch">"已经有一个账户？"</string>
+    <string name="have_account_en">"Already have an account? "</string>
+    <string name="hello_ch">"欢迎！"</string>
+    <string name="hello_en">"Hello!"</string>
+    <string name="password_ch">"密码"</string>
+    <string name="password_en">"Password"</string>
+    <string name="hide_password_ch">"隐藏密码"</string>
+    <string name="hide_password_en">"Show password"</string>
+    <string name="show_password_ch">"显示密码"</string>
+    <string name="show_password_en">"Hide password"</string>
+
+    <!--LoginViewModle.kt-->
+    <string name="register_failed_ch">"网络问题"</string>
+    <string name="register_failed_en">"Network connection failed"</string>
+    <string name="register_success_ch">"注册成功,返回登录界面"</string>
+    <string name="register_success_en">"Register success, return to login"</string>
+
+    <!--common.kt-->
+    <string name="username_exists_ch">"用户名已存在"</string>
+    <string name="username_exists_en">"Username already exists"</string>
+    <string name="invalid_credential_ch">"用户名或密码错误"</string>
+    <string name="invalid_credential_en">"Wrong username or password"</string>
+    <string name="user_not_found_ch">"用户不存在"</string>
+    <string name="user_not_found_en">"User does not exist"</string>
+
+    <!--AuthenticatorUtil.kt-->
+    <string name="unlock_ch">"解锁"</string>
+    <string name="unlock_en">"Unlock"</string>
+
+    <!--ChatScreen.kt-->
+    <!--DiaryView.kt-->
+    <string name="sending_error_ch">"发送失败"</string><!--ChatScreen.kt中原文为发送错误-->
+    <string name="sending_error_en">"Sending failed"</string>
+    <string name="speech_recognition_error_ch">"语言识别失败"</string>
+    <string name="speech_recognition_error_en">"Speech recognition failed"</string>
+
+    <!--DiaryIn.kt-->
+    <string name="diary_error_ch">"获取日记数据信息失败，请检查网络"</string><!--seeall.kt中相同-->
+    <string name="diary_error_en">"Failed to get diary data, please check your network connection"</string>
+    <string name="diary_title_ch">"你想要写一个日记吗？😋"</string>
+    <string name="diary_title_en">"Want to write a diary?😋"</string>
+    <string name="diary_list_ch">"日记列表"</string>
+    <string name="diary_list_en">"Diary List"</string>
+    <string name="all_diary_ch">"全部"</string>
+    <string name="all_diary_en">"View all"</string>
+    <string name="more_horizon_ch">"更多"</string>
+    <string name="more_horizon_en">"View more"</string>
+    <string name="write_diary_ch">"写日记"</string>
+    <string name="write_diary_en">"Write diary"</string>
+
+    <!--seeall.kt-->
+    <string name="see_all_ch">"查看全部"</string>
+    <string name="see_all_en">"View all"</string>
+
+    <!--DiaryView.kt-->
+    <!--genDiary.kt-->
+    <string name="diary_ch">"日记"</string>
+    <string name="diary_en">"Diary"</string>
+
+    <!--genDiary.kt-->
+    <string name="author_ch">"作者"</string>
+    <string name="author_en">"Author"</string>
+    <string name="date_ch">" 时间："</string><!--原文时间前有一个空格，不确定是为了排版还是错误-->
+    <string name="date_en">" Date: "</string>
+    <string name="date_value_ch">"2023年12月4日"</string>
+    <string name="date_value_en">"4 December 2023"</string>
+
+    <!--MainView.kt-->
+    <string name="bar_diary_ch">"日记"</string>
+    <string name="bar_diary_en">"Diary"</string>
+    <string name="bar_chat_ch">"聊天"</string>
+    <string name="bar_chat_en">"Chat"</string>
+    <string name="bar_statistic_ch">"统计"</string>
+    <string name="bar_statistic_en">"Statistic"</string>
+
+    <!--profileScreen.kt-->
+    <string name="loading_ch">"加载中"</string><!--sideDrawer.kt中相同-->
+    <string name="loading_en">"Diary"</string>
+    <string name="user_info_ch">"个人信息"</string><!--sideDrawer.kt中相同-->
+    <string name="user_info_en">"Diary"</string>
+    <string name="default_signature_ch">"签名啥也没写哦。"</string>
+    <string name="default_signature_en">"The signature doesn't say anything."</string>
+    <string name="loading_failed_ch">"加载用户信息失败"</string><!--失败与LoginView.kt相同-->
+    <string name="loading_failed_en">"Failed to load user information"</string>
+    <string name="result_ch">"结果"</string>
+    <string name="result_en">"Result"</string>
+    <string name="upload_image_failed_ch">"上传图片失败"</string><!--失败与LoginView.kt相同-->
+    <string name="upload_image_failed_en">"Failed to upload image"</string>
+    <string name="change_name_ch">"修改名字"</string><!--成功和失败与LoginView.kt相同-->
+    <string name="change_name_en">"Change name"</string>
+    <string name="change_signature_ch">"修改个性签名"</string>
+    <string name="change_signature_en">"Change signature"</string>
+    <string name="change_password_ch">"修改密码"</string>
+    <string name="change_password_en">"Change password"</string>
+    <string name="enter_change_ch">"输入你的修改"</string>
+    <string name="enter_change_en">"Enter your changes"</string>
+    <string name="button_change_ch">"点击修改"</string>
+    <string name="button_change_en">"Click to change"</string>
+
+    <!--ProfileScreenViewModel.kt-->
+    <string name="change_success_ch">"修改成功"</string>
+    <string name="change_success_en">"Change success"</string>
+    <string name="change_failed_ch">"网络问题"</string><!--原文为可能网络有问题-->
+    <string name="change_failed_en">"Network connection failed"</string>
+
+    <!--LockScreen.kt-->
+    <string name="device_lock_ch">"设备锁"</string><!--锁图标未翻译-->
+    <string name="device_lock_en">"Device lock"</string>
+    <string name="device_lock_description_ch">"设备锁可以很好的保护你日记的安全"</string><!--原文分成两段以换行-->
+    <string name="device_lock_description_en">"Device lock can keep your diaries safe"</string>
+    <string name="device_lock_setting_ch">"启动设备锁"</string><!--SwitchBottom.kt中相同-->
+    <string name="device_lock_setting_en">"Enable device lock"</string>
+
+    <!--sideDrawer.kt-->
+    <!--个人信息与profileScreen.kt相同-->
+    <string name="about_us_ch">"关于我们"</string>
+    <string name="about_us_en">"About us"</string>
+    <string name="app_lock_ch">"应用锁"</string>
+    <string name="app_lock_en">"Application lock"</string>
+    <string name="appearance_language_ch">"外观与语言"</string><!--AppearenceScreen.kt中相同-->
+    <string name="appearance_language_en">"Appearance and language"</string>
+    <string name="logout_ch">"登出"</string>
+    <string name="logout_en">"Logout"</string>
+    <!--加载中与profileScreen.kt相同-->
+
+    <!--TableHeader.kt-->
+    <string name="sad_ch">"伤心"</string>
+    <string name="sad_en">"Sad"</string>
+    <string name="happy_ch">"快乐"</string>
+    <string name="happy_en">"Happy"</string>
+    <string name="days_ch">"1天"</string>
+    <string name="days_en">"Day 1"</string><!--或者1 day？-->
+
+    <!--AppearenceScreen.kt-->
+    <!--外观和语言与sideDrawer.kt相同-->
+    <string name="change_theme_ch">"修改主题"</string>
+    <string name="change_theme_en">"Change theme"</string>
+
+    <!--AppThemeItem.kt-->
+    <string name="choose_theme_ch">"选择"</string>
+    <string name="choose_theme_en">"Choose theme"</string>
+
 </resources>
+
