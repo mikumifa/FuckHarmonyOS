@@ -143,6 +143,8 @@
     <string name="about_us_en">"About us"</string>
     <string name="app_lock_ch">"应用锁"</string>
     <string name="app_lock_en">"Application lock"</string>
+    <string name="appearance_language_ch">"外观与语言"</string><!--AppearenceScreen.kt中相同-->
+    <string name="appearance_language_en">"Appearance and language"</string>
     <string name="logout_ch">"登出"</string>
     <string name="logout_en">"Logout"</string>
     <!--加载中与profileScreen.kt相同-->
@@ -154,5 +156,14 @@
     <string name="happy_en">"Happy"</string>
     <string name="days_ch">"1天"</string>
     <string name="days_en">"Day 1"</string><!--或者1 day？-->
+
+    <!--AppearenceScreen.kt-->
+    <!--外观和语言与sideDrawer.kt相同-->
+    <string name="change_theme_ch">"修改主题"</string>
+    <string name="change_theme_en">"Change theme"</string>
+
+    <!--AppThemeItem.kt-->
+    <string name="choose_theme_ch">"选择"</string>
+    <string name="choose_theme_en">"Choose theme"</string>
 </resources>
 
