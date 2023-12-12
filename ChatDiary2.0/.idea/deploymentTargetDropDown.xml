@@ -6,20 +6,7 @@
         <State />
       </entry>
       <entry key="MainActivity">
-        <State>
-          <runningDeviceTargetSelectedWithDropDown>
-            <Target>
-              <type value="RUNNING_DEVICE_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\mikumifa\.android\avd\Pixel_7_Pro_API_33.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-12-11T18:37:33.826389900Z" />
-        </State>
+        <State />
       </entry>
       <entry key="UnlockActivity">
         <State />
