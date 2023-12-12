@@ -34,9 +34,23 @@ fun AutoLoginScreen(
             delay(1000)
             withContext(Dispatchers.Main) {
                 it?.let {
-                    action.toMain() {}
+                    action.toMain() {
+                        action.navController.currentBackStackEntry?.destination?.let { it1 ->
+                            popUpTo(it1.id) {
+                                inclusive = true
+                            }
+                        }
+
+                    }
                 } ?: run {
-                    action.toLogin() {}
+                    action.toLogin() {
+                        action.navController.currentBackStackEntry?.destination?.let { it1 ->
+                            popUpTo(it1.id) {
+                                inclusive = true
+                            }
+                        }
+                    }
+
                 }
             }
         }

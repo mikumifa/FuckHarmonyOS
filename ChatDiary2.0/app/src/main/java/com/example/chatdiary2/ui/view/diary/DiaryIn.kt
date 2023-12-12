@@ -57,18 +57,20 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.chatdiary2.R
 import com.example.chatdiary2.ui.nav.Action
 import com.example.chatdiary2.ui.nav.Destination
+import com.example.chatdiary2.ui.view.common.AnimatedPreloader
 import java.text.SimpleDateFormat
 import java.util.Date
 
 
 @Composable
 fun DiaryIn(action: Action, paddingValues: PaddingValues, diaryViewModel: DiaryViewModel) {
-        HomeScreen(action, paddingValues, diaryViewModel);
+    HomeScreen(action, paddingValues, diaryViewModel);
 }
 
 
@@ -81,8 +83,7 @@ fun HomeScreen(
     val isErrorShow = remember { mutableStateOf(false) }
     var errorShowInfo by remember { mutableStateOf("") }
 
-    TimedDialog(
-        showDialog = isErrorShow,
+    TimedDialog(showDialog = isErrorShow,
         durationMillis = 1000,
         text = errorShowInfo,
         onDismiss = {})
@@ -110,8 +111,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(30.dp))
             Title()
             Spacer(modifier = Modifier.height(20.dp))
-            val genData = diaryViewModel.getGenData(7)
-            genData.observe(lifecycleOwner) {
+            diaryViewModel.getGenData.observe(lifecycleOwner) {
                 if (it != null) diaryViewModel.genDiaryList.value = it;
                 else {
                     isErrorShow.value = true
@@ -176,107 +176,115 @@ fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList:
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        LazyVerticalGrid(columns = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            content = {
-                items(diaryVoList.size) { item ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth(0.4f)
-                            .padding(10.dp)
-                            .clip(RoundedCornerShape(24.dp))
-                            .border(
-                                width = 1.dp, color = MaterialTheme.colorScheme.primary
-                            )
-                    ) {
-                        Column(
+
+        if (diaryVoList.isEmpty()) {
+            AnimatedPreloader(lottieSource = R.raw.empty)
+        } else {
+            LazyVerticalGrid(columns = GridCells.Fixed(2),
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                content = {
+                    items(diaryVoList.size) { item ->
+                        Box(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .background(color = MaterialTheme.colorScheme.secondaryContainer)
-                                .clickable {
-                                    action.navController.navigate(Destination.DiaryGenDetails + "/${item}")
-                                },
-                            horizontalAlignment = CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                                .fillMaxWidth(0.4f)
+                                .padding(10.dp)
+                                .clip(RoundedCornerShape(24.dp))
+                                .border(
+                                    width = 1.dp, color = MaterialTheme.colorScheme.primary
+                                )
                         ) {
-                            val imageUrl = diaryVoList[item].images.getOrElse(0) {
-                                "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg"
-                            }
-                            AsyncImage(
-                                model = imageUrl,
-                                contentDescription = imageUrl,
-                                modifier = Modifier.height(160.dp)
-                            )
-
-                            Text(
-                                modifier = Modifier.padding(start = 8.dp, end = 8.dp), // 可选：添加额外的边距
-                                text = diaryVoList[item].title,
-                                fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.bodyLarge,
-                                maxLines = 1, // 设置为1，以显示单行文本
-                                overflow = TextOverflow.Ellipsis, // 使用省略号表示文本溢出
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-
-                            Text(
-                                modifier = Modifier.padding(start = 8.dp, end = 8.dp),
-                                text = diaryVoList[item].content,
-                                fontWeight = FontWeight.Normal,
-                                style = MaterialTheme.typography.labelMedium,
-                                maxLines = 1, // 设置为1，以显示单行文本
-                                overflow = TextOverflow.Ellipsis, // 使用省略号表示文本溢出
-                                color = Color.Gray
-                            )
-
-                            Row(
+                            Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(20.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = buildAnnotatedString {
-                                        withStyle(
-                                            style = SpanStyle(
-                                                MaterialTheme.colorScheme.onSecondaryContainer,
-                                                fontWeight = FontWeight.Bold
-                                            )
-                                        ) {
-                                            append(dateToYearMonthDayString(diaryVoList[item].date))
-                                        }
+                                    .background(color = MaterialTheme.colorScheme.secondaryContainer)
+                                    .clickable {
+                                        action.navController.navigate(Destination.DiaryGenDetails + "/${item}")
                                     },
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onTertiaryContainer
-
+                                horizontalAlignment = CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                val imageUrl = diaryVoList[item].images.getOrElse(0) {
+                                    "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg"
+                                }
+                                AsyncImage(
+                                    model = imageUrl,
+                                    contentDescription = imageUrl,
+                                    modifier = Modifier.height(160.dp)
                                 )
 
+                                Text(
+                                    modifier = Modifier.padding(
+                                        start = 8.dp, end = 8.dp
+                                    ), // 可选：添加额外的边距
+                                    text = diaryVoList[item].title,
+                                    fontWeight = FontWeight.Bold,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    maxLines = 1, // 设置为1，以显示单行文本
+                                    overflow = TextOverflow.Ellipsis, // 使用省略号表示文本溢出
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
 
-                                Box(
+                                Text(
+                                    modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+                                    text = diaryVoList[item].content,
+                                    fontWeight = FontWeight.Normal,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    maxLines = 1, // 设置为1，以显示单行文本
+                                    overflow = TextOverflow.Ellipsis, // 使用省略号表示文本溢出
+                                    color = Color.Gray
+                                )
+
+                                Row(
                                     modifier = Modifier
-                                        .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.tertiaryContainer)
-                                        .padding(4.dp)
-                                        .clickable { },
-                                    contentAlignment = Alignment.Center
+                                        .fillMaxWidth()
+                                        .padding(20.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    var isExpanded by remember { mutableStateOf(false) }
-                                    Icon(
-                                        modifier = Modifier
-                                            .size(20.dp, 20.dp)
-                                            .clickable { isExpanded = true },
-                                        imageVector = Icons.Default.MoreHoriz,
-                                        contentDescription = "更多",
-                                        tint = MaterialTheme.colorScheme.onTertiaryContainer
-                                    )
-                                }
+                                    Text(
+                                        text = buildAnnotatedString {
+                                            withStyle(
+                                                style = SpanStyle(
+                                                    MaterialTheme.colorScheme.onSecondaryContainer,
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                            ) {
+                                                append(dateToYearMonthDayString(diaryVoList[item].date))
+                                            }
+                                        },
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onTertiaryContainer
 
+                                    )
+
+
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(CircleShape)
+                                            .background(MaterialTheme.colorScheme.tertiaryContainer)
+                                            .padding(4.dp)
+                                            .clickable { },
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        var isExpanded by remember { mutableStateOf(false) }
+                                        Icon(
+                                            modifier = Modifier
+                                                .size(20.dp, 20.dp)
+                                                .clickable { isExpanded = true },
+                                            imageVector = Icons.Default.MoreHoriz,
+                                            contentDescription = "更多",
+                                            tint = MaterialTheme.colorScheme.onTertiaryContainer
+                                        )
+                                    }
+
+                                }
                             }
                         }
                     }
-                }
-            })
+                })
+        }
+
     }
 }
 

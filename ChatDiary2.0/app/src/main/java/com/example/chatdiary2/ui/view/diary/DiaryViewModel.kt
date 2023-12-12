@@ -37,7 +37,14 @@ data class DiaryRequest(
 @HiltViewModel
 class DiaryViewModel @Inject constructor(private val diaryService: DiaryService) : ViewModel() {
 
+
+    var getGenData = MutableLiveData<List<dayDiaryVo>?>()
     val genDiaryList = mutableStateOf(emptyList<dayDiaryVo>())
+
+    init {
+        getGenData = getGenData(Int.MAX_VALUE.toLong())
+    }
+
 
     fun addDiary(
         type: String = "TXT", position: String, content: String, authorId: Long
