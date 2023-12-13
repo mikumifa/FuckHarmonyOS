@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">chatDiary2</string>
+
+    <!--LoginView-->
+    <string name="login_success">"Login success, welcome!"</string>
+    <string name="title_success">"Success"</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="title_failed">"Login failed"</string>
+    <string name="login_your_account">"Login to Your Account"</string>
+    <string name="email">"Email"</string>
+    <string name="login">"Login"</string>
+    <string name="dont_have_account">"Don't have an account yet? Create one!"</string>
+    <string name="register">"Register"</string>
+    <string name="create_account">"Create an Account"</string>
+    <string name="name">"Name"</string>
+    <string name="have_account">"Already have an account? "</string>
+    <string name="hello">"Hello!"</string>
+    <string name="password">"Password"</string>
+    <string name="hide_password">"Show password"</string>
+    <string name="show_password">"Hide password"</string>
+
+    <!--LoginViewModle.kt-->
+    <string name="register_failed">"Network connection failed"</string>
+    <string name="register_success">"Register success, return to login"</string>
+
+    <!--common.kt-->
+    <string name="username_exists">"Username already exists"</string>
+    <string name="invalid_credential">"Wrong username or password"</string>
+    <string name="user_not_found">"User does not exist"</string>
+
+    <!--AuthenticatorUtil.kt-->
+    <string name="unlock">"Unlock"</string>
+
+    <!--ChatScreen.kt-->
+    <!--DiaryView.kt-->
+    <string name="sending_error">"Sending failed"</string>
+    <string name="speech_recognition_error">"Speech recognition failed"</string>
+
+    <!--DiaryIn.kt-->
+    <string name="diary_error">"Failed to get diary data, please check your network connection"</string>
+    <string name="diary_title">"Want to write a diary?😋"</string>
+    <string name="diary_list">"Diary List"</string>
+    <string name="all_diary">"View all"</string>
+    <string name="more_horizon">"View more"</string>
+    <string name="write_diary">"Write diary"</string>
+
+    <!--seeall.kt-->
+    <string name="see_all">"View all"</string>
+
+    <!--DiaryView.kt-->
+    <!--genDiary.kt-->
+    <string name="diary">"Diary"</string>
+
+    <!--genDiary.kt-->
+    <string name="author">"Author"</string>
+    <string name="date">" Date: "</string>
+
+    <!--MainView.kt-->
+    <string name="bar_diary">"Diary"</string>
+    <string name="barat">"Chat"</string>
+    <string name="bar_statistic">"Statistic"</string>
+
+    <!--profileScreen.kt-->
+    <string name="loading">"Diary"</string>
+    <string name="user_info">"Diary"</string>
+    <string name="default_signature">"The signature doesn't say anything."</string>
+    <string name="loading_failed">"Failed to load user information"</string>
+    <string name="result">"Result"</string>
+    <string name="upload_image_failed">"Failed to upload image"</string>
+    <string name="change_name">"Change name"</string>
+    <string name="change_signature">"Change signature"</string>
+    <string name="change_password">"Change password"</string>
+    <string name="enterange">"Enter your changes"</string>
+    <string name="buttonange">"Click to change"</string>
+
+    <!--ProfileScreenViewModel.kt-->
+    <string name="change_success">"Change success"</string>
+    <string name="change_failed">"Network connection failed"</string>
+
+    <!--LockScreen.kt-->
+    <string name="device_lock">"Device lock"</string>
+    <string name="device_lock_description_part1">"Device lock can keep your diaries safe"</string><!--原文分成两段以换行-->
+    <string name="device_lock_description_part2">"\n"</string><!--原文分成两段以换行-->
+    <string name="device_lock_setting">"Enable device lock"</string>
+
+    <!--sideDrawer.kt-->
+    <!--个人信息与profileScreen.kt相同-->
+    <string name="about_us">"About us"</string>
+    <string name="app_lock">"Application lock"</string>
+    <string name="appearance_language">"Appearance and language"</string>
+    <string name="logout">"Logout"</string>
+    <!--加载中与profileScreen.kt相同-->
+
+    <!--TableHeader.kt-->
+    <string name="sad">"Sad"</string>
+    <string name="happy">"Happy"</string>
+    <string name="days">"Day 1"</string><!--或者1 day？-->
+
+    <!--AppearenceScreen.kt-->
+    <!--外观和语言与sideDrawer.kt相同-->
+    <string name="change_theme">"Change theme"</string>
+    <string name="change_lang">"Change language"</string>
+    <string name="system_lang">System Default</string>
+
+    <!--AppThemeItem.kt-->
+    <string name="choose_theme">"Choose theme"</string>
+</resources>

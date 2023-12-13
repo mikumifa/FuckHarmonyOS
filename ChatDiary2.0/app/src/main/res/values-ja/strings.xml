@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">chatDiary2</string>
+
+    <!--LoginView-->
+    <string name="login_success">"ログイン成功、ようこそ！"</string>
+    <string name="title_success">"成功"</string><!--profileScreen.ktでも同様-->
+    <string name="login_failed">"ログイン失敗"</string>
+    <string name="title_failed">"失敗"</string><!--profileScreen.ktでも同様-->
+    <string name="login_your_account">"アカウントにログイン"</string>
+    <string name="email">"メールアドレス"</string>
+    <string name="login">"ログイン"</string>
+    <string name="dont_have_account">"アカウントがありませんか？ 作成する！"</string>
+    <string name="register">"登録"</string>
+    <string name="create_account">"アカウントを作成"</string>
+    <string name="name">"ユーザー名"</string>
+    <string name="have_account">"すでにアカウントをお持ちですか？"</string>
+    <string name="hello">"ようこそ！"</string>
+    <string name="password">"パスワード"</string>
+    <string name="hide_password">"パスワードを非表示"</string>
+    <string name="show_password">"パスワードを表示"</string>
+
+    <!--LoginViewModle.kt-->
+    <string name="register_failed">"ネットワークの問題"</string>
+    <string name="register_success">"登録成功、ログイン画面に戻ります"</string>
+
+    <!--common.kt-->
+    <string name="username_exists">"ユーザー名は既に存在します"</string>
+    <string name="invalid_credential">"ユーザー名またはパスワードが正しくありません"</string>
+    <string name="user_not_found">"ユーザーが存在しません"</string>
+
+    <!--AuthenticatorUtil.kt-->
+    <string name="unlock">"アンロック"</string>
+
+    <!--ChatScreen.kt-->
+    <!--DiaryView.kt-->
+    <string name="sending_error">"送信エラー"</string><!--ChatScreen.ktでの元文はエラーを送信-->
+    <string name="speech_recognition_error">"音声認識エラー"</string>
+
+    <!--DiaryIn.kt-->
+    <string name="diary_error">"日記データの取得に失敗しました。ネットワークを確認してください"</string><!--seeall.ktでも同様-->
+    <string name="diary_title">"日記を書きたいですか？ 😋"</string>
+    <string name="diary_list">"日記リスト"</string>
+    <string name="all_diary">"すべて"</string>
+    <string name="more_horizon">"もっと"</string>
+    <string name="write_diary">"日記を書く"</string>
+
+    <!--seeall.kt-->
+    <string name="see_all">"すべて見る"</string>
+
+    <!--DiaryView.kt-->
+    <!--genDiary.kt-->
+    <string name="diary">"日記"</string>
+
+    <!--genDiary.kt-->
+    <string name="author">"作者"</string>
+    <string name="date">" 時間："</string><!--元文の前にスペースが1つあるが、配置またはエラーか確定していない-->
+
+    <!--MainView.kt-->
+    <string name="bar_diary">"日記"</string>
+    <string name="barat">"チャット"</string>
+    <string name="bar_statistic">"統計"</string>
+
+    <!--profileScreen.kt-->
+    <string name="loading">"読み込み中"</string><!--sideDrawer.ktでも同様-->
+    <string name="user_info">"個人情報"</string><!--sideDrawer.ktでも同様-->
+    <string name="default_signature">"まだ署名はありません。"</string>
+    <string name="loading_failed">"ユーザー情報の読み込みに失敗しました"</string><!--失敗はLoginView.ktと同じ-->
+    <string name="result">"結果"</string>
+    <string name="upload_image_failed">"画像のアップロードに失敗しました"</string><!--失敗はLoginView.ktと同じ-->
+    <string name="change_name">"名前の変更"</string><!--成功と失敗はLoginView.ktと同じ-->
+    <string name="change_signature">"署名の変更"</string>
+    <string name="change_password">"パスワードの変更"</string>
+    <string name="enterange">"変更内容を入力"</string>
+    <string name="buttonange">"変更をクリック"</string>
+
+    <!--ProfileScreenViewModel.kt-->
+    <string name="change_success">"変更成功"</string>
+    <string name="change_failed">"ネットワークの問題"</string><!--元文は可能性があるネットワークの問題-->
+
+    <!--LockScreen.kt-->
+    <string name="device_lock">"デバイスロック"</string><!--ロックアイコンは未翻訳-->
+    <string name="device_lock_description_part1">"デバイスロックは日記のセキュリティを保護します"</string><!--元文は改行で2つに分かれている-->
+    <string name="device_lock_description_part2">"セキュリティ"</string><!--元文は改行で2つに分かれている-->
+
+    <string name="device_lock_setting">"デバイスロックの有効化"</string><!--SwitchBottom.ktでも同様-->
+
+    <!--sideDrawer.kt-->
+    <!--個人情報はprofileScreen.ktでも同様-->
+    <string name="about_us">"私たちについて"</string>
+    <string name="app_lock">"アプリケーションロック"</string>
+    <string name="appearance_language">"外観と言語"</string><!--AppearenceScreen.ktでも同様-->
+    <string name="logout">"ログアウト"</string>
+    <!--読み込み中はprofileScreen.ktでも同様-->
+
+    <!--TableHeader.kt-->
+    <string name="sad">"悲しい"</string>
+    <string name="happy">"幸せ"</string>
+    <string name="days">"1日"</string>
+
+    <!--AppearenceScreen.kt-->
+    <!--外観と言語はsideDrawer.ktでも同様-->
+    <string name="change_theme">"テーマの変更"</string>
+    <string name="change_lang">"言語の変更"</string>
+    <string name="system_lang">"システムデフォルト"</string>
+    <!--AppThemeItem.kt-->
+    <string name="choose_theme">"選択"</string>
+</resources>
