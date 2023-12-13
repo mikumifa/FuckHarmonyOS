@@ -1,4 +1,4 @@
-package com.example.chatdiary2.ui.view.sideDrawer
+package com.example.chatdiary2.ui.view.main.sideDrawer
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

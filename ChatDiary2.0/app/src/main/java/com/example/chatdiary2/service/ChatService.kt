@@ -1,6 +1,6 @@
 package com.example.chatdiary2.service
 
-import com.example.chatdiary2.ui.view.chat.ChatRequest
+import com.example.chatdiary2.ui.view.main.chat.ChatRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

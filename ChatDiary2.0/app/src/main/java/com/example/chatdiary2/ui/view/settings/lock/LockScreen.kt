@@ -41,10 +41,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.chatdiary2.R
 import com.example.chatdiary2.ui.view.common.SettingStyledText
-import com.example.chatdiary2.ui.nav.Action
+import com.example.chatdiary2.ui.view.nav.Action
 import com.example.chatdiary2.ui.view.common.SwitchBottom
-import com.example.chatdiary2.ui.view.login.LoadingComponent
-import com.example.chatdiary2.ui.view.login.ResultDialog
+import com.example.chatdiary2.ui.view.main.login.LoadingComponent
+import com.example.chatdiary2.ui.view.main.login.ResultDialog
 
 
 @SuppressLint("ResourceType", "StateFlowValueCalledInComposition")

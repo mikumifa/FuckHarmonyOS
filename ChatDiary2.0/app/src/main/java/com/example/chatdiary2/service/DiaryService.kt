@@ -1,8 +1,8 @@
 package com.example.chatdiary2.service
 
 import com.example.chatdiary2.data.Diary
-import com.example.chatdiary2.ui.view.diary.DiaryRequest
-import com.example.chatdiary2.ui.view.diary.dayDiaryVo
+import com.example.chatdiary2.ui.view.main.diary.DiaryRequest
+import com.example.chatdiary2.ui.view.main.diary.dayDiaryVo
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import retrofit2.http.Body

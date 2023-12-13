@@ -1,4 +1,4 @@
-package com.example.chatdiary2.ui.view.chat
+package com.example.chatdiary2.ui.view.main.chat
 
 import android.util.Log
 import kotlinx.coroutines.flow.flow

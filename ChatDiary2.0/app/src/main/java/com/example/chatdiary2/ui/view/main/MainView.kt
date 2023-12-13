@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Note
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,15 +23,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.example.chatdiary2.ui.nav.Action
-import com.example.chatdiary2.ui.view.chat.ChatScreen
-import com.example.chatdiary2.ui.view.diary.DiaryIn
-import com.example.chatdiary2.ui.view.diary.DiaryViewModel
-import com.example.chatdiary2.ui.view.login.LoginViewModel
+import com.example.chatdiary2.ui.view.nav.Action
+import com.example.chatdiary2.ui.view.main.chat.ChatScreen
+import com.example.chatdiary2.ui.view.main.diary.DiaryIn
+import com.example.chatdiary2.ui.view.main.diary.DiaryViewModel
 import com.example.chatdiary2.ui.view.nav.BarItem
 import com.example.chatdiary2.ui.view.nav.BottomBar
 import com.example.chatdiary2.ui.view.nav.TopBar
-import com.example.chatdiary2.ui.view.sideDrawer.DrawerContent
+import com.example.chatdiary2.ui.view.main.sideDrawer.DrawerContent
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)

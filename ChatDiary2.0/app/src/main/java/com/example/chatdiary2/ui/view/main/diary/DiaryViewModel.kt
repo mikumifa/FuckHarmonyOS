@@ -1,4 +1,4 @@
-package com.example.chatdiary2.ui.view.diary
+package com.example.chatdiary2.ui.view.main.diary
 
 
 import android.net.Uri

@@ -1,4 +1,4 @@
-package com.example.chatdiary2.ui.view.profile
+package com.example.chatdiary2.ui.view.settings.profile
 
 import android.util.Log
 import androidx.lifecycle.LiveData

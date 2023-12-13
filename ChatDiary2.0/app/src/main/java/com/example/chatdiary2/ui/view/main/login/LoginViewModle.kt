@@ -1,4 +1,4 @@
-package com.example.chatdiary2.ui.view.login
+package com.example.chatdiary2.ui.view.main.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

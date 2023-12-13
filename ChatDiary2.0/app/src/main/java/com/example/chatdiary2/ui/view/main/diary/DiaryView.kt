@@ -1,4 +1,4 @@
-package com.example.chatdiary2.ui.view.diary
+package com.example.chatdiary2.ui.view.main.diary
 
 import EncryptionUtils
 import SpeechToTextUtil
@@ -50,12 +50,10 @@ import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.IndeterminateCheckBox
-import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ButtonDefaults
@@ -117,12 +115,9 @@ import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
-import coil.request.ImageRequest
 import com.example.chatdiary2.R
 import com.example.chatdiary2.data.Diary
-import com.example.chatdiary2.ui.nav.Action
-import com.example.chatdiary2.ui.nav.Destination
+import com.example.chatdiary2.ui.view.nav.Action
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -21,34 +20,24 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.chatdiary2.ui.nav.Action
+import com.example.chatdiary2.ui.view.nav.Action
 import com.example.chatdiary2.ui.theme.AppTheme
-import com.example.chatdiary2.ui.theme.ChatDiaryTheme
-import com.example.chatdiary2.ui.theme.ThemeViewModel
-import com.example.chatdiary2.ui.theme.UiPreferences
 import com.example.chatdiary2.ui.view.common.AppThemesList
-import com.example.chatdiary2.ui.view.common.ImageTextContent
-import com.example.chatdiary2.ui.view.login.LoadingComponent
-import com.example.chatdiary2.ui.view.login.ResultDialog
-import com.example.chatdiary2.ui.view.profile.ProfileStyledText
-import com.example.chatdiary2.util.secure.PreferenceStore
+import com.example.chatdiary2.ui.view.main.login.LoadingComponent
+import com.example.chatdiary2.ui.view.main.login.ResultDialog
 
 
 @SuppressLint("StateFlowValueCalledInComposition", "UnrememberedMutableState")

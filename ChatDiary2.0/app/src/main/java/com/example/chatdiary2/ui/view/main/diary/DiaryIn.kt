@@ -1,4 +1,4 @@
-package com.example.chatdiary2.ui.view.diary
+package com.example.chatdiary2.ui.view.main.diary
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
@@ -57,12 +57,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.chatdiary2.R
-import com.example.chatdiary2.ui.nav.Action
-import com.example.chatdiary2.ui.nav.Destination
+import com.example.chatdiary2.ui.view.nav.Action
+import com.example.chatdiary2.ui.view.nav.Destination
 import com.example.chatdiary2.ui.view.common.AnimatedPreloader
 import java.text.SimpleDateFormat
 import java.util.Date

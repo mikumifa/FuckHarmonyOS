@@ -1,4 +1,4 @@
-package com.example.chatdiary2.ui.view.table
+package com.example.chatdiary2.ui.view.main.table
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -75,7 +75,7 @@ import com.example.chatdiary2.data.table.HappyType
 import com.example.chatdiary2.data.table.HappyValue
 import com.example.chatdiary2.data.table.HappyWeakData
 import com.example.chatdiary2.data.table.happyData
-import com.example.chatdiary2.ui.view.table.TimeGraphScope.timeGraphBar
+import com.example.chatdiary2.ui.view.main.table.TimeGraphScope.timeGraphBar
 import eu.kanade.presentation.theme.colorscheme.md_theme_dark_onPrimaryContainer
 import eu.kanade.presentation.theme.colorscheme.md_theme_light_outlineVariant
 import java.text.SimpleDateFormat

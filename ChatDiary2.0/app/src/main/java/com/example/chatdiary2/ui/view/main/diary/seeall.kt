@@ -1,4 +1,4 @@
-package com.example.chatdiary2.ui.view.diary
+package com.example.chatdiary2.ui.view.main.diary
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -27,8 +27,7 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import com.example.chatdiary2.ui.nav.Action
-import java.util.Date
+import com.example.chatdiary2.ui.view.nav.Action
 
 @Composable
 @Preview

@@ -1,13 +1,13 @@
-package com.example.chatdiary2.ui.nav
+package com.example.chatdiary2.ui.view.nav
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptionsBuilder
-import com.example.chatdiary2.ui.nav.Destination.About
-import com.example.chatdiary2.ui.nav.Destination.Articles
-import com.example.chatdiary2.ui.nav.Destination.Diary
-import com.example.chatdiary2.ui.nav.Destination.Login
-import com.example.chatdiary2.ui.nav.Destination.Main
-import com.example.chatdiary2.ui.nav.Destination.Register
+import com.example.chatdiary2.ui.view.nav.Destination.About
+import com.example.chatdiary2.ui.view.nav.Destination.Articles
+import com.example.chatdiary2.ui.view.nav.Destination.Diary
+import com.example.chatdiary2.ui.view.nav.Destination.Login
+import com.example.chatdiary2.ui.view.nav.Destination.Main
+import com.example.chatdiary2.ui.view.nav.Destination.Register
 
 
 object Destination {

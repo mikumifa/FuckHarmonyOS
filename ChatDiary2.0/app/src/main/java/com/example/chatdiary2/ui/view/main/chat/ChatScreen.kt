@@ -1,4 +1,4 @@
-package com.example.chatdiary2.ui.view.chat
+package com.example.chatdiary2.ui.view.main.chat
 
 import SpeechToTextUtil
 import androidx.compose.foundation.Image
@@ -26,11 +26,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddBox
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.IndeterminateCheckBox
-import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +40,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -82,16 +79,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.chatdiary2.R
-import com.example.chatdiary2.ui.nav.Action
+import com.example.chatdiary2.ui.view.nav.Action
 import com.example.chatdiary2.service.Message
-import com.example.chatdiary2.ui.view.diary.DiaryViewModel
-import com.example.chatdiary2.ui.view.diary.InputSelector
-import com.example.chatdiary2.ui.view.diary.SelectorExpanded
-import com.example.chatdiary2.ui.view.diary.TimedDialog
+import com.example.chatdiary2.ui.view.main.diary.InputSelector
+import com.example.chatdiary2.ui.view.main.diary.SelectorExpanded
+import com.example.chatdiary2.ui.view.main.diary.TimedDialog
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @Composable
 private fun LoadingComponent() {
