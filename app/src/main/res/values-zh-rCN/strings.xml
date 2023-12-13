@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">chatDiary2</string>
+
+    <!--LoginView-->
+    <string name="login_success">"登录成功，欢迎！"</string>
+    <string name="title_success">"成功"</string><!--profileScreen.kt中相同-->
+    <string name="login_failed">"登录失败"</string>
+    <string name="title_failed">"失败"</string><!--profileScreen.kt中相同-->
+    <string name="login_your_account">"登录你的账号"</string>
+    <string name="email">"邮箱"</string>
+    <string name="login">"登录"</string>
+    <string name="dont_have_account">"还没有账户？创建一个！"</string>
+    <string name="register">"注册"</string>
+    <string name="create_account">"注册一个账号"</string>
+    <string name="name">"用户名"</string>
+    <string name="have_account">"已经有一个账户？"</string>
+    <string name="hello">"欢迎！"</string>
+    <string name="password">"密码"</string>
+    <string name="hide_password">"隐藏密码"</string>
+    <string name="show_password">"显示密码"</string>
+
+    <!--LoginViewModle.kt-->
+    <string name="register_failed">"网络问题"</string>
+    <string name="register_success">"注册成功,返回登录界面"</string>
+
+    <!--common.kt-->
+    <string name="username_exists">"用户名已存在"</string>
+    <string name="invalid_credential">"用户名或密码错误"</string>
+    <string name="user_not_found">"用户不存在"</string>
+
+    <!--AuthenticatorUtil.kt-->
+    <string name="unlock">"解锁"</string>
+
+    <!--ChatScreen.kt-->
+    <!--DiaryView.kt-->
+    <string name="sending_error">"发送失败"</string><!--ChatScreen.kt中原文为发送错误-->
+    <string name="speech_recognition_error">"语言识别失败"</string>
+
+    <!--DiaryIn.kt-->
+    <string name="diary_error">"获取日记数据信息失败，请检查网络"</string><!--seeall.kt中相同-->
+    <string name="diary_title">"你想要写一个日记吗？😋"</string>
+    <string name="diary_list">"日记列表"</string>
+    <string name="all_diary">"全部"</string>
+    <string name="more_horizon">"更多"</string>
+    <string name="write_diary">"写日记"</string>
+
+    <!--seeall.kt-->
+    <string name="see_all">"查看全部"</string>
+
+    <!--DiaryView.kt-->
+    <!--genDiary.kt-->
+    <string name="diary">"日记"</string>
+
+    <!--genDiary.kt-->
+    <string name="author">"作者"</string>
+    <string name="date">" 时间："</string><!--原文时间前有一个空格，不确定是为了排版还是错误-->
+
+    <!--MainView.kt-->
+    <string name="bar_diary">"日记"</string>
+    <string name="barat">"聊天"</string>
+    <string name="bar_statistic">"统计"</string>
+
+    <!--profileScreen.kt-->
+    <string name="loading">"加载中"</string><!--sideDrawer.kt中相同-->
+    <string name="user_info">"个人信息"</string><!--sideDrawer.kt中相同-->
+    <string name="default_signature">"签名啥也没写哦。"</string>
+    <string name="loading_failed">"加载用户信息失败"</string><!--失败与LoginView.kt相同-->
+    <string name="result">"结果"</string>
+    <string name="upload_image_failed">"上传图片失败"</string><!--失败与LoginView.kt相同-->
+    <string name="change_name">"修改名字"</string><!--成功和失败与LoginView.kt相同-->
+    <string name="change_signature">"修改个性签名"</string>
+    <string name="change_password">"修改密码"</string>
+    <string name="enterange">"输入你的修改"</string>
+    <string name="buttonange">"点击修改"</string>
+
+    <!--ProfileScreenViewModel.kt-->
+    <string name="change_success">"修改成功"</string>
+    <string name="change_failed">"网络问题"</string><!--原文为可能网络有问题-->
+
+    <!--LockScreen.kt-->
+    <string name="device_lock">"设备锁"</string><!--锁图标未翻译-->
+    <string name="device_lock_description_part1">"设备锁可以很好的保护你日记的安全"</string><!--原文分成两段以换行-->
+    <string name="device_lock_description_part2">"日记的安全"</string><!--原文分成两段以换行-->
+
+    <string name="device_lock_setting">"启动设备锁"</string><!--SwitchBottom.kt中相同-->
+
+    <!--sideDrawer.kt-->
+    <!--个人信息与profileScreen.kt相同-->
+    <string name="about_us">"关于我们"</string>
+    <string name="app_lock">"应用锁"</string>
+    <string name="appearance_language">"外观与语言"</string><!--AppearenceScreen.kt中相同-->
+    <string name="logout">"登出"</string>
+    <!--加载中与profileScreen.kt相同-->
+
+    <!--TableHeader.kt-->
+    <string name="sad">"伤心"</string>
+    <string name="happy">"快乐"</string>
+    <string name="days">"1天"</string>
+
+    <!--AppearenceScreen.kt-->
+    <!--外观和语言与sideDrawer.kt相同-->
+    <string name="change_theme">"修改主题"</string>
+    <string name="change_lang">"修改语言"</string>
+    <string name="system_lang">系统默认</string>
+
+    <!--AppThemeItem.kt-->
+    <string name="choose_theme">"选择"</string>
+</resources>
