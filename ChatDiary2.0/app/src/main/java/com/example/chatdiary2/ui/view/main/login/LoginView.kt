@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -101,7 +102,11 @@ fun LoginView(
         val showDialogSuccess = remember { mutableStateOf(false) }
         val showDialogFailure = remember { mutableStateOf(false) }
         val isLoading = remember { mutableStateOf(false) }
-        ResultDialog(showDialogSuccess, "登录成功，欢迎", "成功") {
+        ResultDialog(
+            showDialogSuccess,
+            stringResource(R.string.login_success),
+            stringResource(R.string.title_success)
+        ) {
             action.toMain() {
                 popUpTo(Destination.Login) {
                     inclusive = true
@@ -109,18 +114,22 @@ fun LoginView(
 
             }
         }
-        ResultDialog(showDialogFailure, "登录失败", "失败") {}
+        ResultDialog(
+            showDialogFailure,
+            stringResource(R.string.login_failed),
+            stringResource(R.string.title_failed)
+        ) {}
         if (isLoading.value) {
             LoadingComponent()
         }
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            LoginHead(title = "登录你的账号")
+            LoginHead(title = stringResource(R.string.login_your_account))
 
             Spacer(modifier = Modifier.height(10.dp))
             NormalTextField(
-                headImageVec = Icons.Filled.Email, "邮箱", emailTextState
+                headImageVec = Icons.Filled.Email, stringResource(R.string.email), emailTextState
             ) {
                 emailTextState.value = it
             }
@@ -129,7 +138,7 @@ fun LoginView(
                 passwordTextState.value = it
             }
             Spacer(modifier = Modifier.weight(1f))
-            ButtonComponent(!isLoading.value, value = "登录") {
+            ButtonComponent(!isLoading.value, value = stringResource(R.string.login)) {
                 isLoading.value = true
                 val loginUser =
                     loginViewModel.loginUser(emailTextState.value, passwordTextState.value)
@@ -159,7 +168,7 @@ fun LoginView(
             ) {
 
                 Text(
-                    text = "还没有账户？ 创建一个！",
+                    text = stringResource(R.string.dont_have_account),
                     style = TextStyle(
                         fontSize = 12.sp,
                         color = Color.Black,
@@ -167,7 +176,7 @@ fun LoginView(
                         textAlign = TextAlign.Center
                     ),
                 )
-                val rightText = "注册"
+                val rightText = stringResource(R.string.register)
                 ClickableText(text = buildAnnotatedString {
                     withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
                         pushStringAnnotation(tag = rightText, annotation = rightText)
@@ -238,26 +247,32 @@ fun RegisterView(
         if (isLoading.value) {
             LoadingComponent()
         }
-        ResultDialog(showDialogSuccess, showDialogSuccessMessage.value, "成功") {
+        ResultDialog(
+            showDialogSuccess,
+            showDialogSuccessMessage.value,
+            stringResource(R.string.title_success)
+        ) {
             action.toLogin() {
                 popUpTo(action.navController.graph.startDestinationId) {
                     inclusive = true
                 }
             }
         }
-        ResultDialog(showDialogFailure, showDialogFailureMessage.value, "失败") {
+        ResultDialog(
+            showDialogFailure, showDialogFailureMessage.value, stringResource(R.string.title_failed)
+        ) {
 
         }
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            LoginHead(title = "注册一个账号")
+            LoginHead(title = stringResource(R.string.create_account))
             Spacer(modifier = Modifier.height(10.dp))
-            NormalTextField(Icons.Filled.AccountBox, "用户名", nameTextState) {
+            NormalTextField(Icons.Filled.AccountBox, stringResource(R.string.name), nameTextState) {
                 nameTextState.value = it
             }
             Spacer(modifier = Modifier.height(10.dp))
-            NormalTextField(Icons.Filled.Email, "邮箱", emailTextState) {
+            NormalTextField(Icons.Filled.Email, stringResource(R.string.email), emailTextState) {
                 emailTextState.value = it
             }
             Spacer(modifier = Modifier.height(10.dp))
@@ -266,7 +281,7 @@ fun RegisterView(
             }
             Spacer(modifier = Modifier.height(200.dp))
             Spacer(modifier = Modifier.weight(1f))
-            ButtonComponent(!isLoading.value, value = "注册") {
+            ButtonComponent(!isLoading.value, value = stringResource(R.string.register)) {
                 isLoading.value = true
                 val result = loginViewModel.registerUser(
                     nameTextState.value, passwordTextState.value, emailTextState.value
@@ -293,7 +308,7 @@ fun RegisterView(
             ) {
 
                 Text(
-                    text = "已经有一个账户？",
+                    text = stringResource(R.string.have_account),
                     style = TextStyle(
                         fontSize = 12.sp,
                         color = Color.Black,
@@ -336,7 +351,7 @@ fun LoginHead(title: String) {
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(min = 40.dp),
-            text = "欢迎！",
+            text = stringResource(R.string.hello),
             textAlign = TextAlign.Center,
             style = TextStyle(
                 fontSize = 24.sp, fontWeight = FontWeight.Normal, fontStyle = FontStyle.Normal
@@ -367,7 +382,7 @@ fun PasswordField(
         modifier = Modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.small),
-        label = { Text(text = "密码") },
+        label = { Text(text = stringResource(R.string.password)) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             focusedLabelColor = MaterialTheme.colorScheme.primary,
@@ -388,7 +403,7 @@ fun PasswordField(
         leadingIcon = {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.baseline_password_24),
-                contentDescription = "密码"
+                contentDescription = stringResource(R.string.password)
             )
         },
         trailingIcon = {
@@ -435,7 +450,7 @@ fun NormalTextField(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
         keyboardOptions = KeyboardOptions(
-            keyboardType = if (label == "邮箱") KeyboardType.Email else KeyboardType.Ascii,
+            keyboardType = if (label == stringResource(R.string.email)) KeyboardType.Email else KeyboardType.Ascii,
             imeAction = ImeAction.Next
         ),
         singleLine = true,

@@ -33,9 +33,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.example.chatdiary2.R
 import com.example.chatdiary2.data.UserVO
 import com.example.chatdiary2.ui.view.nav.Action
 import com.example.chatdiary2.ui.view.nav.Destination
@@ -43,20 +45,21 @@ import com.example.chatdiary2.ui.view.nav.Destination
 object Menus {
     val list = arrayOf(
 
-        DrawerMenu(Icons.Filled.Face, "个人信息") {
+        DrawerMenu(Icons.Filled.Face, R.string.user_info) {
             it.navController.navigate(Destination.profile)
         },
-        //DrawerMenu(Icons.Filled.Settings, "Settings", Destination.Settings),
-        DrawerMenu(Icons.Filled.Info, "关于我们") {
 
-        },
-        DrawerMenu(Icons.Filled.Lock, "应用锁") {
+        DrawerMenu(Icons.Filled.Lock, R.string.app_lock) {
             it.navController.navigate(Destination.lock)
         },
-        DrawerMenu(Icons.Filled.Looks, "外观与语言") {
+        DrawerMenu(Icons.Filled.Looks, R.string.appearance_language) {
             it.navController.navigate(Destination.Appearance)
         },
-        DrawerMenu(Icons.Filled.Logout, "登出") {
+        //DrawerMenu(Icons.Filled.Settings, "Settings", Destination.Settings),
+        DrawerMenu(Icons.Filled.Info, R.string.about_us) {
+
+        },
+        DrawerMenu(Icons.Filled.Logout, R.string.logout) {
             it.toLogin() {
                 it.navController.currentBackStackEntry?.destination?.let { it1 ->
                     popUpTo(it1.id) {
@@ -69,7 +72,7 @@ object Menus {
 }
 
 data class DrawerMenu(
-    val icon: ImageVector, val title: String, val onClick: (actions: Action) -> Unit
+    val icon: ImageVector, val title: Int, val onClick: (actions: Action) -> Unit
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -143,7 +146,7 @@ fun DrawerContent(
         }
         Spacer(modifier = Modifier.height(12.dp))
         menus.forEach {
-            NavigationDrawerItem(label = { Text(text = it.title) },
+            NavigationDrawerItem(label = { Text(text = stringResource(id = it.title)) },
                 icon = { Icon(imageVector = it.icon, contentDescription = null) },
                 selected = false,
                 onClick = {

@@ -23,7 +23,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.chatdiary2.R
 import com.example.chatdiary2.ui.view.main.chat.ChatScreen
 import com.example.chatdiary2.ui.view.main.diary.DiaryIn
 import com.example.chatdiary2.ui.view.main.diary.DiaryViewModel
@@ -38,21 +40,24 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainComponent(
     action: Action,
-    diaryViewModel: DiaryViewModel= hiltViewModel(),
+    diaryViewModel: DiaryViewModel = hiltViewModel(),
 ) {
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val selectedIndex = remember { mutableStateOf(0) }
     val value = arrayOf(
-        BarItem(Icons.Default.Note, "日记") { DiaryIn(action = action, it, diaryViewModel) },
-        BarItem(Icons.Default.Chat, "聊天") {
+        BarItem(
+            Icons.Default.Note,
+            stringResource(id = R.string.bar_diary)
+        ) { DiaryIn(action = action, it, diaryViewModel) },
+        BarItem(Icons.Default.Chat,   stringResource(id = R.string.barat)) {
             Box(modifier = Modifier.padding(it)) {
                 ChatScreen(action = action)
             }
         },
 
-        BarItem(Icons.Filled.BrightnessHigh, "统计") {
+        BarItem(Icons.Filled.BrightnessHigh,  stringResource(id = R.string.bar_statistic)) {
             HappyValueScreen(modifier = Modifier.padding(it), onDrawerClicked = { -> })
         })
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {

@@ -32,6 +32,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
@@ -68,7 +69,10 @@ fun LockScreen(action: Action, lockScreenViewModel: LockScreenViewModel? = hiltV
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "设备锁", style = MaterialTheme.typography.titleLarge)
+                    Text(
+                        text = stringResource(id = R.string.device_lock),
+                        style = MaterialTheme.typography.titleLarge
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -94,14 +98,18 @@ fun LockScreen(action: Action, lockScreenViewModel: LockScreenViewModel? = hiltV
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = "设备锁可以很好的保护你", style = MaterialTheme.typography.titleMedium.copy(
+                text = stringResource(id = R.string.device_lock_description_part1),
+                style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.colorScheme.primary, fontSize = 24.sp
-                ), modifier = Modifier.align(Alignment.CenterHorizontally)
+                ),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Text(
-                text = "日记的安全", style = MaterialTheme.typography.titleMedium.copy(
+                text = stringResource(id = R.string.device_lock_description_part2),
+                style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.colorScheme.primary, fontSize = 24.sp
-                ), modifier = Modifier.align(Alignment.CenterHorizontally)
+                ),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Surface(
@@ -111,10 +119,11 @@ fun LockScreen(action: Action, lockScreenViewModel: LockScreenViewModel? = hiltV
                         color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(2.dp)
                     )
             ) {
-                SwitchBottom(icon = {
-                    Icon(Icons.Filled.Lock, contentDescription = "edit sentiment")
-                },
-                    text = { SettingStyledText(text = "启动设备锁") },
+                SwitchBottom(
+                    icon = {
+                        Icon(Icons.Filled.Lock, contentDescription = "edit sentiment")
+                    },
+                    text = { stringResource(id = R.string.device_lock_setting) },
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         lockScreenViewModel!!.setuseAuthenticator(it)

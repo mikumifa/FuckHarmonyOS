@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
@@ -52,6 +53,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.chatdiary2.R
 import com.example.chatdiary2.data.UserVO
 import com.example.chatdiary2.ui.view.common.ImageTextContent
 import com.example.chatdiary2.ui.view.main.login.ButtonComponent
@@ -122,7 +124,7 @@ fun profileScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "个人信息")
+                    Text(text = stringResource(id = R.string.user_info))
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -164,7 +166,7 @@ fun profileScreen(
                     uri = filePath,
                 )
                 res.observe(lifecycleOwner) {
-                    if (it!=null) {
+                    if (it != null) {
                         showDialog.value = true
                         dialogMessage.value = it
                         dialogTitle.value = "结果"
@@ -178,7 +180,7 @@ fun profileScreen(
             ImageTextContent(icon = {
                 Icon(Icons.Filled.Edit, contentDescription = "edit username")
             },
-                text = { ProfileStyledText(text = "修改名字") },
+                text = { ProfileStyledText(text = stringResource(id = R.string.change_name)) },
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     editTitleState.value = "修改名字"
@@ -211,7 +213,7 @@ fun profileScreen(
             ImageTextContent(icon = {
                 Icon(Icons.Filled.Edit, contentDescription = "edit sentiment")
             },
-                text = { ProfileStyledText(text = "修改个性签名") },
+                text = { ProfileStyledText(text = stringResource(id = R.string.change_signature)) },
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     editTitleState.value = "修改个性签名"
@@ -244,7 +246,7 @@ fun profileScreen(
             ImageTextContent(icon = {
                 Icon(Icons.Filled.Edit, contentDescription = "edit password")
             },
-                text = { ProfileStyledText(text = "修改密码") },
+                text = { ProfileStyledText(text = stringResource(id = R.string.change_password)) },
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     editTitleState.value = "修改密码"
@@ -310,13 +312,17 @@ private fun BottomSheetEditor(
             Spacer(modifier = Modifier.height(40.dp))
             Box(modifier = Modifier.padding(24.dp)) {
                 NormalTextField(headImageVec = Icons.Filled.Edit,
-                    label = "输入你的修改",
+                    label = stringResource(id = R.string.enterange),
                     textContent = textState,
                     onChange = { textState.value = it })
             }
             Spacer(modifier = Modifier.height(40.dp))
             Box(modifier = Modifier.padding(start = 48.dp, end = 48.dp)) {
-                ButtonComponent(enable = true, value = "点击修改", onClick = onClick)
+                ButtonComponent(
+                    enable = true,
+                    value = stringResource(id = R.string.buttonange),
+                    onClick = onClick
+                )
             }
             Spacer(modifier = Modifier.height(80.dp))
 

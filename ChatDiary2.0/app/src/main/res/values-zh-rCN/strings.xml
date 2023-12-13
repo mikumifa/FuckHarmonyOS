@@ -55,7 +55,6 @@
     <!--genDiary.kt-->
     <string name="author">"作者"</string>
     <string name="date">" 时间："</string><!--原文时间前有一个空格，不确定是为了排版还是错误-->
-    <string name="date_value">"2023年12月4日"</string>
 
     <!--MainView.kt-->
     <string name="bar_diary">"日记"</string>
@@ -81,7 +80,9 @@
 
     <!--LockScreen.kt-->
     <string name="device_lock">"设备锁"</string><!--锁图标未翻译-->
-    <string name="device_lock_description">"设备锁可以很好的保护你日记的安全"</string><!--原文分成两段以换行-->
+    <string name="device_lock_description_part1">"设备锁可以很好的保护你日记的安全"</string><!--原文分成两段以换行-->
+    <string name="device_lock_description_part2">"日记的安全"</string><!--原文分成两段以换行-->
+
     <string name="device_lock_setting">"启动设备锁"</string><!--SwitchBottom.kt中相同-->
 
     <!--sideDrawer.kt-->
@@ -100,6 +101,8 @@
     <!--AppearenceScreen.kt-->
     <!--外观和语言与sideDrawer.kt相同-->
     <string name="change_theme">"修改主题"</string>
+    <string name="change_lang">"修改语言"</string>
+    <string name="system_lang">系统默认</string>
 
     <!--AppThemeItem.kt-->
     <string name="choose_theme">"选择"</string>

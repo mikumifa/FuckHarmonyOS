@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
@@ -51,7 +52,7 @@ fun GenDiaryScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "日记")
+                    Text(text = stringResource(id = R.string.diary))
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -102,11 +103,11 @@ fun GenDiaryScreen(
                 Row(horizontalArrangement = Arrangement.Center) {
                     Icon(
                         imageVector = Icons.Filled.AccessTime,
-                        contentDescription = "作者",
+                        contentDescription = stringResource(id = R.string.author),
                         tint = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text = " 时间: ",
+                        text =stringResource(id = R.string.date),
                         style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
                         modifier = Modifier
                             .padding(bottom = 8.dp)

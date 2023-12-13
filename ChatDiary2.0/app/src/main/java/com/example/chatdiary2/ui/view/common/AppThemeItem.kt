@@ -55,7 +55,6 @@ fun AppThemePreviewItemPreview(
     currentTheme: AppTheme,
     amoled: Boolean,
     onItemClick: (AppTheme) -> Unit,
-    uiPreference: UiPreferences,
 ) {
 
     val appThemes = remember {

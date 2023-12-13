@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -131,7 +132,7 @@ fun Title() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "你想要写一个日记吗？\uD83D\uDE0B",
+            text = stringResource(R.string.diary_title),
             color = MaterialTheme.colorScheme.onSecondaryContainer,
             style = MaterialTheme.typography.headlineSmall
         )
@@ -149,13 +150,13 @@ fun Content(action: Action, diaryVoList: List<DayDiaryVo>) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "日记列表",
+                text = stringResource(R.string.diary_list),
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.headlineSmall
             )
             TextButton(onClick = { action.navController.navigate(Destination.seeAllDiary) }) {
                 Text(
-                    text = "全部", color = MaterialTheme.colorScheme.primary
+                    text =stringResource(R.string.all_diary), color = MaterialTheme.colorScheme.primary
                 )
                 Icon(
                     imageVector = Icons.Outlined.KeyboardArrowRight,
@@ -286,7 +287,7 @@ fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList:
                                                 .size(20.dp, 20.dp)
                                                 .clickable { isExpanded = true },
                                             imageVector = Icons.Default.MoreHoriz,
-                                            contentDescription = "更多",
+                                            contentDescription = stringResource(R.string.more_horizon),
                                             tint = MaterialTheme.colorScheme.onTertiaryContainer
                                         )
                                     }
@@ -335,7 +336,7 @@ fun Header(action: Action) {
                             .align(Alignment.CenterHorizontally)
                     )
                     Text(
-                        text = "写日记",
+                        text = stringResource(R.string.write_diary),
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         style = MaterialTheme.typography.headlineSmall,
                         modifier = Modifier.align(Alignment.CenterHorizontally)

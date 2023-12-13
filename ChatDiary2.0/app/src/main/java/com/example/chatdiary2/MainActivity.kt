@@ -12,6 +12,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.remember
 import androidx.core.view.WindowCompat
@@ -48,7 +49,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
+class MainActivity :  AppCompatActivity(), DefaultLifecycleObserver {
 
     @Inject
     lateinit var preferenceStore: PreferenceStore
@@ -61,7 +62,7 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         //
-        super<ComponentActivity>.onCreate(savedInstanceState)
+        super<AppCompatActivity>.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         requestPermissions(arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION), 100)
         requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 100)

@@ -22,11 +22,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.example.chatdiary2.R
 import com.example.chatdiary2.ui.view.nav.Action
 
 @Composable
@@ -60,7 +62,7 @@ fun SeeAllScreen(action: Action, diaryViewModel: DiaryViewModel = hiltViewModel(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "查看全部")
+                    Text(text = stringResource(R.string.see_all))
                 },
                 navigationIcon = {
                     IconButton(onClick = {
