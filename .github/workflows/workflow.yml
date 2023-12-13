@@ -15,7 +15,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 11
-      - uses: ChatDiary2.0/gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v2
         with:
           gradle-version: current
           arguments: assembleRelease
