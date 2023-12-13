@@ -71,17 +71,17 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.util.lerp
-import com.example.chatdiary2.data.table.HappyType
-import com.example.chatdiary2.data.table.HappyValue
-import com.example.chatdiary2.data.table.HappyWeakData
-import com.example.chatdiary2.data.table.happyData
+import com.example.chatdiary2.data.HappyType
+import com.example.chatdiary2.data.HappyValue
+import com.example.chatdiary2.data.HappyWeakData
 import com.example.chatdiary2.ui.view.main.table.TimeGraphScope.timeGraphBar
 import eu.kanade.presentation.theme.colorscheme.md_theme_dark_onPrimaryContainer
 import eu.kanade.presentation.theme.colorscheme.md_theme_light_outlineVariant
-import java.text.SimpleDateFormat
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAdjusters
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -109,7 +109,7 @@ private fun DayLabel(dateInfo: String) {
         text = dateInfo,
         modifier = Modifier
             .height(24.dp)
-            .padding(start =  8.dp, end = 24.dp),
+            .padding(start = 8.dp, end = 24.dp),
         style = MaterialTheme.typography.labelLarge.copy(color = MaterialTheme.colorScheme.onSecondaryContainer),
         textAlign = TextAlign.Center,
     )
@@ -157,7 +157,8 @@ fun HappyBar(
 
     val transition = updateTransition(targetState = isExpanded, label = "expanded")
 
-    Column(modifier = modifier.clickable(indication = null,
+    Column(modifier = modifier.clickable(
+        indication = null,
         interactionSource = remember { MutableInteractionSource() }) {
         isExpanded = !isExpanded
     }) {
@@ -413,13 +414,33 @@ private fun DrawScope.drawHappyBar(
     }
 }
 
+private fun splitIntoHappyWeakData(happyValues: List<HappyValue>): List<HappyWeakData> {
+    if (happyValues.isEmpty()) return emptyList()
+    val result = mutableListOf<HappyWeakData>()
+
+    // 根据日期进行分组，以一周为单位
+    val groupedByWeek = happyValues.groupBy {
+        it.startDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+    }
+
+    // 遍历分组，并创建 HappyWeakData
+    for ((weekStartDate, values) in groupedByWeek) {
+        val happyWeakData = HappyWeakData(
+            startDate = weekStartDate, happyValues = values
+        )
+        result.add(happyWeakData)
+    }
+
+    return result
+}
+
 @Composable
 fun TimeGraph(
-    happyData: List<HappyWeakData>,
+    happyDataOfDay: List<HappyValue>,
     modifier: Modifier = Modifier,
 ) {
     val weeks = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-
+    val happyData = splitIntoHappyWeakData(happyDataOfDay)
     val dayLabels = @Composable {
         happyData.forEach {
             val formatter = DateTimeFormatter.ofPattern("MMM dd", Locale.getDefault())

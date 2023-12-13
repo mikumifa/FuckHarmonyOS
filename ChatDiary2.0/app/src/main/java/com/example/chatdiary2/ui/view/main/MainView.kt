@@ -1,6 +1,6 @@
 package com.example.chatdiary2.ui.view.main
 
-import TableScreen
+import HappyValueScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
@@ -53,7 +53,7 @@ fun MainComponent(
         },
 
         BarItem(Icons.Filled.BrightnessHigh, "统计") {
-            TableScreen(modifier = Modifier.padding(it), onDrawerClicked = { -> })
+            HappyValueScreen(modifier = Modifier.padding(it), onDrawerClicked = { -> })
         })
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
         DrawerContent(actions = action) {}

@@ -188,15 +188,15 @@ fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList:
                             modifier = Modifier
                                 .fillMaxWidth(0.4f)
                                 .padding(10.dp)
-                                .clip(RoundedCornerShape(24.dp))
+                                .clip(RoundedCornerShape(12.dp))
                                 .border(
-                                    width = 1.dp, color = MaterialTheme.colorScheme.primary
+                                    width = 1.dp, color = MaterialTheme.colorScheme.surface
                                 )
                         ) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .background(color = MaterialTheme.colorScheme.secondaryContainer)
+                                    .background(color = MaterialTheme.colorScheme.secondary)
                                     .clickable {
                                         action.navController.navigate(Destination.DiaryGenDetails + "/${item}")
                                     },
@@ -221,7 +221,7 @@ fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList:
                                     style = MaterialTheme.typography.bodyLarge,
                                     maxLines = 1, // 设置为1，以显示单行文本
                                     overflow = TextOverflow.Ellipsis, // 使用省略号表示文本溢出
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
 
                                 Text(
@@ -245,7 +245,7 @@ fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList:
                                         text = buildAnnotatedString {
                                             withStyle(
                                                 style = SpanStyle(
-                                                    MaterialTheme.colorScheme.onSecondaryContainer,
+                                                    MaterialTheme.colorScheme.onSurface,
                                                     fontWeight = FontWeight.Bold
                                                 )
                                             ) {
@@ -253,7 +253,7 @@ fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList:
                                             }
                                         },
                                         style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onTertiaryContainer
+                                        color = MaterialTheme.colorScheme.surface
 
                                     )
 

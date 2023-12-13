@@ -108,8 +108,8 @@ fun TopBar(
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.secondary,
         ),
         title = {
             Text(
@@ -125,7 +125,7 @@ fun TopBar(
 fun BottomNavigation(
     modifier: Modifier = Modifier,
     elevation: Dp = 4.dp,
-    backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    backgroundColor: Color = MaterialTheme.colorScheme.secondaryContainer,
     content: @Composable RowScope.() -> Unit
 ) {
     Surface(

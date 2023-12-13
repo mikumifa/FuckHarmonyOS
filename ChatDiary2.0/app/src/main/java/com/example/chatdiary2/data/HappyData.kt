@@ -1,8 +1,7 @@
-package com.example.chatdiary2.data.table;
+package com.example.chatdiary2.data;
 
 import androidx.compose.ui.graphics.Color
 import com.example.chatdiary2.ui.theme.HappyColor
-import java.time.Duration
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
@@ -22,6 +21,7 @@ val happyData = listOf(
         )
     )
 )
+
 data class HappyWeakData(
     val startDate: LocalDate,
     val happyValues: List<HappyValue>,
@@ -61,6 +61,7 @@ data class HappyValue(
     val startDate: LocalDate,
     val value: Int,
 ) {
+
     val type: HappyType by lazy {
         when (value) {
             in 0..20 -> HappyType.WantToDie

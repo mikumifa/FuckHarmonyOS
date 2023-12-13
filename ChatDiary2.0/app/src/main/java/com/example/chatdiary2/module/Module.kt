@@ -4,17 +4,19 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.room.TypeConverter
 import com.example.chatdiary2.config.ConfigBuild
 import com.example.chatdiary2.config.Constants
 import com.example.chatdiary2.service.ChatService
 import com.example.chatdiary2.service.DiaryService
+import com.example.chatdiary2.service.HappyValueService
 import com.example.chatdiary2.service.UserService
 import com.example.chatdiary2.util.secure.PreferenceStore
 import com.example.chatdiary2.util.secure.SecurityPreferences
-import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,8 +27,9 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.text.DateFormat
-import java.util.Date
+import java.lang.reflect.Type
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -37,8 +40,11 @@ object Module {
     @Singleton
     @Provides
     fun provideRetrofit(okHttp: OkHttpClient): Retrofit {
+        val gson: Gson = GsonBuilder()
+            .registerTypeAdapter(LocalDate::class.java, LocalDateDeserializer())
+            .create()
         return Retrofit.Builder().baseUrl(Constants.BASE_URL).client(okHttp)
-            .addConverterFactory(GsonConverterFactory.create()).build()
+            .addConverterFactory(GsonConverterFactory.create(gson)).build()
     }
 
 
@@ -47,11 +53,13 @@ object Module {
     fun provideSharedPreferences(application: Application): SharedPreferences {
         return application.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
     }
+
     @Singleton
     @Provides
     fun provideSecurityPreferenceStore(sharedPreferences: SharedPreferences): PreferenceStore {
         return PreferenceStore(sharedPreferences = sharedPreferences)
     }
+
     @Singleton
     @Provides
     fun provideSecurityPreferences(preferenceStore: PreferenceStore): SecurityPreferences {
@@ -101,6 +109,10 @@ object Module {
     @Provides
     fun provideChatService(retrofit: Retrofit): ChatService =
         retrofit.create(ChatService::class.java)
+
+    @Provides
+    fun provideHappyValueService(retrofit: Retrofit): HappyValueService =
+        retrofit.create(HappyValueService::class.java)
 }
 
 
@@ -138,3 +150,11 @@ class ReceivedCookiesInterceptor(private val sharedPreferences: SharedPreference
     }
 }
 
+class LocalDateDeserializer : JsonDeserializer<LocalDate> {
+    override fun deserialize(
+        json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?
+    ): LocalDate {
+        val dateString = json?.asJsonPrimitive?.asString
+        return LocalDate.parse(dateString, DateTimeFormatter.ISO_DATE)
+    }
+}
