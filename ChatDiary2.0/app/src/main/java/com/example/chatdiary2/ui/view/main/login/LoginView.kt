@@ -1,5 +1,6 @@
 package com.example.chatdiary2.ui.view.main.login
 
+import UserPref
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

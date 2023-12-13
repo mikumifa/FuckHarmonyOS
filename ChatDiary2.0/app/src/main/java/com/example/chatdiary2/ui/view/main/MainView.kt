@@ -23,14 +23,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import com.example.chatdiary2.ui.view.nav.Action
 import com.example.chatdiary2.ui.view.main.chat.ChatScreen
 import com.example.chatdiary2.ui.view.main.diary.DiaryIn
 import com.example.chatdiary2.ui.view.main.diary.DiaryViewModel
+import com.example.chatdiary2.ui.view.main.sideDrawer.DrawerContent
+import com.example.chatdiary2.ui.view.nav.Action
 import com.example.chatdiary2.ui.view.nav.BarItem
 import com.example.chatdiary2.ui.view.nav.BottomBar
 import com.example.chatdiary2.ui.view.nav.TopBar
-import com.example.chatdiary2.ui.view.main.sideDrawer.DrawerContent
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)

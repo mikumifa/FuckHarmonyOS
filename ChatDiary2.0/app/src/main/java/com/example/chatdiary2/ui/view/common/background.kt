@@ -1,5 +1,6 @@
 package com.example.chatdiary2.ui.view.common
 
+import android.graphics.Color
 import android.graphics.RuntimeShader
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -9,8 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import android.graphics.Color
-
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.ShaderBrush
 import org.intellij.lang.annotations.Language

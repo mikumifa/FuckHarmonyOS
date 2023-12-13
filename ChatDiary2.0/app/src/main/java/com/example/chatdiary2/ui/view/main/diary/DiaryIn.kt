@@ -60,9 +60,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.chatdiary2.R
+import com.example.chatdiary2.ui.view.common.AnimatedPreloader
 import com.example.chatdiary2.ui.view.nav.Action
 import com.example.chatdiary2.ui.view.nav.Destination
-import com.example.chatdiary2.ui.view.common.AnimatedPreloader
 import java.text.SimpleDateFormat
 import java.util.Date
 

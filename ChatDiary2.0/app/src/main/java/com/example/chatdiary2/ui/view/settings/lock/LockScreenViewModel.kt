@@ -1,10 +1,7 @@
 package com.example.chatdiary2.ui.view.settings.lock
 
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.chatdiary2.service.UserService
-import com.example.chatdiary2.util.secure.Preference
 import com.example.chatdiary2.util.secure.SecurityPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

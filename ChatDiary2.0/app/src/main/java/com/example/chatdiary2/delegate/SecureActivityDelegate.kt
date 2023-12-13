@@ -1,14 +1,7 @@
 package com.example.chatdiary2.delegate
 
 import AuthenticatorUtil
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import com.example.chatdiary2.util.secure.PreferenceStore
 import com.example.chatdiary2.util.secure.SecurityPreferences
-import com.example.chatdiary2.util.secure.UnlockActivity
-import javax.inject.Inject
 
 class SecureActivityDelegate() {
     companion object {

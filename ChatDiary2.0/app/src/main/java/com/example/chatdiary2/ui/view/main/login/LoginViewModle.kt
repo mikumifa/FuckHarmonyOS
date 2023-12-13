@@ -11,7 +11,6 @@ import com.example.chatdiary2.service.RegisterRequest
 import com.example.chatdiary2.service.UserService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import retrofit2.http.HTTP
 import javax.inject.Inject
 
 @HiltViewModel

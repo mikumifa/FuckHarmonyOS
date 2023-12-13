@@ -5,23 +5,6 @@ import com.example.chatdiary2.ui.theme.HappyColor
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
-val happyData = listOf(
-    HappyWeakData(
-        startDate = LocalDate.of(2023, 1, 1), happyValues = listOf(
-            HappyValue(startDate = LocalDate.of(2023, 1, 2), value = 0),
-            HappyValue(startDate = LocalDate.of(2023, 1, 3), value = 29),
-            HappyValue(startDate = LocalDate.of(2023, 1, 5), value = 69),
-        )
-    ), HappyWeakData(
-        startDate = LocalDate.of(2023, 1, 11), happyValues = listOf(
-            HappyValue(startDate = LocalDate.of(2023, 1, 11), value = 99),
-            HappyValue(startDate = LocalDate.of(2023, 1, 12), value = 19),
-            HappyValue(startDate = LocalDate.of(2023, 1, 14), value = 49),
-            HappyValue(startDate = LocalDate.of(2023, 1, 16), value = 29),
-        )
-    )
-)
-
 data class HappyWeakData(
     val startDate: LocalDate,
     val happyValues: List<HappyValue>,

@@ -33,11 +33,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.chatdiary2.ui.view.nav.Action
 import com.example.chatdiary2.ui.theme.AppTheme
 import com.example.chatdiary2.ui.view.common.AppThemesList
 import com.example.chatdiary2.ui.view.main.login.LoadingComponent
 import com.example.chatdiary2.ui.view.main.login.ResultDialog
+import com.example.chatdiary2.ui.view.nav.Action
 
 
 @SuppressLint("StateFlowValueCalledInComposition", "UnrememberedMutableState")

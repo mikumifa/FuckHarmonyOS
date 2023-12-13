@@ -8,7 +8,6 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.example.chatdiary2.R
 
 @Composable
 fun AnimatedPreloader(modifier: Modifier = Modifier, lottieSource: Int) {

@@ -23,10 +23,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.chatdiary2.delegate.SecureActivityDelegate
-import com.example.chatdiary2.ui.view.nav.Action
-import com.example.chatdiary2.ui.view.nav.Destination
 import com.example.chatdiary2.ui.theme.ChatDiaryTheme
-import com.example.chatdiary2.ui.theme.UiPreferences
+import com.example.chatdiary2.ui.view.main.MainComponent
 import com.example.chatdiary2.ui.view.main.diary.DiaryView
 import com.example.chatdiary2.ui.view.main.diary.DiaryViewModel
 import com.example.chatdiary2.ui.view.main.diary.SeeAllScreen
@@ -35,14 +33,14 @@ import com.example.chatdiary2.ui.view.main.login.AutoLoginScreen
 import com.example.chatdiary2.ui.view.main.login.LoginView
 import com.example.chatdiary2.ui.view.main.login.LoginViewModel
 import com.example.chatdiary2.ui.view.main.login.RegisterView
-import com.example.chatdiary2.ui.view.main.MainComponent
-import com.example.chatdiary2.ui.view.settings.profile.profileScreen
+import com.example.chatdiary2.ui.view.nav.Action
+import com.example.chatdiary2.ui.view.nav.Destination
 import com.example.chatdiary2.ui.view.settings.appearance.AppearanceScreen
 import com.example.chatdiary2.ui.view.settings.lock.LockScreen
+import com.example.chatdiary2.ui.view.settings.profile.profileScreen
 import com.example.chatdiary2.util.secure.PreferenceStore
 import com.example.chatdiary2.util.secure.SecurityPreferences
 import com.example.chatdiary2.util.secure.UnlockActivity
-
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import javax.inject.Inject
@@ -79,7 +77,6 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
             }
             val diaryViewModel by viewModels<DiaryViewModel>()
             val loginViewModel by viewModels<LoginViewModel>()
-            val uiPreferences = UiPreferences(preferenceStore)
 
             val sharedPreferences: SharedPreferences =
                 getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
@@ -183,8 +180,8 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
 
     override fun onResume(owner: LifecycleOwner) {
         Log.d("lifecycle", "onResume: resume")
-
         if (!preferences.useAuthenticator().get()) return
+        if (!SecureActivityDelegate.requireUnlock) return// 防止重复
         this.startActivity(Intent(this, UnlockActivity::class.java))
         this.overridePendingTransition(0, 0)
     }

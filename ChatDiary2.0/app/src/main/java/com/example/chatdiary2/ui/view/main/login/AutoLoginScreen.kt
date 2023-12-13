@@ -13,8 +13,8 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.example.chatdiary2.R
-import com.example.chatdiary2.ui.view.nav.Action
 import com.example.chatdiary2.ui.view.common.AnimatedPreloader
+import com.example.chatdiary2.ui.view.nav.Action
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

@@ -53,12 +53,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.chatdiary2.data.UserVO
-import com.example.chatdiary2.ui.view.nav.Action
 import com.example.chatdiary2.ui.view.common.ImageTextContent
 import com.example.chatdiary2.ui.view.main.login.ButtonComponent
 import com.example.chatdiary2.ui.view.main.login.LoadingComponent
 import com.example.chatdiary2.ui.view.main.login.NormalTextField
 import com.example.chatdiary2.ui.view.main.login.ResultDialog
+import com.example.chatdiary2.ui.view.nav.Action
 
 
 const val email = "damahecode"

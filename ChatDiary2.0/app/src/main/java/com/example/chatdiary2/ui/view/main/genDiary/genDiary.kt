@@ -29,9 +29,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.chatdiary2.ui.view.nav.Action
 import com.example.chatdiary2.ui.view.main.diary.DiaryViewModel
 import com.example.chatdiary2.ui.view.main.diary.HorizontalImageList
+import com.example.chatdiary2.ui.view.nav.Action
 
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)

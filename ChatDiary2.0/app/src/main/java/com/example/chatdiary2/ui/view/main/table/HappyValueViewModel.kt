@@ -3,8 +3,8 @@ package com.example.chatdiary2.ui.view.main.table
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatdiary2.config.HttpCode
-import com.example.chatdiary2.data.UiResult
 import com.example.chatdiary2.data.HappyValue
+import com.example.chatdiary2.data.UiResult
 import com.example.chatdiary2.service.HappyValueService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

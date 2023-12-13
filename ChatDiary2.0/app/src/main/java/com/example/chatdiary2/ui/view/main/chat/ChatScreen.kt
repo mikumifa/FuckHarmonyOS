@@ -79,11 +79,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.chatdiary2.R
-import com.example.chatdiary2.ui.view.nav.Action
 import com.example.chatdiary2.service.Message
 import com.example.chatdiary2.ui.view.main.diary.InputSelector
 import com.example.chatdiary2.ui.view.main.diary.SelectorExpanded
 import com.example.chatdiary2.ui.view.main.diary.TimedDialog
+import com.example.chatdiary2.ui.view.nav.Action
 import kotlinx.coroutines.launch
 
 @Composable
