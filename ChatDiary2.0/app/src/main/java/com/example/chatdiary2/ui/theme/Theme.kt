@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.chatdiary2.ui.view.common.TransparentSystemBars
 import eu.kanade.presentation.theme.colorscheme.GreenAppleColorScheme
 import eu.kanade.presentation.theme.colorscheme.LavenderColorScheme
 import eu.kanade.presentation.theme.colorscheme.MidnightDuskColorScheme
@@ -26,10 +27,8 @@ fun ChatDiaryTheme(
     amoled: Boolean? = null,
     themeViewModel: ThemeViewModel = hiltViewModel(),
     content: @Composable () -> Unit,
-
-    ) {
-
-
+) {
+    TransparentSystemBars()
     MaterialTheme(
         colorScheme = getThemeColorScheme(
             appTheme ?: AppTheme.valueOf(themeViewModel.uiPreferences.appTheme().get()),

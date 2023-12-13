@@ -36,8 +36,8 @@ data class DiaryRequest(
 class DiaryViewModel @Inject constructor(private val diaryService: DiaryService) : ViewModel() {
 
 
-    var getGenData = MutableLiveData<List<dayDiaryVo>?>()
-    val genDiaryList = mutableStateOf(emptyList<dayDiaryVo>())
+    var getGenData = MutableLiveData<List<DayDiaryVo>?>()
+    val genDiaryList = mutableStateOf(emptyList<DayDiaryVo>())
 
     init {
         getGenData = getGenData(Int.MAX_VALUE.toLong())
@@ -45,7 +45,7 @@ class DiaryViewModel @Inject constructor(private val diaryService: DiaryService)
 
 
     fun addDiary(
-        type: String = "TXT", position: String, content: String, authorId: Long
+        type: String = "TXT", position: String, content: String
     ): MutableLiveData<Boolean> {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
         val currentDate = SimpleDateFormat("MMM d, yyyy", Locale.US).format(Date())
@@ -174,8 +174,8 @@ class DiaryViewModel @Inject constructor(private val diaryService: DiaryService)
 
     }
 
-    fun getGenData(number: Long): MutableLiveData<List<dayDiaryVo>?> {
-        val result = MutableLiveData<List<dayDiaryVo>?>()
+    private fun getGenData(number: Long): MutableLiveData<List<DayDiaryVo>?> {
+        val result = MutableLiveData<List<DayDiaryVo>?>()
         viewModelScope.launch {
             kotlin.runCatching {
                 diaryService.getDiaryGenList(number)

@@ -14,6 +14,7 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.remember
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -59,8 +60,9 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
     @SuppressLint("MutableCollectionMutableState", "CommitPrefEdits")
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
-
+        //
         super<ComponentActivity>.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         requestPermissions(arrayOf(android.Manifest.permission.ACCESS_COARSE_LOCATION), 100)
         requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 100)
         requestPermissions(arrayOf(android.Manifest.permission.RECORD_AUDIO), 100)
@@ -75,9 +77,6 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
             val action = remember(navController) {
                 Action(navController)
             }
-            val diaryViewModel by viewModels<DiaryViewModel>()
-            val loginViewModel by viewModels<LoginViewModel>()
-
             val sharedPreferences: SharedPreferences =
                 getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
             val isLoggedIn: Boolean = sharedPreferences.getBoolean("isLoggedIn", false)
@@ -96,18 +95,14 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
                             action = action,
                             password = savedPassword,
                             email = savedUsername,
-                            loginViewModel = loginViewModel
                         )
                     } else {
-                        LoginView(action = action, loginViewModel = loginViewModel)
+                        LoginView(action = action)
                     }
                 }
                 composable(Destination.Start) {
                     AutoLoginScreen(
-                        action = action,
-                        password = savedPassword,
-                        email = savedUsername,
-                        loginViewModel = loginViewModel
+                        action = action, password = savedPassword, email = savedUsername
                     )
                 }
                 composable(Destination.Register) {
@@ -116,7 +111,7 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
 
                 composable(Destination.Diary) {
                     ChatDiaryTheme() {
-                        DiaryView(action = action, diaryViewModel = diaryViewModel)
+                        DiaryView(action = action)
                     }
                 }
 
@@ -130,15 +125,14 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
                     ChatDiaryTheme() {
 
                         MainComponent(
-                            action = action,
-                            diaryViewModel = diaryViewModel,
+                            action = action
                         )
                     }
                 }
                 composable(Destination.seeAllDiary) {
                     ChatDiaryTheme() {
 
-                        SeeAllScreen(action = action, diaryViewModel = diaryViewModel)
+                        SeeAllScreen(action = action)
                     }
                 }
                 composable(Destination.profile) {
@@ -159,7 +153,7 @@ class MainActivity : ComponentActivity(), DefaultLifecycleObserver {
                     val param = entry.arguments?.getInt("param")
                     ChatDiaryTheme() {
                         GenDiaryScreen(
-                            action = action, idx = param!!, diaryViewModel = diaryViewModel
+                            action = action, idx = param!!
                         )
                     }
                 }

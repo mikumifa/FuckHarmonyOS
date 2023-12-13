@@ -70,6 +70,7 @@ android {
 
 
 dependencies {
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.31.0-alpha")
     implementation("androidx.lifecycle:lifecycle-process:2.6.2")
     implementation("com.airbnb.android:lottie-compose:4.0.0")
     implementation("com.google.android.material:material:1.10.0")

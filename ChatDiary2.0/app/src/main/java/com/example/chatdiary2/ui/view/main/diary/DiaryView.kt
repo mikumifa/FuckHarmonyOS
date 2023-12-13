@@ -116,6 +116,7 @@ import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImage
 import com.example.chatdiary2.R
 import com.example.chatdiary2.data.Diary
+import com.example.chatdiary2.ui.view.common.AnimatedPreloader
 import com.example.chatdiary2.ui.view.nav.Action
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -190,9 +191,6 @@ fun ErrorDialog(text: String) {
     }
 }
 
-data class DrawerMenu(
-    val icon: ImageVector, val title: String, val onClick: (actions: Action) -> Unit
-)
 
 enum class InputSelector {
     NONE, MAP, EMOJI, IMAGE
@@ -224,8 +222,7 @@ fun DiaryView(
                 Text(
                     "日记", maxLines = 1, overflow = TextOverflow.Ellipsis
                 )
-                val currentDate =
-                    SimpleDateFormat("MMM d, yyyy", Locale.CHINA).format(Date())
+                val currentDate = SimpleDateFormat("MMM d, yyyy", Locale.CHINA).format(Date())
                 Text(
                     currentDate,
                     maxLines = 1,
@@ -330,6 +327,7 @@ fun DatePickerPreview() {
     DatePicker({}, {})
 }
 
+@SuppressLint("WeekBasedYear")
 @Composable
 fun DatePicker(onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit) {
     val selDate = remember { mutableStateOf(LocalDate.now()) }
@@ -698,7 +696,7 @@ fun InputDialog(
                 IconButton(
                     onClick = {
                         val res = diaryViewModel.addDiary(
-                            position = area.value, content = text.text, authorId = useId
+                            position = area.value, content = text.text
                         )
                         res.observe(lifecycleOwner) {
                             if (it == true) {
@@ -889,22 +887,29 @@ fun DiaryItem(
 
 @Composable
 fun HorizontalImageList(imageUrls: List<String>, modifier: Modifier = Modifier) {
-    LazyRow(
-        modifier = modifier
-            .height(180.dp)
-            .fillMaxWidth()
-    ) {
-        items(imageUrls.size) { idx ->
-            val imageUrl = imageUrls[idx]
-            AsyncImage(
-                model = imageUrl,
-                contentDescription = imageUrl,
-                modifier = Modifier
-                    .height(160.dp)
-                    .padding(end = 2.dp, start = 2.dp),
-            )
+    if (imageUrls.isNotEmpty()) {
+        LazyRow(
+            modifier = modifier
+                .height(180.dp)
+                .fillMaxWidth()
+        ) {
+            items(imageUrls.size) { idx ->
+                val imageUrl = imageUrls[idx]
+                AsyncImage(
+                    model = imageUrl,
+                    contentDescription = imageUrl,
+                    modifier = Modifier
+                        .height(160.dp)
+                        .padding(end = 2.dp, start = 2.dp),
+                )
+            }
+        }
+    } else {
+        Box(modifier = Modifier.height(180.dp)) {
+            AnimatedPreloader(lottieSource = R.raw.no_image)
         }
     }
+
 }
 
 enum class EmojiStickerSelector {

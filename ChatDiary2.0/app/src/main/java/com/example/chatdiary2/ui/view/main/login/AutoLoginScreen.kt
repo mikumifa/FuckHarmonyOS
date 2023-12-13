@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import com.example.chatdiary2.R
 import com.example.chatdiary2.ui.view.common.AnimatedPreloader
@@ -22,7 +23,10 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun AutoLoginScreen(
-    action: Action, password: String = "", email: String = "", loginViewModel: LoginViewModel
+    action: Action,
+    password: String = "",
+    email: String = "",
+    loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 

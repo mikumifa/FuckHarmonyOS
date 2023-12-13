@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatdiary2.ui.view.main.chat.ChatScreen
 import com.example.chatdiary2.ui.view.main.diary.DiaryIn
 import com.example.chatdiary2.ui.view.main.diary.DiaryViewModel
@@ -34,11 +35,10 @@ import com.example.chatdiary2.ui.view.nav.TopBar
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainComponent(
     action: Action,
-    diaryViewModel: DiaryViewModel,
+    diaryViewModel: DiaryViewModel= hiltViewModel(),
 ) {
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)

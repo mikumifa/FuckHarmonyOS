@@ -139,7 +139,7 @@ fun Title() {
 }
 
 @Composable
-fun Content(action: Action, diaryVoList: List<dayDiaryVo>) {
+fun Content(action: Action, diaryVoList: List<DayDiaryVo>) {
     Column(modifier = Modifier.fillMaxSize()) {
         Header(action)
         Spacer(modifier = Modifier.height(16.dp))
@@ -171,7 +171,7 @@ fun Content(action: Action, diaryVoList: List<dayDiaryVo>) {
 }
 
 @Composable
-fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList: List<dayDiaryVo>) {
+fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList: List<DayDiaryVo>) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -203,14 +203,28 @@ fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList:
                                 horizontalAlignment = CenterHorizontally,
                                 verticalArrangement = Arrangement.Center
                             ) {
-                                val imageUrl = diaryVoList[item].images.getOrElse(0) {
-                                    "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg"
+
+                                if (diaryVoList[item].images.isEmpty()) {
+                                    Box(modifier = Modifier.height(160.dp)) {
+                                        Box(
+                                            modifier = Modifier
+                                                .height(140.dp)
+                                                .fillMaxWidth()
+                                                .padding(end = 15.dp)
+                                                .align(Alignment.Center)
+                                        ) {
+                                            AnimatedPreloader(lottieSource = R.raw.no_image)
+                                        }
+                                    }
+                                } else {
+                                    val imageUrl = diaryVoList[item].images.get(0)
+                                    AsyncImage(
+                                        model = imageUrl,
+                                        contentDescription = imageUrl,
+                                        modifier = Modifier.height(160.dp)
+                                    )
                                 }
-                                AsyncImage(
-                                    model = imageUrl,
-                                    contentDescription = imageUrl,
-                                    modifier = Modifier.height(160.dp)
-                                )
+
 
                                 Text(
                                     modifier = Modifier.padding(
@@ -333,7 +347,7 @@ fun Header(action: Action) {
 
 }
 
-data class dayDiaryVo(
+data class DayDiaryVo(
     val date: Date, val id: Long, val content: String, val title: String, val images: List<String>
 
 )

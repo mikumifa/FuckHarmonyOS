@@ -2,7 +2,7 @@ package com.example.chatdiary2.service
 
 import com.example.chatdiary2.data.Diary
 import com.example.chatdiary2.ui.view.main.diary.DiaryRequest
-import com.example.chatdiary2.ui.view.main.diary.dayDiaryVo
+import com.example.chatdiary2.ui.view.main.diary.DayDiaryVo
 import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -30,5 +30,5 @@ interface DiaryService {
     @GET("/v1/gen/diaryDateList")
     suspend fun getDiaryGenList(
         @Query("number") number: Long,
-    ): CommonResponse<List<dayDiaryVo>>;
+    ): CommonResponse<List<DayDiaryVo>>;
 }

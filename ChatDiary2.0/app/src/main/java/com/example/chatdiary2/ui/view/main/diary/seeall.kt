@@ -80,9 +80,7 @@ fun SeeAllScreen(action: Action, diaryViewModel: DiaryViewModel = hiltViewModel(
                 .padding(it)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-
-            val genData = diaryViewModel.getGenData(Int.MAX_VALUE.toLong())
-            genData.observe(lifecycleOwner) { list ->
+            diaryViewModel.getGenData.observe(lifecycleOwner) { list ->
                 if (list != null) diaryViewModel.genDiaryList.value = list
                 else {
                     isErrorShow.value = true
