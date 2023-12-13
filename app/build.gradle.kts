@@ -7,14 +7,6 @@ plugins {
 }
 
 android {
-    signingConfigs {
-        create("release") {
-            storeFile = file("C:\\Users\\mikumifa\\Documents\\Code\\TXT\\android.jks")
-            storePassword = "ldxy041015"
-            keyAlias = "key0"
-            keyPassword = "ldxy041015"
-        }
-    }
     namespace = "com.example.chatdiary2"
     compileSdk = 34
 
@@ -39,7 +31,6 @@ android {
                 "proguard-rules.pro"
             )
             buildConfigField ("String", "BASE_URL", "\"http://124.70.150.192:8080\"")
-            signingConfig = signingConfigs.getByName("release")
         }
         debug {
             buildConfigField ("String", "BASE_URL", "\"http://10.0.2.2:8080\"")
