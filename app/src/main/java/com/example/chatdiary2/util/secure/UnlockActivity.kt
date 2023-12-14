@@ -1,6 +1,9 @@
 package com.example.chatdiary2.util.secure
+
 import AuthenticatorUtil
 import AuthenticatorUtil.startAuthentication
+import android.app.Activity
+import android.content.Intent
 import com.example.chatdiary2.delegate.SecureActivityDelegate
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +25,9 @@ class UnlockActivity : AppCompatActivity() {
                     errString: CharSequence,
                 ) {
                     super.onAuthenticationError(activity, errorCode, errString)
+                    val resultCode = Activity.RESULT_OK
+                    val resultIntent = Intent()
+                    setResult(resultCode, resultIntent)
                     finishAffinity()
                 }
 
@@ -31,9 +37,20 @@ class UnlockActivity : AppCompatActivity() {
                 ) {
                     super.onAuthenticationSucceeded(activity, result)
                     SecureActivityDelegate.unlock()
+                    val resultCode = Activity.RESULT_OK
+                    val resultIntent = Intent()
+                    setResult(resultCode, resultIntent)
                     finish()
                 }
             },
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val resultCode = Activity.RESULT_OK
+        val resultIntent = Intent()
+        setResult(resultCode, resultIntent)
+        finish() // 关闭UnlockActivity
     }
 }

@@ -2,6 +2,7 @@ package com.example.chatdiary2
 
 import EncryptionUtils
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -178,10 +179,18 @@ class MainActivity : AppCompatActivity(), DefaultLifecycleObserver {
         Log.d("lifecycle", "onResume: resume")
         if (!preferences.useAuthenticator().get()) return
         if (!SecureActivityDelegate.requireUnlock) return// 防止重复
-        if (isInUnlockActivity) return
+        if (isInUnlockActivity) return // 防止重复
         isInUnlockActivity = true
-        this.startActivity(Intent(this, UnlockActivity::class.java))
-        this.overridePendingTransition(0, 0)
+        val requestCode = 123
+        this.startActivityForResult(Intent(this, UnlockActivity::class.java), requestCode)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 123 && resultCode == Activity.RESULT_OK) {
+            isInUnlockActivity = false
+        }
     }
 
 
