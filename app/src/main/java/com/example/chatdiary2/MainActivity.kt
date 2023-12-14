@@ -49,7 +49,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MainActivity :  AppCompatActivity(), DefaultLifecycleObserver {
+class MainActivity : AppCompatActivity(), DefaultLifecycleObserver {
 
     @Inject
     lateinit var preferenceStore: PreferenceStore
@@ -173,10 +173,13 @@ class MainActivity :  AppCompatActivity(), DefaultLifecycleObserver {
         SecureActivityDelegate.onApplicationStopped(preferences = preferences)
     }
 
+    private var isInUnlockActivity: Boolean = false
     override fun onResume(owner: LifecycleOwner) {
         Log.d("lifecycle", "onResume: resume")
         if (!preferences.useAuthenticator().get()) return
         if (!SecureActivityDelegate.requireUnlock) return// 防止重复
+        if (isInUnlockActivity) return
+        isInUnlockActivity = true
         this.startActivity(Intent(this, UnlockActivity::class.java))
         this.overridePendingTransition(0, 0)
     }
