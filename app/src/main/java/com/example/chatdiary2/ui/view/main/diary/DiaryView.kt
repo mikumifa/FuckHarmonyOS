@@ -2,10 +2,8 @@ package com.example.chatdiary2.ui.view.main.diary
 
 import EncryptionUtils
 import SpeechToTextUtil
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
@@ -49,7 +47,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Image
@@ -60,7 +57,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
@@ -74,6 +70,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -88,7 +85,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -110,13 +106,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.app.ActivityCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImage
 import com.example.chatdiary2.R
 import com.example.chatdiary2.data.Diary
 import com.example.chatdiary2.ui.view.common.AnimatedPreloader
+import com.example.chatdiary2.ui.view.common.keyboardAsState
 import com.example.chatdiary2.ui.view.nav.Action
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -125,6 +121,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
+import android.view.WindowInsets as WindowInsets1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
@@ -208,16 +205,17 @@ fun DiaryView(
     val context = LocalContext.current
     var lifecycleOwner = LocalLifecycleOwner.current
     val encryptionUtils = EncryptionUtils(context)
-    val useId = encryptionUtils.decrypt("userId").toLong()
     var searchText by remember { mutableStateOf("") }
     val diaryList = remember { mutableStateOf(emptyList<Diary>()) }
     var hasSearchResult by remember { mutableStateOf(false) }
     Scaffold(topBar = {
-        TopAppBar(title = {
+        TopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+        ), title = {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
                     "日记", maxLines = 1, overflow = TextOverflow.Ellipsis
@@ -407,40 +405,6 @@ fun DatePicker(onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit
 }
 
 @Composable
-fun DatePickerDialogButton(
-    onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit
-) {
-    var isDatePickerVisible by remember { mutableStateOf(false) }
-    val selectedDate = remember { mutableStateOf(LocalDate.now()) }
-    FloatingActionButton(onClick = { isDatePickerVisible = true }, content = {
-        Icon(
-            imageVector = Icons.Default.DateRange, contentDescription = "Open Date Picker"
-        )
-    }, modifier = Modifier
-        .padding(end = 8.dp, bottom = 90.dp)
-        .size(70.dp)
-
-    )
-    if (isDatePickerVisible) {
-        Dialog(
-            onDismissRequest = {
-                isDatePickerVisible = false
-                onDismissRequest()
-            }, properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
-            DatePicker(onDateSelected = {
-                selectedDate.value = it
-                isDatePickerVisible = false
-                onDateSelected(it)
-            }, onDismissRequest = {
-                isDatePickerVisible = false
-                onDismissRequest()
-            })
-        }
-    }
-}
-
-@Composable
 fun CustomCalendarView(onDateSelected: (LocalDate) -> Unit) {
     // Adds view to Compose
     AndroidView(modifier = Modifier.wrapContentSize(), factory = { context ->
@@ -557,8 +521,8 @@ fun InputDialog(
     var errorShowInfo by remember { mutableStateOf("") }
     val speechToTextUtil = SpeechToTextUtil(LocalContext.current)
     val isToolbarShow = remember { mutableStateOf(false) }
+    val isKeyboardOpen by keyboardAsState() // true or false
     val focusRequester = remember { FocusRequester() }
-    var textFieldFocusState by remember { mutableStateOf(false) }
     var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
     val lifecycleOwner = LocalLifecycleOwner.current
     speechToTextUtil.setSpeechRecognitionListener(onSpeechRecognitionResult = {
@@ -627,49 +591,29 @@ fun InputDialog(
         }
     }
 
-    if (area.value == "") {
-        if (ActivityCompat.checkSelfPermission(
-                context, Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                context, Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            val requestPermissionLauncher = rememberLauncherForActivityResult(
-                ActivityResultContracts.RequestPermission()
-            ) { isGranted: Boolean ->
-                if (isGranted) {
-                    locationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER, 1000, 1.0f, locationListener
-                    )
-                }
-            }
-        } else {
-            locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER, 1000, 1.0f, locationListener
-            )
-        }
-    }
 
     TimedDialog(showDialog = isErrorShow,
         durationMillis = 1000,
         text = errorShowInfo,
         onDismiss = {})
 
-    Column(modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)) {
+    Column(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer)) {
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
         ) {
             val lifecycleOwner = LocalLifecycleOwner.current
-            IconButton(onClick = {
-                isToolbarShow.value = !isToolbarShow.value
-                if (!isToolbarShow.value) {
-                    currentInputSelector = InputSelector.NONE
+            if (!isKeyboardOpen) {
+                IconButton(onClick = {
+                    isToolbarShow.value = !isToolbarShow.value
+                    if (!isToolbarShow.value) {
+                        currentInputSelector = InputSelector.NONE
+                    }
+                }) {
+                    Icon(
+                        imageVector = if (isToolbarShow.value) Icons.Filled.IndeterminateCheckBox else Icons.Filled.AddBox,
+                        contentDescription = "send",
+                    )
                 }
-            }) {
-                Icon(
-                    imageVector = if (isToolbarShow.value) Icons.Filled.IndeterminateCheckBox else Icons.Filled.AddBox,
-                    contentDescription = "send",
-                )
             }
             OutlinedTextField(value = text, onValueChange = {
                 text = it
@@ -679,10 +623,10 @@ fun InputDialog(
                 singleLine = false, modifier = Modifier
                     .weight(1f)
                     .onFocusChanged {
-                        if (textFieldFocusState != it.isFocused) {
-                            currentInputSelector = InputSelector.NONE
+                        if (it.isFocused) {
+                            isToolbarShow.value = false
                         }
-                        textFieldFocusState = it.isFocused
+                        currentInputSelector = InputSelector.NONE
                     }
                     .padding(4.dp),
 
@@ -751,7 +695,6 @@ fun InputDialog(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .imePadding()
                     .focusRequester(focusRequester)
             ) {
 
@@ -794,22 +737,6 @@ fun InputDialog(
         }
 
     }
-}
-
-@Composable
-@Preview
-fun DiaryItemPreview(
-) {
-    DiaryItem(
-        title = "title", context = "context", pos = "pos", type = "type", imageUrls = listOf(
-            "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg",
-            "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg",
-            "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg",
-            "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg",
-            "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg",
-            "https://gitee.com/misakabryant/chat-diary-fig/raw/master/ChatDiary/1701196018624.jpg"
-        ), time = Date()
-    )
 }
 
 @Composable
@@ -947,8 +874,6 @@ fun SelectorExpanded(
     onTextAdded: (String) -> Unit,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
-    if (currentSelector == InputSelector.NONE) return
-    val focusRequester = FocusRequester()
     SideEffect {
         if (currentSelector == InputSelector.EMOJI) {
             keyboard?.hide()
@@ -962,7 +887,13 @@ fun SelectorExpanded(
     }
     Surface(tonalElevation = 8.dp) {
         when (currentSelector) {
-            InputSelector.EMOJI -> EmojiSelector(onTextAdded, focusRequester)
+            InputSelector.EMOJI -> EmojiSelector(onTextAdded)
+            InputSelector.NONE -> Spacer(
+                modifier = Modifier
+                    .height(0.dp)
+                    .fillMaxWidth()
+            )
+
             else -> {
                 throw NotImplementedError()
             }
@@ -972,14 +903,11 @@ fun SelectorExpanded(
 
 @Composable
 fun EmojiSelector(
-    onTextAdded: (String) -> Unit, focusRequester: FocusRequester
+    onTextAdded: (String) -> Unit
 ) {
     var selected by remember { mutableStateOf(EmojiStickerSelector.EMOJI) }
-    val a11yLabel = "Emoji Selector"
     Column(modifier = Modifier
-        .focusRequester(focusRequester)
-        .focusTarget()
-        .semantics { contentDescription = a11yLabel }) {
+        .semantics { contentDescription = "Emoji Selector" }) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

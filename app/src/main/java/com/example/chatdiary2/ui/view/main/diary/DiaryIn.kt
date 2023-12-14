@@ -78,7 +78,6 @@ fun DiaryIn(action: Action, paddingValues: PaddingValues, diaryViewModel: DiaryV
 fun HomeScreen(
     action: Action, paddingValues: PaddingValues, diaryViewModel: DiaryViewModel = hiltViewModel()
 ) {
-    var navController = action.navController
     val lifecycleOwner = LocalLifecycleOwner.current
     val isErrorShow = remember { mutableStateOf(false) }
     var errorShowInfo by remember { mutableStateOf("") }

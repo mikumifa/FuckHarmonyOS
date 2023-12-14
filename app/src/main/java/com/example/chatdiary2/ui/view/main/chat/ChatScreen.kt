@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
@@ -80,11 +79,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.chatdiary2.R
 import com.example.chatdiary2.service.Message
+import com.example.chatdiary2.ui.view.common.keyboardAsState
 import com.example.chatdiary2.ui.view.main.diary.InputSelector
 import com.example.chatdiary2.ui.view.main.diary.SelectorExpanded
 import com.example.chatdiary2.ui.view.main.diary.TimedDialog
 import com.example.chatdiary2.ui.view.nav.Action
-import kotlinx.coroutines.launch
 
 @Composable
 private fun LoadingComponent() {
@@ -308,21 +307,14 @@ fun ConversationContent(
             }
             result
         }
-        UserInput(sendingMessage = sendingMessage, onSent = {
+        UserInput(
+            sendingMessage = sendingMessage
+        ) {
             val messages = uiState.getMessageFlow()
             messages.observe(lifecycleOwner) {
                 messageList = it
             }
-        }, resetScroll = {
-            scope.launch {
-                scrollState.scrollToItem(0)
-            }
-        },
-
-            modifier = Modifier
-                .navigationBarsPadding()
-                .imePadding()
-        )
+        }
     }
 }
 
@@ -331,8 +323,6 @@ fun ConversationContent(
 fun UserInput(
     sendingMessage: (String) -> MutableLiveData<Boolean>,
     onSent: () -> Unit,
-    resetScroll: () -> Unit,
-    modifier: Modifier
 ) {
     var text by remember { mutableStateOf(TextFieldValue()) }
     //   val text = rememberSaveable { mutableStateOf("") }
@@ -344,7 +334,7 @@ fun UserInput(
     val speechToTextUtil = SpeechToTextUtil(LocalContext.current)
     val isToolbarShow = remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
-    var textFieldFocusState by remember { mutableStateOf(false) }
+    val isKeyboardOpen by keyboardAsState() // true or false
     var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.NONE) }
     speechToTextUtil.setSpeechRecognitionListener(onSpeechRecognitionResult = {
         text = TextFieldValue(it)
@@ -352,10 +342,6 @@ fun UserInput(
         isErrorShow.value = true
         errorShowInfo = "语言识别失败"
     })
-//    if (isLoading.value) {
-//        LoadingComponent()
-//
-//    }
     TimedDialog(showDialog = isErrorShow,
         durationMillis = 1000,
         text = errorShowInfo,
@@ -366,7 +352,6 @@ fun UserInput(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .imePadding()
                     .focusRequester(focusRequester)
             ) {
 
@@ -377,7 +362,7 @@ fun UserInput(
                         )
 
                     }
-                    IconButton(onClick = {   }) {
+                    IconButton(onClick = { }) {
                         Icon(
                             Icons.Filled.Image,
                             contentDescription = "Localized description",
@@ -391,32 +376,27 @@ fun UserInput(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
         ) {
             val lifecycleOwner = LocalLifecycleOwner.current
-            IconButton(onClick = {
-                isToolbarShow.value = !isToolbarShow.value
-
-                if (!isToolbarShow.value) {
-                    currentInputSelector = InputSelector.NONE
+            if (!isKeyboardOpen) {
+                IconButton(onClick = {
+                    isToolbarShow.value = !isToolbarShow.value
+                    if (!isToolbarShow.value) {
+                        currentInputSelector = InputSelector.NONE
+                    }
+                }) {
+                    Icon(
+                        imageVector = if (isToolbarShow.value) Icons.Filled.IndeterminateCheckBox else Icons.Filled.AddBox,
+                        contentDescription = "send",
+                    )
                 }
-            }) {
-                Icon(
-                    imageVector = if (isToolbarShow.value) Icons.Filled.IndeterminateCheckBox else Icons.Filled.AddBox,
-                    contentDescription = "send",
-                )
             }
             OutlinedTextField(value = text, onValueChange = {
                 text = it
                 isSending.value = it.text.isNotBlank()
             },
-
                 singleLine = false, modifier = Modifier
                     .weight(1f)
                     .onFocusChanged {
-
-
-                        if (textFieldFocusState != it.isFocused) {
-                            currentInputSelector = InputSelector.NONE
-                        }
-                        textFieldFocusState = it.isFocused
+                        currentInputSelector = InputSelector.NONE
                     }
                     .padding(4.dp),
 
@@ -497,7 +477,6 @@ fun UserInput(
                     }
                 }
             }
-
             Spacer(modifier = Modifier.width(4.dp))
         }
         SelectorExpanded(
@@ -513,32 +492,24 @@ fun UserInput(
                 isSending.value = it.isNotBlank()
             },
             currentSelector = currentInputSelector,
-
-
-            )
+        )
     }
 }
-
 
 @Composable
 fun messageFormatter(
     text: String, primary: Boolean
 ): AnnotatedString {
     val tokens = symbolPattern.findAll(text)
-
     return buildAnnotatedString {
-
         var cursorPosition = 0
-
         val codeSnippetBackground = if (primary) {
             MaterialTheme.colorScheme.secondary
         } else {
             MaterialTheme.colorScheme.surface
         }
-
         for (token in tokens) {
             append(text.slice(cursorPosition until token.range.first))
-
             val (annotatedString, stringAnnotation) = getSymbolAnnotation(
                 matchResult = token,
                 colorScheme = MaterialTheme.colorScheme,
@@ -546,15 +517,12 @@ fun messageFormatter(
                 codeSnippetBackground = codeSnippetBackground
             )
             append(annotatedString)
-
             if (stringAnnotation != null) {
                 val (item, start, end, tag) = stringAnnotation
                 addStringAnnotation(tag = tag, start = start, end = end, annotation = item)
             }
-
             cursorPosition = token.range.last + 1
         }
-
         if (!tokens.none()) {
             append(text.slice(cursorPosition..text.lastIndex))
         } else {
@@ -568,12 +536,10 @@ val symbolPattern by lazy {
     Regex("""(https?://[^\s\t\n]+)|(`[^`]+`)|(@\w+)|(\*[\w]+\*)|(_[\w]+_)|(~[\w]+~)""")
 }
 
-// Accepted annotations for the ClickableTextWrapper
 enum class SymbolAnnotationType {
     LINK
 }
 typealias StringAnnotation = AnnotatedString.Range<String>
-// Pair returning styled content and annotation for ClickableText when matching syntax token
 typealias SymbolAnnotation = Pair<AnnotatedString, StringAnnotation?>
 
 
