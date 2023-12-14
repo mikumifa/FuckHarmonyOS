@@ -64,6 +64,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatdiary2.R
+import com.example.chatdiary2.ui.view.common.TransparentSystemBars
 import com.example.chatdiary2.ui.view.nav.Action
 import com.example.chatdiary2.ui.view.nav.Destination
 import eu.kanade.presentation.theme.colorscheme.md_theme_light_outline
@@ -87,6 +88,8 @@ fun LoginView(
     password: String = "",
     email: String = ""
 ) {
+    TransparentSystemBars()
+    Spacer(modifier = Modifier.height(12.dp))
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -227,7 +230,8 @@ fun ResultDialog(
 fun RegisterView(
     action: Action, loginViewModel: LoginViewModel = hiltViewModel()
 ) {
-
+    TransparentSystemBars()
+    Spacer(modifier = Modifier.height(12.dp))
     Surface(
         modifier = Modifier
             .fillMaxSize()

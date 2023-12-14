@@ -306,7 +306,7 @@ fun DiaryView(
             }
             if (haveInputDialog) {
                 InputDialog(
-                    useId, diaryViewModel!!, onSent = {
+                    diaryViewModel!!, onSent = {
                         val diary = diaryViewModel.searchDiariesByDateFlow(myDate)
                         diary.observe(lifecycleOwner) {
                             if (!hasSearchResult) diaryList.value = it
@@ -546,7 +546,7 @@ fun TimedDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputDialog(
-    useId: Long, diaryViewModel: DiaryViewModel, onSent: () -> Unit, actions: Action
+    diaryViewModel: DiaryViewModel, onSent: () -> Unit, actions: Action
 ) {
     val context = LocalContext.current
     var text by remember { mutableStateOf(TextFieldValue()) }

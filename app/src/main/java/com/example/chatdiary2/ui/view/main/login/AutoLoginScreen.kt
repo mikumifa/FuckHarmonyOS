@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import com.example.chatdiary2.R
 import com.example.chatdiary2.ui.view.common.AnimatedPreloader
+import com.example.chatdiary2.ui.view.common.TransparentSystemBars
 import com.example.chatdiary2.ui.view.nav.Action
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -28,8 +29,8 @@ fun AutoLoginScreen(
     email: String = "",
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
+    TransparentSystemBars()
     val lifecycleOwner = LocalLifecycleOwner.current
-
     val loginUser = loginViewModel.loginUser(email, password)
     loginUser.observe(lifecycleOwner) {
         lifecycleOwner.lifecycleScope.launch {
