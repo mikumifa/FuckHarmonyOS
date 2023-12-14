@@ -162,7 +162,6 @@ fun Messages(
     messages: List<Message>, scrollState: LazyListState, modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
-        val authorMe = "Me"
         LazyColumn(
             reverseLayout = true, state = scrollState, modifier = Modifier.fillMaxSize()
         ) {
@@ -272,7 +271,6 @@ fun AuthorAndTextMessage(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConversationContent(
     action: Action, modifier: Modifier = Modifier, uiState: ChatViewModel = hiltViewModel()
@@ -361,12 +359,6 @@ fun UserInput(
                             Icons.Filled.EmojiEmotions, contentDescription = "Localized description"
                         )
 
-                    }
-                    IconButton(onClick = { }) {
-                        Icon(
-                            Icons.Filled.Image,
-                            contentDescription = "Localized description",
-                        )
                     }
                 }
             }
