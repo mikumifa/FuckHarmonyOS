@@ -105,5 +105,23 @@
     <!--AppThemeItem.kt-->
     <string name="choose_theme">"选择"</string>
     <string name="system_lang">系统默认</string>
+
+
+    <string name="VeryHappy">超级开心</string>
+    <string name="Happy">开心</string>
+    <string name="JustSoSo">一般</string>
+    <string name="Sad">伤心</string>
+    <string name="WantToDie">想去死</string>
+    <string name="Empty">无</string>
+    <string name="day_count">天数统计</string>
+    <string-array name="week_days">
+        <item>日</item>
+        <item>一</item>
+        <item>二</item>
+        <item>三</item>
+        <item>四</item>
+        <item>五</item>
+        <item>六</item>
+    </string-array>
 </resources>
 

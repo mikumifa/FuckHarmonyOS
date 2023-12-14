@@ -105,4 +105,21 @@
 
     <!--AppThemeItem.kt-->
     <string name="choose_theme">"Choose theme"</string>
+    <string name="VeryHappy">Very Happy</string>
+    <string name="Happy">Happy</string>
+    <string name="JustSoSo">Just So So</string>
+    <string name="Sad">Sad</string>
+    <string name="WantToDie">Want to Die</string>
+    <string name="Empty">No Diaries</string>
+
+    <string-array name="week_days">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
+    <string name="day_count">Day Count</string>
 </resources>

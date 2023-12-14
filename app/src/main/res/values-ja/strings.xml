@@ -105,4 +105,23 @@
     <string name="system_lang">"システムデフォルト"</string>
     <!--AppThemeItem.kt-->
     <string name="choose_theme">"選択"</string>
+
+
+    <string name="VeryHappy">超嬉しい</string>
+    <string name="Happy">嬉しい</string>
+    <string name="JustSoSo">まあまあ</string>
+    <string name="Sad">悲しい</string>
+    <string name="WantToDie">死にたい</string>
+    <string name="Empty">なし</string>
+
+    <string-array name="week_days">
+        <item>日</item>
+        <item>月</item>
+        <item>火</item>
+        <item>水</item>
+        <item>木</item>
+        <item>金</item>
+        <item>土</item>
+    </string-array>
+    <string name="day_count">日数統計</string>
 </resources>

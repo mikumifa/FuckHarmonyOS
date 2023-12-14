@@ -1,13 +1,15 @@
 package com.example.chatdiary2.data;
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.debugInspectorInfo
+import com.example.chatdiary2.R
 import com.example.chatdiary2.ui.theme.HappyColor
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 data class HappyWeakData(
     val startDate: LocalDate,
-    val happyValues: List<HappyValue>,
+    val happyValues: List<HappyDateWithType>,
 ) {
     val ScoreEmoji: String by lazy {
         val sum = happyValues.sumOf { it.value }
@@ -22,10 +24,10 @@ data class HappyWeakData(
 
 
     val start: LocalDate by lazy {
-        happyValues.sortedBy(HappyValue::startDate).first().startDate
+        happyValues.sortedBy(HappyDateWithType::startDate).first().startDate
     }
     val end: LocalDate by lazy {
-        happyValues.sortedBy(HappyValue::startDate).last().startDate
+        happyValues.sortedBy(HappyDateWithType::startDate).last().startDate
     }
     val total: Long by lazy {
         ChronoUnit.DAYS.between(start, end) + 1
@@ -35,7 +37,7 @@ data class HappyWeakData(
         1f / 7f
     }
 
-    fun daysAfterDiaryStart(happyValue: HappyValue): Long {
+    fun daysAfterDiaryStart(happyValue: HappyDateWithType): Long {
         return ChronoUnit.DAYS.between(start, happyValue.startDate)
     }
 }
@@ -43,10 +45,18 @@ data class HappyWeakData(
 data class HappyValue(
     val startDate: LocalDate,
     val value: Int,
-) {
+) {}
 
-    val type: HappyType by lazy {
-        when (value) {
+data class HappyDateWithType(
+    val startDate: LocalDate,
+    val value: Int,
+    val type: HappyType,
+) {
+    constructor(
+        startDate: LocalDate,
+        value: Int,
+    ) : this(
+        startDate, value, when (value) {
             in 0..20 -> HappyType.WantToDie
             in 21..40 -> HappyType.Sad
             in 41..60 -> HappyType.JustSoSo
@@ -56,26 +66,26 @@ data class HappyValue(
                 HappyType.Empty
             }
         }
-    }
+    )
 }
 
-enum class HappyType(val title: String, var color: Color) {
+enum class HappyType(val titleResource: Int, var color: Color) {
     VeryHappy(
-        "Very Happy", HappyColor.VeryHappy
+        R.string.VeryHappy, HappyColor.VeryHappy
     ),
     Happy(
-        "Happy", HappyColor.Happy
+        R.string.Happy, HappyColor.Happy
     ),
     JustSoSo(
-        "Just So So", HappyColor.JustSoSo
+        R.string.JustSoSo, HappyColor.JustSoSo
     ),
     Sad(
-        "Sad", HappyColor.Sad
+        R.string.Sad, HappyColor.Sad
     ),
     WantToDie(
-        "Want to Die", HappyColor.WantToDie
+        R.string.WantToDie, HappyColor.WantToDie
     ),
     Empty(
-        "No Diaries", HappyColor.Empty
+        R.string.Empty, HappyColor.Empty
     )
 }

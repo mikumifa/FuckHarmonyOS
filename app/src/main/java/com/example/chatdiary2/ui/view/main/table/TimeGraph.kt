@@ -60,6 +60,8 @@ import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.ParentDataModifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextLayoutResult
@@ -71,6 +73,8 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.util.lerp
+import com.example.chatdiary2.R
+import com.example.chatdiary2.data.HappyDateWithType
 import com.example.chatdiary2.data.HappyType
 import com.example.chatdiary2.data.HappyValue
 import com.example.chatdiary2.data.HappyWeakData
@@ -90,11 +94,6 @@ private val barHeight = 24.dp
 private const val animationDuration = 500
 private val textPadding = 4.dp
 private val expandedLength = HappyType.values().size * barHeight
-
-@Composable
-@Preview
-fun WeekHeaderPreview() {
-}
 
 @Composable
 @Preview
@@ -127,6 +126,7 @@ fun WeekHeader(week: List<String>) {
                         md_theme_dark_onPrimaryContainer, md_theme_light_outlineVariant
                     )
                 )
+
                 drawRoundRect(
                     brush,
                     cornerRadius = CornerRadius(10.dp.toPx(), 10.dp.toPx()),
@@ -151,12 +151,8 @@ fun HappyBar(
     happyWeakData: HappyWeakData,
     modifier: Modifier = Modifier,
 ) {
-    var isExpanded by rememberSaveable {
-        mutableStateOf(false)
-    }
-
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
     val transition = updateTransition(targetState = isExpanded, label = "expanded")
-
     Column(modifier = modifier.clickable(
         indication = null,
         interactionSource = remember { MutableInteractionSource() }) {
@@ -234,7 +230,7 @@ private fun LegendItem(happyType: HappyType) {
                 .background(color = happyType.color)
         )
         Text(
-            happyType.title,
+            stringResource(id = happyType.titleResource),
             style = MaterialTheme.typography.labelMedium,
             modifier = Modifier.padding(start = 4.dp)
         )
@@ -294,7 +290,6 @@ private fun HappyRoundedBar(
                     cornerRadiusStartPx * animationProgress
                 )
             )
-
             val happyPath = generateWeakPath(
                 canvasSize = this.size,
                 happyWeakData = happyWeakData,
@@ -308,7 +303,6 @@ private fun HappyRoundedBar(
                 startY = 0f,
                 endY = HappyType.values().size * barHeight.toPx()
             )
-
             onDrawBehind {
                 drawHappyBar(
                     roundedRectPath = roundedRectPath,
@@ -324,7 +318,6 @@ private fun HappyRoundedBar(
 
 }
 
-
 /**
  * Generate the path for the different sleep periods.
  */
@@ -337,31 +330,28 @@ private fun generateWeakPath(
     lineThicknessPx: Float,
 ): Path {
     val path = Path()
-    var previousHappyValue: HappyValue? = null
+    var previousHappyValue: HappyDateWithType? = null
     path.moveTo(0f, 0f)
-    val newWeekDate = ArrayList<HappyValue>()
+    val newWeekDate = ArrayList<HappyDateWithType>()
     for (i in 0 until happyWeakData.total) {
         val nowDate = happyWeakData.start.plusDays(i)
         newWeekDate.add(
-            HappyValue(
+            HappyDateWithType(
                 startDate = nowDate,
                 value = happyWeakData.happyValues.find { it.startDate == nowDate }?.value ?: -1
             )
         )
-
     }
     newWeekDate.forEach {
         val percentageOfTotal = happyWeakData.fractionOfTotalTime
         val periodWidth = percentageOfTotal * width
         val startOffsetPercentage = happyWeakData.daysAfterDiaryStart(it) / 7f
         val halfBarHeight = canvasSize.height / HappyType.values().size / 2f
-
         val offset = if (previousHappyValue == null) {
             0f
         } else {
             halfBarHeight
         }
-
         val offsetY = lerp(
             0f, it.type.heightPos() * canvasSize.height, heightAnimation
         )
@@ -371,7 +361,6 @@ private fun generateWeakPath(
                 x = startOffsetPercentage * width + lineThicknessPx, y = offsetY + offset
             )
         }
-
         // step 2 - add the current sleep period as rectangle to path
         path.addRect(
             rect = Rect(
@@ -390,7 +379,6 @@ private fun generateWeakPath(
     return path
 }
 
-@OptIn(ExperimentalTextApi::class)
 private fun DrawScope.drawHappyBar(
     roundedRectPath: Path,
     happyPath: Path,
@@ -414,20 +402,28 @@ private fun DrawScope.drawHappyBar(
     }
 }
 
-private fun splitIntoHappyWeakData(happyValues: List<HappyValue>): List<HappyWeakData> {
+private fun splitIntoHappyWeakData(happyValues: List<HappyDateWithType>): List<HappyWeakData> {
     if (happyValues.isEmpty()) return emptyList()
     val result = mutableListOf<HappyWeakData>()
 
-    // 根据日期进行分组，以一周为单位
     val groupedByWeek = happyValues.groupBy {
-        it.startDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        it.startDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
     }
 
-    // 遍历分组，并创建 HappyWeakData
     for ((weekStartDate, values) in groupedByWeek) {
-        val happyWeakData = HappyWeakData(
-            startDate = weekStartDate, happyValues = values
-        )
+        val weekDays = mutableListOf<LocalDate>()
+        var currentDay = weekStartDate
+        for (i in 0 until 7) {
+            weekDays.add(currentDay)
+            currentDay = currentDay.plusDays(1)
+        }
+
+        val happyWeakData =
+            HappyWeakData(startDate = weekStartDate, happyValues = weekDays.map { day ->
+                values.find { it.startDate == day } ?: HappyDateWithType(
+                    startDate = day, value = -1
+                )
+            })
         result.add(happyWeakData)
     }
 
@@ -439,8 +435,11 @@ fun TimeGraph(
     happyDataOfDay: List<HappyValue>,
     modifier: Modifier = Modifier,
 ) {
-    val weeks = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-    val happyData = splitIntoHappyWeakData(happyDataOfDay)
+    val context = LocalContext.current
+    val weeks = context.resources.getStringArray(R.array.week_days).toList()
+    val happyDateWithTypeOfType =
+        happyDataOfDay.map { day -> HappyDateWithType(day.startDate, day.value) }
+    val happyData = splitIntoHappyWeakData(happyDateWithTypeOfType)
     val dayLabels = @Composable {
         happyData.forEach {
             val formatter = DateTimeFormatter.ofPattern("MMM dd", Locale.getDefault())
@@ -485,7 +484,6 @@ fun TimeGraph(
         var totalHeight = weekHeaderPlaceables.height
 
         val barPlaceables = barMeasureables.map { measurable ->
-            val barParentData = measurable.parentData as TimeGraphParentData
             val barWidth = weekHeaderPlaceables.width
 
             val barPlaceable = measurable.measure(
@@ -529,7 +527,6 @@ object TimeGraphScope {
     ): Modifier {
         return then(
             TimeGraphParentData(
-                duration = ChronoUnit.DAYS.between(start, end).toFloat() + 1 / 7f,
                 offset = ChronoUnit.DAYS.between(startTime, start).toFloat() / 7f
             )
         )
@@ -537,7 +534,6 @@ object TimeGraphScope {
 }
 
 class TimeGraphParentData(
-    val duration: Float,
     val offset: Float,
 ) : ParentDataModifier {
     override fun Density.modifyParentData(parentData: Any?) = this@TimeGraphParentData

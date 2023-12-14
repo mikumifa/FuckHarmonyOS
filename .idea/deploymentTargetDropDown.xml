@@ -2,16 +2,19 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="AnimatedPieChartPreview">
+        <State />
+      </entry>
       <entry key="AppLanguagePreview">
         <State />
       </entry>
       <entry key="AuoLoginScreenPreview">
         <State />
       </entry>
-      <entry key="MainActivity">
+      <entry key="ChartPreview">
         <State />
       </entry>
-      <entry key="UnlockActivity">
+      <entry key="MainActivity">
         <State />
       </entry>
     </value>
