@@ -181,7 +181,7 @@ class DiaryViewModel @Inject constructor(private val diaryService: DiaryService)
                 diaryService.getDiaryGenList(number)
             }.onSuccess {
                 Log.w("sendImage", it.toString())
-                result.value = it.data
+                result.value = it.data?.reversed()
             }.onFailure {
                 Log.w("sendImage", it.toString())
                 result.value = null
