@@ -13,6 +13,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
@@ -119,30 +120,10 @@ class MainActivity : AppCompatActivity(), DefaultLifecycleObserver {
 
                 composable(
                     Destination.Diary,
-                    enterTransition = {
-                        scaleIn(
-                            initialScale = 0.1f,
-                            transformOrigin = TransformOrigin(0.5f, 0.3f)
-                        )
-                    },
-                    exitTransition = {
-                        scaleOut(
-                            targetScale = 0.1f,
-                            transformOrigin = TransformOrigin(0.5f, 0.3f)
-                        )
-                    },
-                    popEnterTransition = {
-                        scaleIn(
-                            initialScale = 0.1f,
-                            transformOrigin = TransformOrigin(0.5f, 0.3f)
-                        )
-                    },
-                    popExitTransition = {
-                        scaleOut(
-                            targetScale = 0.1f,
-                            transformOrigin = TransformOrigin(0.5f, 0.3f)
-                        )
-                    },
+                    enterTransition = { slideInHorizontally() { it } },
+                    exitTransition = { slideOutHorizontally() { it } },
+                    popEnterTransition = { slideInHorizontally() { it } },
+                    popExitTransition = { slideOutHorizontally() { it } },
                 ) {
                     ChatDiaryTheme() {
                         DiaryView(action = action)
