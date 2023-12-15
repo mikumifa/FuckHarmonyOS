@@ -40,6 +40,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -76,6 +78,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
+import coil.compose.AsyncImage
 import com.example.chatdiary.R
 import com.example.chatdiary.service.Message
 import com.example.chatdiary.ui.view.common.RequestWithPermission
@@ -83,27 +86,21 @@ import com.example.chatdiary.ui.view.common.keyboardAsState
 import com.example.chatdiary.ui.view.main.diary.InputSelector
 import com.example.chatdiary.ui.view.main.diary.SelectorExpanded
 import com.example.chatdiary.ui.view.main.diary.TimedDialog
+import com.example.chatdiary.ui.view.main.login.LoginViewModel
 import com.example.chatdiary.ui.view.nav.Action
-
-@Composable
-private fun LoadingComponent() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CircularProgressIndicator() // 显示一个进度条
-    }
-}
+import com.example.chatdiary.ui.view.settings.profile.ProfileScreenViewModel
 
 @Composable
 fun ChatScreen(
     action: Action,
     chatViewModel: ChatViewModel = hiltViewModel(),
+    profileScreenViewModel: ProfileScreenViewModel
 ) {
-    ConversationContent(action = action, uiState = chatViewModel);
+    ConversationContent(
+        action = action,
+        uiState = chatViewModel,
+        profileScreenViewModel = profileScreenViewModel
+    );
 }
 
 private val ChatBubbleShape = RoundedCornerShape(4.dp, 20.dp, 20.dp, 20.dp)
@@ -159,7 +156,10 @@ fun ClickableMessage(
 
 @Composable
 fun Messages(
-    messages: List<Message>, scrollState: LazyListState, modifier: Modifier = Modifier
+    messages: List<Message>,
+    scrollState: LazyListState,
+    modifier: Modifier = Modifier,
+    profileScreenViewModel: ProfileScreenViewModel
 ) {
     Box(modifier = modifier) {
         LazyColumn(
@@ -176,7 +176,8 @@ fun Messages(
                     Message(
                         msg = thisMsg,
                         isFirstMessageByAuthor = isFirstMessageByAuthor,
-                        isLastMessageByAuthor = isLastMessageByAuthor
+                        isLastMessageByAuthor = isLastMessageByAuthor,
+                        profileScreenViewModel = profileScreenViewModel
                     )
                 }
             }
@@ -187,32 +188,52 @@ fun Messages(
 
 @Composable
 fun Message(
-    msg: Message, isFirstMessageByAuthor: Boolean, isLastMessageByAuthor: Boolean
+    msg: Message,
+    isFirstMessageByAuthor: Boolean,
+    isLastMessageByAuthor: Boolean,
+    profileScreenViewModel: ProfileScreenViewModel
 ) {
     val borderColor = if (msg.isUserMe) {
         MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.tertiary
     }
-
+    val userInfo by profileScreenViewModel.userInfo.collectAsState()
     val spaceBetweenAuthors = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
     Row(modifier = spaceBetweenAuthors) {
-
         if (isLastMessageByAuthor) {
-            Image(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .size(42.dp)
-                    .border(1.5.dp, borderColor, CircleShape)
-                    .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
-                    .clip(CircleShape)
-                    .align(Alignment.Top),
-                painter = if (msg.isUserMe) painterResource(R.drawable.temp_user) else painterResource(
-                    R.drawable.chatgpt
-                ),
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
-            )
+            if (userInfo.data == null || !msg.isUserMe || userInfo.data!!.avatarUrl == null) {
+                Image(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .size(42.dp)
+                        .border(1.5.dp, borderColor, CircleShape)
+                        .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
+                        .clip(CircleShape)
+                        .align(Alignment.Top),
+                    painter = if (msg.isUserMe) painterResource(R.drawable.temp_user) else painterResource(
+                        R.drawable.chatgpt
+                    ),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null,
+                )
+            } else {
+
+                AsyncImage(
+                    model = userInfo.data!!.avatarUrl,
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .size(42.dp)
+                        .border(1.5.dp, borderColor, CircleShape)
+                        .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
+                        .clip(CircleShape)
+                        .align(Alignment.Top),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null,
+                )
+            }
+
+
         } else {
             // Space under avatar
             Spacer(modifier = Modifier.width(74.dp))
@@ -273,13 +294,15 @@ fun AuthorAndTextMessage(
 
 @Composable
 fun ConversationContent(
-    action: Action, modifier: Modifier = Modifier, uiState: ChatViewModel = hiltViewModel()
+    action: Action,
+    modifier: Modifier = Modifier,
+    uiState: ChatViewModel,
+    profileScreenViewModel: ProfileScreenViewModel
 
 ) {
 
 
     val scrollState = rememberLazyListState()
-    val scope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
 
     var messageList by remember { mutableStateOf(emptyList<Message>()) }
@@ -293,7 +316,10 @@ fun ConversationContent(
             messageList = it
         }
         Messages(
-            messages = messageList, modifier = Modifier.weight(1f), scrollState = scrollState
+            messages = messageList,
+            modifier = Modifier.weight(1f),
+            scrollState = scrollState,
+            profileScreenViewModel = profileScreenViewModel
         )
         val sendingMessage: (String) -> MutableLiveData<Boolean> = { content ->
             val res = uiState.addChat(
@@ -340,7 +366,8 @@ fun UserInput(
         isErrorShow.value = true
         errorShowInfo = "语言识别失败"
     })
-    TimedDialog(showDialog = isErrorShow,
+    TimedDialog(
+        showDialog = isErrorShow,
         durationMillis = 1000,
         text = errorShowInfo,
         onDismiss = {})
@@ -394,13 +421,12 @@ fun UserInput(
             OutlinedTextField(value = text, onValueChange = {
                 text = it
                 isSending.value = it.text.isNotBlank()
-            },
-                singleLine = false, modifier = Modifier
-                    .weight(1f)
-                    .onFocusChanged {
-                        currentInputSelector = InputSelector.NONE
-                    }
-                    .padding(4.dp),
+            }, singleLine = false, modifier = Modifier
+                .weight(1f)
+                .onFocusChanged {
+                    currentInputSelector = InputSelector.NONE
+                }
+                .padding(4.dp),
 
                 shape = RoundedCornerShape(18.dp), colors = TextFieldDefaults.textFieldColors(
                     disabledTextColor = Color.Transparent,

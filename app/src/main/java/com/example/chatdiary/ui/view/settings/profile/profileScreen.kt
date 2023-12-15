@@ -67,16 +67,7 @@ const val email = "damahecode"
 const val my_description =
     "A group of simple, open source Android apps without ads and unnecessary permissions, with materials design UI."
 
-@Composable
-@Preview
-@ExperimentalMaterial3Api
-fun ProfileScreenPreview() {
-    val navController = rememberNavController()
-    val actions = remember(navController) {
-        Action(navController)
-    }
-    profileScreen(actions)
-}
+
 
 @OptIn(
     ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class
@@ -85,7 +76,7 @@ fun ProfileScreenPreview() {
 @ExperimentalMaterial3Api
 fun profileScreen(
     action: Action,
-    profileViewModel: ProfileScreenViewModel = hiltViewModel(),
+    profileViewModel: ProfileScreenViewModel,
 ) {
     val showBottomSheet = remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()

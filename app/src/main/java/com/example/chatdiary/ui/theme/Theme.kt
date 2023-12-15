@@ -45,9 +45,7 @@ private fun getThemeColorScheme(
     appTheme: AppTheme?, amoled: Boolean?, uiPreferences: UiPreferences
 ): ColorScheme {
     val colorScheme = when (appTheme ?: uiPreferences.appTheme().get()) {
-        AppTheme.DEFAULT -> TachiyomiColorScheme
-        AppTheme.MONET -> MonetColorScheme(LocalContext.current)
-        AppTheme.GREEN_APPLE -> GreenAppleColorScheme
+        AppTheme.DEFAULT -> MonetColorScheme(LocalContext.current)
         AppTheme.LAVENDER -> LavenderColorScheme
         AppTheme.MIDNIGHT_DUSK -> MidnightDuskColorScheme
         AppTheme.STRAWBERRY_DAIQUIRI -> StrawberryColorScheme
@@ -56,6 +54,8 @@ private fun getThemeColorScheme(
         AppTheme.TIDAL_WAVE -> TidalWaveColorScheme
         AppTheme.YINYANG -> YinYangColorScheme
         AppTheme.YOTSUBA -> YotsubaColorScheme
+        AppTheme.GREEN_APPLE -> GreenAppleColorScheme
+        AppTheme.MONET -> TachiyomiColorScheme
         else -> TachiyomiColorScheme
     }
     return colorScheme.getColorScheme(

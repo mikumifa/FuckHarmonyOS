@@ -39,12 +39,14 @@ import com.example.chatdiary.ui.view.nav.Action
 import com.example.chatdiary.ui.view.nav.BarItem
 import com.example.chatdiary.ui.view.nav.BottomBar
 import com.example.chatdiary.ui.view.nav.TopBar
+import com.example.chatdiary.ui.view.settings.profile.ProfileScreenViewModel
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun MainComponent(
     action: Action,
+    profileScreenViewModel: ProfileScreenViewModel,
     diaryViewModel: DiaryViewModel = hiltViewModel(),
 ) {
 
@@ -68,16 +70,14 @@ fun MainComponent(
 
     val value = arrayOf(BarItem(stringResource(id = R.string.bar_diary), {
         AnimationIconButton(
-            resInt = R.raw.low_brightness,
+            resInt = R.raw.file,
             isSelected = it,
             speed = 1f,
-            modifier = Modifier.size(60.dp, 60.dp)
+            modifier = Modifier.size(50.dp, 50.dp)
         )
     }) {
         DiaryIn(
-            action = action,
-            it,
-            diaryViewModel
+            action = action, it, diaryViewModel
         )
     },
 
@@ -90,16 +90,18 @@ fun MainComponent(
             )
         }) {
             Box(modifier = Modifier.padding(it)) {
-                ChatScreen(action = action)
+                ChatScreen(action = action, profileScreenViewModel = profileScreenViewModel)
             }
         },
 
-        BarItem(stringResource(id = R.string.bar_statistic), {     AnimationIconButton(
-            resInt = R.raw.smile_and_sad_emoji,
-            isSelected = it,
-            speed = 1f,
-            modifier = Modifier.size(50.dp, 50.dp)
-        )}) {
+        BarItem(stringResource(id = R.string.bar_statistic), {
+            AnimationIconButton(
+                resInt = R.raw.smile_and_sad_emoji,
+                isSelected = it,
+                speed = 1f,
+                modifier = Modifier.size(50.dp, 50.dp)
+            )
+        }) {
             HappyValueScreen(modifier = Modifier.padding(it), onDrawerClicked = { -> })
         })
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {

@@ -82,16 +82,16 @@ fun AppThemePreviewItemPreview(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(28.dp))
 
-                Text(
-                    text = appTheme.name,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    maxLines = 2,
-                    minLines = 2,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+//                Text(
+//                    text = appTheme.name,
+//                    modifier = Modifier.fillMaxWidth(),
+//                    textAlign = TextAlign.Center,
+//                    maxLines = 2,
+//                    minLines = 2,
+//                    style = MaterialTheme.typography.bodyMedium,
+//                )
             }
         }
     }

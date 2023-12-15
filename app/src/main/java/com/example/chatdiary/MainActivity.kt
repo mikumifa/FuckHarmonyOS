@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.scaleIn
@@ -41,6 +42,7 @@ import com.example.chatdiary.ui.view.nav.Action
 import com.example.chatdiary.ui.view.nav.Destination
 import com.example.chatdiary.ui.view.settings.appearance.AppearanceScreen
 import com.example.chatdiary.ui.view.settings.lock.LockScreen
+import com.example.chatdiary.ui.view.settings.profile.ProfileScreenViewModel
 import com.example.chatdiary.ui.view.settings.profile.profileScreen
 import com.example.chatdiary.util.secure.PreferenceStore
 import com.example.chatdiary.util.secure.SecurityPreferences
@@ -75,6 +77,7 @@ class MainActivity : AppCompatActivity(), DefaultLifecycleObserver {
         val dexOutputDir: File = codeCacheDir
         dexOutputDir.setReadOnly()
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+        val profileScreenViewModel: ProfileScreenViewModel by viewModels()
         setContent {
             val navController = rememberNavController()
             val action = remember(navController) {
@@ -86,6 +89,8 @@ class MainActivity : AppCompatActivity(), DefaultLifecycleObserver {
             val encryptionUtils = EncryptionUtils(this)
             val savedUsername = encryptionUtils.decrypt("email")
             val savedPassword = encryptionUtils.decrypt("password")
+
+
             NavHost(
                 navController = navController,
                 startDestination = if (isLoggedIn) Destination.Start else Destination.Login
@@ -160,6 +165,7 @@ class MainActivity : AppCompatActivity(), DefaultLifecycleObserver {
                     ChatDiaryTheme() {
 
                         MainComponent(
+                            profileScreenViewModel = profileScreenViewModel,
                             action = action
                         )
                     }
@@ -184,7 +190,7 @@ class MainActivity : AppCompatActivity(), DefaultLifecycleObserver {
                 ) {
 
                     ChatDiaryTheme() {
-                        profileScreen(action = action)
+                        profileScreen(action = action, profileViewModel = profileScreenViewModel)
                     }
                 }
                 composable(

@@ -29,7 +29,9 @@ import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -106,9 +108,9 @@ fun HomeScreen(
             contentScale = ContentScale.FillWidth
         )
         Column(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier
         ) {
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(50.dp))
             Title()
             Spacer(modifier = Modifier.height(20.dp))
             diaryViewModel.getGenData.observe(lifecycleOwner) {
@@ -141,7 +143,7 @@ fun Title() {
 
 @Composable
 fun Content(action: Action, diaryVoList: List<DayDiaryVo>) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().padding(start = 20.dp,end=20.dp)) {
         Header(action)
         Spacer(modifier = Modifier.height(16.dp))
         Row(
@@ -167,6 +169,7 @@ fun Content(action: Action, diaryVoList: List<DayDiaryVo>) {
                 )
             }
         }
+        HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.24f))
         DiaryListContent(action = action, modifier = Modifier.weight(1f), diaryVoList = diaryVoList)
 
     }
@@ -198,7 +201,7 @@ fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList:
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .background(color = MaterialTheme.colorScheme.secondary)
+                                    .background(color = MaterialTheme.colorScheme.surfaceVariant)
                                     .clickable {
                                         action.navController.navigate(Destination.DiaryGenDetails + "/${item}")
                                     },
@@ -237,7 +240,7 @@ fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList:
                                     style = MaterialTheme.typography.bodyLarge,
                                     maxLines = 1, // 设置为1，以显示单行文本
                                     overflow = TextOverflow.Ellipsis, // 使用省略号表示文本溢出
-                                    color = MaterialTheme.colorScheme.onSurface
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
 
                                 Text(
@@ -261,7 +264,7 @@ fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList:
                                         text = buildAnnotatedString {
                                             withStyle(
                                                 style = SpanStyle(
-                                                    MaterialTheme.colorScheme.onSurface,
+                                                    MaterialTheme.colorScheme.onSurfaceVariant,
                                                     fontWeight = FontWeight.Bold
                                                 )
                                             ) {
@@ -269,29 +272,29 @@ fun DiaryListContent(action: Action, modifier: Modifier = Modifier, diaryVoList:
                                             }
                                         },
                                         style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.surface
+                                        color = MaterialTheme.colorScheme.surfaceVariant
 
                                     )
 
 
-                                    Box(
-                                        modifier = Modifier
-                                            .clip(CircleShape)
-                                            .background(MaterialTheme.colorScheme.tertiaryContainer)
-                                            .padding(4.dp)
-                                            .clickable { },
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        var isExpanded by remember { mutableStateOf(false) }
-                                        Icon(
-                                            modifier = Modifier
-                                                .size(20.dp, 20.dp)
-                                                .clickable { isExpanded = true },
-                                            imageVector = Icons.Default.MoreHoriz,
-                                            contentDescription = stringResource(R.string.more_horizon),
-                                            tint = MaterialTheme.colorScheme.onTertiaryContainer
-                                        )
-                                    }
+//                                    Box(
+//                                        modifier = Modifier
+//                                            .clip(CircleShape)
+//                                            .background(MaterialTheme.colorScheme.tertiaryContainer)
+//                                            .padding(4.dp)
+//                                            .clickable { },
+//                                        contentAlignment = Alignment.Center
+//                                    ) {
+//                                        var isExpanded by remember { mutableStateOf(false) }
+//                                        Icon(
+//                                            modifier = Modifier
+//                                                .size(20.dp, 20.dp)
+//                                                .clickable { isExpanded = true },
+//                                            imageVector = Icons.Default.MoreHoriz,
+//                                            contentDescription = stringResource(R.string.more_horizon),
+//                                            tint = MaterialTheme.colorScheme.onTertiaryContainer
+//                                        )
+//                                    }
 
                                 }
                             }
