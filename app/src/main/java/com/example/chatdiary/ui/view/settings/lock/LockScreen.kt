@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.chatdiary.R
+import com.example.chatdiary.ui.view.common.SettingStyledText
 import com.example.chatdiary.ui.view.common.SwitchBottom
 import com.example.chatdiary.ui.view.main.login.LoadingComponent
 import com.example.chatdiary.ui.view.main.login.ResultDialog
@@ -122,7 +123,9 @@ fun LockScreen(action: Action, lockScreenViewModel: LockScreenViewModel? = hiltV
                     icon = {
                         Icon(Icons.Filled.Lock, contentDescription = "edit sentiment")
                     },
-                    text = { stringResource(id = R.string.device_lock_setting) },
+                    text = {
+                        SettingStyledText(stringResource(id = R.string.device_lock_setting))
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         lockScreenViewModel!!.setuseAuthenticator(it)
