@@ -1,4 +1,4 @@
-package com.example.chatdiary2
+package com.example.chatdiary
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
