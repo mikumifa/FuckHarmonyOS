@@ -164,7 +164,12 @@ class MainActivity : AppCompatActivity(), DefaultLifecycleObserver {
                         )
                     }
                 }
-                composable(Destination.seeAllDiary) {
+                composable(
+                    Destination.seeAllDiary, enterTransition = { slideInHorizontally() { it } },
+                    exitTransition = { slideOutHorizontally() { it } },
+                    popEnterTransition = { slideInHorizontally() { it } },
+                    popExitTransition = { slideOutHorizontally() { it } },
+                ) {
                     ChatDiaryTheme() {
 
                         SeeAllScreen(action = action)
