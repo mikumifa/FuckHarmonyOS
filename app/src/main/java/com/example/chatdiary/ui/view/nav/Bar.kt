@@ -85,9 +85,9 @@ fun BottomNavigationItem(
 ) {
     val background = if (selected) Modifier
         .fillMaxWidth()
-        .padding(start = 30.dp, end = 30.dp) // 添加一些内边距使背景框小于内容尺寸
+        .padding(start = 10.dp, end = 10.dp) // 添加一些内边距使背景框小于内容尺寸
         .clip(RoundedCornerShape(10.dp)) // 添加圆角
-        .background(MaterialTheme.colorScheme.surface) else Modifier.padding(top = 10.dp)
+    else Modifier.padding(top = 10.dp)
     Box(
         modifier = modifier
             .then(background)
