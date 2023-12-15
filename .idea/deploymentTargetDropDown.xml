@@ -2,18 +2,6 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AnimatedPieChartPreview">
-        <State />
-      </entry>
-      <entry key="AppLanguagePreview">
-        <State />
-      </entry>
-      <entry key="AuoLoginScreenPreview">
-        <State />
-      </entry>
-      <entry key="ChartPreview">
-        <State />
-      </entry>
       <entry key="MainActivity">
         <State>
           <runningDeviceTargetSelectedWithDropDown>
@@ -29,6 +17,9 @@
           </runningDeviceTargetSelectedWithDropDown>
           <timeTargetWasSelectedWithDropDown value="2023-12-15T05:54:00.377270200Z" />
         </State>
+      </entry>
+      <entry key="app">
+        <State />
       </entry>
     </value>
   </component>
