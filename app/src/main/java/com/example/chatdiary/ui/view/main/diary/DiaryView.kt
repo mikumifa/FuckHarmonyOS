@@ -17,6 +17,15 @@ import android.widget.CalendarView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -600,7 +609,8 @@ fun InputDialog(
     }
 
 
-    TimedDialog(showDialog = isErrorShow,
+    TimedDialog(
+        showDialog = isErrorShow,
         durationMillis = 1000,
         text = errorShowInfo,
         onDismiss = {})
@@ -708,7 +718,6 @@ fun InputDialog(
                     .fillMaxWidth()
                     .focusRequester(focusRequester)
             ) {
-
                 Row {
                     IconButton(onClick = { currentInputSelector = InputSelector.EMOJI }) {
                         Icon(
@@ -735,6 +744,7 @@ fun InputDialog(
                     }
                 }
             }
+
             SelectorExpanded(
                 onTextAdded = {
                     val currentText = text.text
@@ -751,7 +761,6 @@ fun InputDialog(
                 currentSelector = currentInputSelector,
             )
         }
-
     }
 }
 
@@ -901,17 +910,23 @@ fun SelectorExpanded(
             keyboard?.hide()
         }
     }
-    Surface(tonalElevation = 8.dp) {
-        when (currentSelector) {
-            InputSelector.EMOJI -> EmojiSelector(onTextAdded)
-            InputSelector.NONE -> Spacer(
-                modifier = Modifier
-                    .height(0.dp)
-                    .fillMaxWidth()
-            )
+    AnimatedContent(
+        targetState = currentSelector, transitionSpec = {
+            fadeIn().togetherWith(fadeOut())
+        }, label = ""
+    ) { targetState ->
+        Surface(tonalElevation = 8.dp) {
+            when (targetState) {
+                InputSelector.EMOJI -> EmojiSelector(onTextAdded)
+                InputSelector.NONE -> Spacer(
+                    modifier = Modifier
+                        .height(0.dp)
+                        .fillMaxWidth()
+                )
 
-            else -> {
-                throw NotImplementedError()
+                else -> {
+                    throw NotImplementedError()
+                }
             }
         }
     }

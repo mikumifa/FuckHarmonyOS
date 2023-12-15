@@ -3,14 +3,16 @@ package com.example.chatdiary.ui.view.main
 import HappyValueScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BrightnessHigh
-import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.filled.Note
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,13 +20,17 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatdiary.R
+import com.example.chatdiary.ui.view.common.AnimationIconButton
 import com.example.chatdiary.ui.view.main.chat.ChatScreen
 import com.example.chatdiary.ui.view.main.diary.DiaryIn
 import com.example.chatdiary.ui.view.main.diary.DiaryViewModel
@@ -45,46 +51,91 @@ fun MainComponent(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val selectedIndex = remember { mutableStateOf(0) }
-    val value = arrayOf(
-        BarItem(
-            Icons.Default.Note,
-            stringResource(id = R.string.bar_diary)
-        ) { DiaryIn(action = action, it, diaryViewModel) },
-        BarItem(Icons.Default.Chat,   stringResource(id = R.string.barat)) {
+
+
+    // 定义动画状态
+    val scale by animateFloatAsState(
+        targetValue = if (drawerState.isClosed) 1f else 0.99f, animationSpec = tween(
+            durationMillis = 300, // 动画时长
+            easing = FastOutSlowInEasing // 插值器
+        ), label = ""
+    )
+    val offsetX by animateFloatAsState(
+        targetValue = if (drawerState.isClosed) 0f else 20f, animationSpec = tween(
+            durationMillis = 300, easing = FastOutSlowInEasing
+        ), label = ""
+    )
+
+    val value = arrayOf(BarItem(stringResource(id = R.string.bar_diary), {
+        AnimationIconButton(
+            resInt = R.raw.low_brightness,
+            isSelected = it,
+            speed = 1f,
+            modifier = Modifier.size(60.dp, 60.dp)
+        )
+    }) {
+        DiaryIn(
+            action = action,
+            it,
+            diaryViewModel
+        )
+    },
+
+        BarItem(stringResource(id = R.string.barat), {
+            AnimationIconButton(
+                resInt = R.raw.texting,
+                isSelected = it,
+                speed = 1f,
+                modifier = Modifier.size(50.dp, 50.dp)
+            )
+        }) {
             Box(modifier = Modifier.padding(it)) {
                 ChatScreen(action = action)
             }
         },
 
-        BarItem(Icons.Filled.BrightnessHigh,  stringResource(id = R.string.bar_statistic)) {
+        BarItem(stringResource(id = R.string.bar_statistic), {     AnimationIconButton(
+            resInt = R.raw.smile_and_sad_emoji,
+            isSelected = it,
+            speed = 1f,
+            modifier = Modifier.size(50.dp, 50.dp)
+        )}) {
             HappyValueScreen(modifier = Modifier.padding(it), onDrawerClicked = { -> })
         })
     ModalNavigationDrawer(drawerState = drawerState, drawerContent = {
-        DrawerContent(actions = action) {}
+        AnimatedVisibility(visible = drawerState.isOpen) {
+            DrawerContent(actions = action) {}
+        }
     }, content = {
-        Scaffold(topBar = {
-            TopBar(value[selectedIndex.value].text, {
-                IconButton(onClick = {
-                    scope.launch { drawerState.open() }
-                }) {
-                    Icon(
-                        imageVector = Icons.Filled.Menu,
-                        contentDescription = "Localized description"
-                    )
-                }
-            }, {
-                IconButton(onClick = { /* do something */ }) {
-                    Icon(
-                        imageVector = Icons.Filled.MoreHoriz,
-                        contentDescription = "Localized description"
-                    )
-                }
-            })
+        Scaffold(
+            //graphicsLayer can be used to apply effects to content, such as scaling, rotation, opacity, shadow, and clipping.
+            modifier = Modifier.graphicsLayer {
+                scaleX = scale //底层渲染， x轴比例
+                scaleY = scale
+                translationX = offsetX //正是右移
+            }, topBar = {
+                TopBar(value[selectedIndex.value].label, {
+                    IconButton(onClick = {
+                        scope.launch { drawerState.open() }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                }, {
+                    IconButton(onClick = { /* do something */ }) {
+                        Icon(
+                            imageVector = Icons.Filled.MoreHoriz,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                })
 
-        }, bottomBar = {
-            BottomBar(action, selectedIndex, value)
-        }, content = {
-            value[selectedIndex.value].context(it)
-        })
+            }, bottomBar = {
+                BottomBar(action, selectedIndex, value)
+            }, content = {
+                value[selectedIndex.value].context(it)
+            })
     })
 }

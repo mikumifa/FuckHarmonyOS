@@ -12,8 +12,13 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -107,13 +112,45 @@ class MainActivity : AppCompatActivity(), DefaultLifecycleObserver {
                     RegisterView(action = action)
                 }
 
-                composable(Destination.Diary) {
+                composable(
+                    Destination.Diary,
+                    enterTransition = {
+                        scaleIn(
+                            initialScale = 0.1f,
+                            transformOrigin = TransformOrigin(0.5f, 0.3f)
+                        )
+                    },
+                    exitTransition = {
+                        scaleOut(
+                            targetScale = 0.1f,
+                            transformOrigin = TransformOrigin(0.5f, 0.3f)
+                        )
+                    },
+                    popEnterTransition = {
+                        scaleIn(
+                            initialScale = 0.1f,
+                            transformOrigin = TransformOrigin(0.5f, 0.3f)
+                        )
+                    },
+                    popExitTransition = {
+                        scaleOut(
+                            targetScale = 0.1f,
+                            transformOrigin = TransformOrigin(0.5f, 0.3f)
+                        )
+                    },
+                ) {
                     ChatDiaryTheme() {
                         DiaryView(action = action)
                     }
                 }
 
-                composable(Destination.Appearance) {
+                composable(
+                    Destination.Appearance,
+                    enterTransition = { slideInHorizontally() { it } },
+                    exitTransition = { slideOutHorizontally() { it } },
+                    popEnterTransition = { slideInHorizontally() { it } },
+                    popExitTransition = { slideOutHorizontally() { it } },
+                ) {
                     ChatDiaryTheme() {
 
                         AppearanceScreen(action = action)
@@ -133,12 +170,25 @@ class MainActivity : AppCompatActivity(), DefaultLifecycleObserver {
                         SeeAllScreen(action = action)
                     }
                 }
-                composable(Destination.profile) {
+                composable(
+                    Destination.profile,
+                    enterTransition = { slideInHorizontally() { it } },
+                    exitTransition = { slideOutHorizontally() { it } },
+                    popEnterTransition = { slideInHorizontally() { it } },
+                    popExitTransition = { slideOutHorizontally() { it } },
+                ) {
+
                     ChatDiaryTheme() {
                         profileScreen(action = action)
                     }
                 }
-                composable(Destination.lock) {
+                composable(
+                    Destination.lock,
+                    enterTransition = { slideInHorizontally() { it } },
+                    exitTransition = { slideOutHorizontally() { it } },
+                    popEnterTransition = { slideInHorizontally() { it } },
+                    popExitTransition = { slideOutHorizontally() { it } },
+                ) {
                     ChatDiaryTheme() {
 
                         LockScreen(action = action)

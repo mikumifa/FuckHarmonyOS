@@ -1,5 +1,6 @@
 package com.example.chatdiary.ui.view.nav
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,28 +31,47 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 data class BarItem(
-    val icon: ImageVector, val text: String, val context: @Composable (it: PaddingValues) -> Unit
+    val label: String,
+    val icon: @Composable (Boolean) -> Unit,
+    val context: @Composable (it: PaddingValues) -> Unit
 )
 
 
 @Composable
 fun BottomBar(
-
     action: Action, selectedIndex: MutableState<Int>, navList: Array<BarItem>
 ) {
-    BottomNavigation(elevation = 10.dp) {
+    BottomNavigation(elevation = 0.dp) {
         navList.forEachIndexed { index, it ->
-            BottomNavigationItem(icon = { Icon(imageVector = it.icon, "") },
-                label = { Text(text = it.text) },
+            BottomNavigationItem(
+                icon = {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        it.icon(selectedIndex.value == index) // 图标
+                        AnimatedVisibility(visible = selectedIndex.value == index) {
+                            Text(
+                                text = it.label,
+                                style = MaterialTheme.typography.labelLarge
+                            ) // 图标上方的文字
+                        }
+                    }
+                },
+                label = { /* 可以选择不再显示标签，或者在这里添加其他内容 */ },
                 selected = (selectedIndex.value == index),
                 onClick = {
                     selectedIndex.value = index
                 },
-                modifier = Modifier.weight(1f))
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(vertical = 8.dp) // 增加垂直方向的触摸范围
+            )
         }
     }
+
 
 }
 

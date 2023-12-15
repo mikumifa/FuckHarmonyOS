@@ -57,6 +57,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -155,7 +156,8 @@ fun Content(action: Action, diaryVoList: List<DayDiaryVo>) {
             )
             TextButton(onClick = { action.navController.navigate(Destination.seeAllDiary) }) {
                 Text(
-                    text =stringResource(R.string.all_diary), color = MaterialTheme.colorScheme.primary
+                    text = stringResource(R.string.all_diary),
+                    color = MaterialTheme.colorScheme.primary
                 )
                 Icon(
                     imageVector = Icons.Outlined.KeyboardArrowRight,
@@ -311,7 +313,7 @@ fun Header(action: Action) {
     ) {
         Card(
             modifier = Modifier
-                .height(120.dp)
+                .height(140.dp)
                 .width(200.dp),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 4.dp
@@ -325,19 +327,16 @@ fun Header(action: Action) {
                 onClick = { action.toDiary() {} }) {
 
                 Column {
-                    Icon(
-                        imageVector = Icons.Default.Chat,
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    AnimatedPreloader(
                         modifier = Modifier
-                            .height(80.dp)
+                            .height(100.dp)
                             .width(100.dp)
-                            .align(Alignment.CenterHorizontally)
+                            .align(Alignment.CenterHorizontally), lottieSource =R.raw.customer_service_chat
                     )
                     Text(
                         text = stringResource(R.string.write_diary),
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = MaterialTheme.typography.headlineSmall.copy(fontSize = 20.sp),
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 }
