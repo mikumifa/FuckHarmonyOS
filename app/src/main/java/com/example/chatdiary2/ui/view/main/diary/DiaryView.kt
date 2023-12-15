@@ -232,14 +232,17 @@ fun DiaryView(
             IconButton(onClick = { action.navController.navigateUp() }) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Localized description"
+                    contentDescription = "Localized description",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
         }, actions = {
             IconButton(onClick = { /* do something */ }) {
                 Icon(
                     imageVector = Icons.Filled.MoreHoriz,
-                    contentDescription = "Localized description"
+                    contentDescription = "Localized description",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+
                 )
             }
         })
@@ -380,7 +383,6 @@ fun DatePicker(onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit
                 TextButton(
                     onClick = onDismissRequest
                 ) {
-                    //TODO - hardcode string
                     Text(
                         text = "Cancel",
                         style = MaterialTheme.typography.bodyMedium,
@@ -466,17 +468,17 @@ fun Search(
                 if (query.isNotEmpty()) {
                     Icon(imageVector = Icons.Default.Cancel,
                         contentDescription = "Cancel",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier.clickable {
                             onCancel()
                         })
                 } else {
                     Icon(imageVector = Icons.Default.Search,
                         contentDescription = "Search",
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+
                         modifier = Modifier.clickable {
                             onSearch()
-
                         })
                 }
             })
@@ -597,7 +599,7 @@ fun InputDialog(
         text = errorShowInfo,
         onDismiss = {})
 
-    Column(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer)) {
+    Column(modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)) {
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
         ) {
@@ -612,6 +614,8 @@ fun InputDialog(
                     Icon(
                         imageVector = if (isToolbarShow.value) Icons.Filled.IndeterminateCheckBox else Icons.Filled.AddBox,
                         contentDescription = "send",
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+
                     )
                 }
             }
@@ -662,7 +666,8 @@ fun InputDialog(
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.baseline_send_24),
                         contentDescription = "send",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+
                     )
                 }
             } else {
@@ -701,8 +706,11 @@ fun InputDialog(
                 Row {
                     IconButton(onClick = { currentInputSelector = InputSelector.EMOJI }) {
                         Icon(
-                            Icons.Filled.EmojiEmotions, contentDescription = "Localized description"
-                        )
+                            Icons.Filled.EmojiEmotions,
+                            contentDescription = "Localized description",
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+
+                            )
 
                     }
                     IconButton(onClick = {
@@ -711,11 +719,13 @@ fun InputDialog(
                                 ActivityResultContracts.PickVisualMedia.ImageOnly
                             )
                         )
+
                     }) {
                         Icon(
                             Icons.Filled.Image,
                             contentDescription = "Localized description",
-                        )
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                            )
                     }
                 }
             }

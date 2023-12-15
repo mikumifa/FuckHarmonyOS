@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
@@ -26,7 +25,6 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.EmojiEmotions
-import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.IndeterminateCheckBox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ColorScheme
@@ -356,7 +354,8 @@ fun UserInput(
                 Row {
                     IconButton(onClick = { currentInputSelector = InputSelector.EMOJI }) {
                         Icon(
-                            Icons.Filled.EmojiEmotions, contentDescription = "Localized description"
+                            Icons.Filled.EmojiEmotions, contentDescription = "Localized description",
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
                         )
 
                     }
@@ -378,6 +377,8 @@ fun UserInput(
                     Icon(
                         imageVector = if (isToolbarShow.value) Icons.Filled.IndeterminateCheckBox else Icons.Filled.AddBox,
                         contentDescription = "send",
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+
                     )
                 }
             }
@@ -441,7 +442,7 @@ fun UserInput(
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.baseline_send_24),
                             contentDescription = "send",
-                            tint = Color.White
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     }
                 } else {
@@ -456,7 +457,7 @@ fun UserInput(
                         }, modifier = Modifier
                             .size(48.dp)
                             .background(
-                                MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp)
+                                MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(12.dp)
                             )
                             .clip(CircleShape)
                     ) {
@@ -464,7 +465,7 @@ fun UserInput(
                             imageVector = if (!isRecording) ImageVector.vectorResource(R.drawable.baseline_keyboard_voice_24)
                             else ImageVector.vectorResource(R.drawable.baseline_stop_24),
                             contentDescription = "keyboard voice",
-                            tint = Color.White,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                 }
