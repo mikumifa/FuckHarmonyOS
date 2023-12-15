@@ -1,0 +1,15 @@
+package com.example.chatdiary.ui.theme
+
+enum class AppTheme(themeName: String) {
+
+    DEFAULT("DEFAULT"), MONET("MONET"), GREEN_APPLE("GREEN_APPLE"), LAVENDER("LAVENDER"), MIDNIGHT_DUSK(
+        "MIDNIGHT_DUSK"
+    ),
+    STRAWBERRY_DAIQUIRI("STRAWBERRY_DAIQUIRI"), TAKO(
+        "TAKO"
+    ),
+    TEALTURQUOISE("TEALTURQUOISE"), TIDAL_WAVE("TIDAL_WAVE"), YINYANG("YINYANG"), YOTSUBA("YOTSUBA"),
+
+    // Deprecated
+    DARK_BLUE("DARK_BLUE"), HOT_PINK("HOT_PINK"), BLUE("BLUE"),
+}

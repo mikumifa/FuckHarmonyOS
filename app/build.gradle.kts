@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.chatdiary2"
+    namespace = "com.example.chatdiary"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.chatdiary2"
+        applicationId = "com.example.chatdiary"
         minSdk = 30
         targetSdk = 34
         versionCode = 1
@@ -30,10 +30,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField ("String", "BASE_URL", "\"http://124.70.150.192:8080\"")
+            buildConfigField("String", "BASE_URL", "\"http://124.70.150.192:8080\"")
         }
         debug {
-            buildConfigField ("String", "BASE_URL", "\"http://124.70.150.192:8080\"")
+            buildConfigField("String", "BASE_URL", "\"http://124.70.150.192:8080\"")
 
             //buildConfigField ("String", "BASE_URL", "\"http://10.0.2.2:8080\"")
         }
@@ -63,7 +63,8 @@ android {
 
 
 dependencies {
-    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.31.0-alpha")
+    implementation("com.google.accompanist:accompanist-permissions:0.31.0-alpha")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.31.0-alpha")
     implementation("androidx.lifecycle:lifecycle-process:2.6.2")
     implementation("com.airbnb.android:lottie-compose:4.0.0")
     implementation("com.google.android.material:material:1.10.0")

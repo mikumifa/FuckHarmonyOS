@@ -15,7 +15,20 @@
         <State />
       </entry>
       <entry key="MainActivity">
-        <State />
+        <State>
+          <runningDeviceTargetSelectedWithDropDown>
+            <Target>
+              <type value="RUNNING_DEVICE_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="SERIAL_NUMBER" />
+                  <value value="AMAABIVOTGGU9DS8" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </runningDeviceTargetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2023-12-15T05:54:00.377270200Z" />
+        </State>
       </entry>
     </value>
   </component>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">chatDiary2</string>
+    <string name="app_name">日記</string>
 
     <!--LoginView-->
     <string name="login_success">"ログイン成功、ようこそ！"</string>
