@@ -3,6 +3,7 @@ package com.example.chatdiary.data;
 import androidx.compose.ui.graphics.Color
 import com.example.chatdiary.R
 import com.example.chatdiary.ui.theme.HappyColor
+import com.example.chatdiary.ui.theme.HappyColorShow
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
@@ -87,4 +88,38 @@ enum class HappyType(val titleResource: Int, var color: Color) {
     Empty(
         R.string.Empty, HappyColor.Empty
     )
+}
+
+var typeColorToShowColor = mapOf<Color, Color>(
+    Pair(HappyType.VeryHappy.color, HappyColorShow.VeryHappy),
+    Pair(HappyType.Happy.color, HappyColorShow.Happy),
+    Pair(HappyType.JustSoSo.color, HappyColorShow.JustSoSo),
+    Pair(HappyType.Sad.color, HappyColorShow.Sad),
+    Pair(HappyType.WantToDie.color, HappyColorShow.WantToDie),
+    Pair(HappyType.Empty.color, HappyColorShow.Empty),
+)
+
+val happyGradientStops: List<Pair<Float, Color>> = HappyType.values().map {
+    Pair(
+        when (it) {
+            HappyType.VeryHappy -> 0f / 4f
+            HappyType.Happy -> 1f / 4f
+            HappyType.JustSoSo -> 2f / 4f
+            HappyType.Sad -> 3f / 4f
+            HappyType.WantToDie -> 4f / 4f
+            HappyType.Empty -> 6f / 4f
+
+        }, it.color
+    )
+}
+
+fun HappyType.heightPos(): Float {
+    return when (this) {
+        HappyType.VeryHappy -> 0f / 5f
+        HappyType.Happy -> 1f / 5f
+        HappyType.JustSoSo -> 2f / 5f
+        HappyType.Sad -> 3f / 5f
+        HappyType.WantToDie -> 4f / 5f
+        HappyType.Empty -> 6f / 5f
+    }
 }

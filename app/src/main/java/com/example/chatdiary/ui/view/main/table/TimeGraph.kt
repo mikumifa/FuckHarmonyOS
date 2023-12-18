@@ -49,7 +49,6 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
@@ -77,6 +76,9 @@ import com.example.chatdiary.data.HappyDateWithType
 import com.example.chatdiary.data.HappyType
 import com.example.chatdiary.data.HappyValue
 import com.example.chatdiary.data.HappyWeakData
+import com.example.chatdiary.data.happyGradientStops
+import com.example.chatdiary.data.heightPos
+import com.example.chatdiary.data.typeColorToShowColor
 import com.example.chatdiary.ui.view.main.table.TimeGraphScope.timeGraphBar
 import eu.kanade.presentation.theme.colorscheme.md_theme_dark_onPrimaryContainer
 import eu.kanade.presentation.theme.colorscheme.md_theme_light_outlineVariant
@@ -138,7 +140,7 @@ fun WeekHeader(week: List<String>) {
                 modifier = Modifier
                     .width(50.dp)
                     .padding(vertical = 4.dp),
-                style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.onSecondaryContainer)
+                style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
             )
         }
     }
@@ -170,30 +172,6 @@ fun HappyBar(
     }
 }
 
-private val happyGradientStops: List<Pair<Float, Color>> = HappyType.values().map {
-    Pair(
-        when (it) {
-            HappyType.VeryHappy -> 0f / 5f
-            HappyType.Happy -> 1f / 5f
-            HappyType.JustSoSo -> 2f / 5f
-            HappyType.Sad -> 3f / 5f
-            HappyType.WantToDie -> 4f / 5f
-            HappyType.Empty -> 5f / 5f
-
-        }, it.color
-    )
-}
-
-private fun HappyType.heightPos(): Float {
-    return when (this) {
-        HappyType.VeryHappy -> 0f / 6f
-        HappyType.Happy -> 1f / 6f
-        HappyType.JustSoSo -> 2f / 6f
-        HappyType.Sad -> 3f / 6f
-        HappyType.WantToDie -> 4f / 6f
-        HappyType.Empty -> 5f / 6f
-    }
-}
 
 @Preview
 @Composable
@@ -226,7 +204,7 @@ private fun LegendItem(happyType: HappyType) {
             modifier = Modifier
                 .size(10.dp)
                 .clip(CircleShape)
-                .background(color = happyType.color)
+                .background(color = typeColorToShowColor[happyType.color]!!)
         )
         Text(
             stringResource(id = happyType.titleResource),
@@ -298,7 +276,11 @@ private fun HappyRoundedBar(
                 lineThicknessPx = lineThickness.toPx() / 2f
             )
             val gradientBrush = Brush.verticalGradient(
-                colorStops = happyGradientStops.toTypedArray(),
+                colorStops = happyGradientStops
+                    .map {
+                        Pair(it.first, typeColorToShowColor[it.second]!!)
+                    }
+                    .toTypedArray(),
                 startY = 0f,
                 endY = HappyType.values().size * barHeight.toPx()
             )
@@ -322,7 +304,7 @@ private fun HappyRoundedBar(
 /**
  * Generate the path for the different sleep periods.
  */
-private fun generateWeakPath(
+    private fun generateWeakPath(
     canvasSize: Size,
     happyWeakData: HappyWeakData,
     width: Float,
