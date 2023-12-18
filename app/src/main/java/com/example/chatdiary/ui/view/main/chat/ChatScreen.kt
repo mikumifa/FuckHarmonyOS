@@ -378,7 +378,7 @@ fun UserInput(
         /* nothing to do*/
     })
     speechToTextUtil
-    Column(modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)) {
+    Column(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer)) {
         if (isToolbarShow.value) {
             Box(
                 modifier = Modifier
@@ -391,7 +391,7 @@ fun UserInput(
                         Icon(
                             Icons.Filled.EmojiEmotions,
                             contentDescription = "Localized description",
-                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
 
                     }
@@ -413,7 +413,7 @@ fun UserInput(
                     Icon(
                         imageVector = if (isToolbarShow.value) Icons.Filled.IndeterminateCheckBox else Icons.Filled.AddBox,
                         contentDescription = "send",
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                        tint = MaterialTheme.colorScheme.primaryContainer
 
                     )
                 }
@@ -470,14 +470,14 @@ fun UserInput(
                         }, modifier = Modifier
                             .size(48.dp)
                             .background(
-                                MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp)
+                                MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(12.dp)
                             )
                             .clip(CircleShape)
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.baseline_send_24),
                             contentDescription = "send",
-                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                 } else {
@@ -627,5 +627,3 @@ private fun getSymbolAnnotation(
         else -> SymbolAnnotation(AnnotatedString(matchResult.value), null)
     }
 }
-
-private val JumpToBottomThreshold = 56.dp

@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.chatdiary.R
+import com.example.chatdiary.data.HappyType
 import com.example.chatdiary.ui.theme.HappyColor.Happy
 import com.example.chatdiary.ui.theme.HappyColor.JustSoSo
 import com.example.chatdiary.ui.theme.HappyColor.Sad
@@ -56,19 +58,20 @@ fun PieChart(
     modifier: Modifier = Modifier
 ) {
 
+    val context = LocalContext.current
     val totalSum = data.values.sum()
     val floatValue = mutableListOf<Float>()
     data.values.forEachIndexed { index, values ->
         floatValue.add(index, 360 * values.toFloat() / totalSum.toFloat())
     }
+    val nameToColorMap = HappyType.values().associate {
+        Pair(context.getString(it.titleResource), it.color)
+    }
 
-    val colors = listOf(
-        VeryHappy,
-        Happy,
-        JustSoSo,
-        Sad,
-        WantToDie,
-    )
+    val colors = data.keys.toList().map { name ->
+        nameToColorMap[name]!!
+    }
+
 
     var animationPlayed by remember { mutableStateOf(false) }
 
@@ -124,7 +127,9 @@ fun PieChart(
         }
         Text(
             text = stringResource(id = R.string.day_count), style = TextStyle(
-                fontSize = 30.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         )
         // To see the data in more structured way
@@ -142,8 +147,7 @@ fun DetailsPieChart(
     data: Map<String, Int>, colors: List<Color>
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         // create the data items
         data.values.forEachIndexed { index, value ->

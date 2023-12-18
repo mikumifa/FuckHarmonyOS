@@ -672,7 +672,7 @@ fun InputDialog(
                     }, modifier = Modifier
                         .size(48.dp)
                         .background(
-                            MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp)
+                            MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(12.dp)
                         )
                         .clip(CircleShape)
                 ) {
@@ -697,7 +697,7 @@ fun InputDialog(
                         }, modifier = Modifier
                             .size(48.dp)
                             .background(
-                                MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp)
+                                MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(12.dp)
                             )
                             .clip(CircleShape)
                     ) {
@@ -705,7 +705,7 @@ fun InputDialog(
                             imageVector = if (!isRecording) ImageVector.vectorResource(R.drawable.baseline_keyboard_voice_24)
                             else ImageVector.vectorResource(R.drawable.baseline_stop_24),
                             contentDescription = "keyboard voice",
-                            tint = Color.White,
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     }
                 }

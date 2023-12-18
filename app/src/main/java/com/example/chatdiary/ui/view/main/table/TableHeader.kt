@@ -16,16 +16,16 @@ import com.example.chatdiary.ui.view.main.table.HappyValueViewModel
 fun HappyDaySummary(modifier: Modifier = Modifier, happyValueViewModel: HappyValueViewModel) {
 
     val happyValueState by happyValueViewModel.happyValueListState.collectAsState()
-    val data = happyValueState.data.map { day ->
+    val data = happyValueState.data.filter { day -> day.value != -1 }.map { day ->
         HappyDateWithType(day.startDate, day.value)
     }.groupBy { it.type.titleResource }.mapValues { it.value.size }
 
-    var filterValues = mapOf(
+    val filterValues = mapOf(
         getPair(R.string.VeryHappy, data),
         getPair(R.string.Happy, data),
         getPair(R.string.JustSoSo, data),
+        getPair(R.string.Sad, data),
         getPair(R.string.WantToDie, data),
-        getPair(R.string.Empty, data),
     ).filterValues { it != null }
         .map { it.key to it.value!! }
         .toMap()
@@ -36,6 +36,11 @@ fun HappyDaySummary(modifier: Modifier = Modifier, happyValueViewModel: HappyVal
 
 @Composable
 private fun getPair(resId: Int, data: Map<Int, Int>): Pair<String, Int?> {
-    return Pair(stringResource(id = resId), data[resId]);
+    return if (data.containsKey(resId)) {
+        Pair(stringResource(id = resId), data[resId]);
+    } else {
+        Pair(stringResource(id = resId), null);
+
+    }
 }
 
