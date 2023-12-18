@@ -68,7 +68,6 @@ const val my_description =
     "A group of simple, open source Android apps without ads and unnecessary permissions, with materials design UI."
 
 
-
 @OptIn(
     ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class
 )
@@ -242,7 +241,7 @@ fun profileScreen(
                 onClick = {
                     editTitleState.value = "修改密码"
                     textState.value = ""
-                    showBottomSheet.value
+                    showBottomSheet.value = true
                     onClickState.value = {
                         isLoading.value = true
                         val result = profileViewModel.editUserPassword(
