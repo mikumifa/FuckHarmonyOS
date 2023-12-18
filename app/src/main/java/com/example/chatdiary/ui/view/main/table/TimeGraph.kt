@@ -92,7 +92,7 @@ private val lineThickness = 2.dp
 private val barHeight = 24.dp
 private const val animationDuration = 500
 private val textPadding = 4.dp
-private val expandedLength = HappyType.values().size * barHeight
+private val expandedLength = HappyType.values().size * (barHeight + 3.dp)
 
 @Composable
 @Preview
@@ -173,25 +173,25 @@ fun HappyBar(
 private val happyGradientStops: List<Pair<Float, Color>> = HappyType.values().map {
     Pair(
         when (it) {
-            HappyType.VeryHappy -> 1f / 7f
-            HappyType.Happy -> 2f / 7f
-            HappyType.JustSoSo -> 3f / 7f
-            HappyType.Sad -> 4f / 7f
-            HappyType.WantToDie -> 5f / 7f
-            HappyType.Empty -> 7f / 7f
+            HappyType.VeryHappy -> 0f / 5f
+            HappyType.Happy -> 1f / 5f
+            HappyType.JustSoSo -> 2f / 5f
+            HappyType.Sad -> 3f / 5f
+            HappyType.WantToDie -> 4f / 5f
+            HappyType.Empty -> 5f / 5f
+
         }, it.color
     )
 }
 
 private fun HappyType.heightPos(): Float {
     return when (this) {
-        HappyType.VeryHappy -> 1f / 7f
-        HappyType.Happy -> 2f / 7f
-        HappyType.JustSoSo -> 3f / 7f
-        HappyType.Sad -> 4f / 7f
-        HappyType.WantToDie -> 5f / 7f
-        HappyType.Empty -> 7f / 7f
-
+        HappyType.VeryHappy -> 0f / 6f
+        HappyType.Happy -> 1f / 6f
+        HappyType.JustSoSo -> 2f / 6f
+        HappyType.Sad -> 3f / 6f
+        HappyType.WantToDie -> 4f / 6f
+        HappyType.Empty -> 5f / 6f
     }
 }
 
@@ -260,9 +260,9 @@ private fun HappyRoundedBar(
     }
 
     Spacer(modifier = Modifier
-        .height(height)
-        .fillMaxWidth()
         .drawWithCache {
+            val width = this.size.width
+
             val cornerRadiusStartPx = 2.dp.toPx()
             val collapsedCornerRadiusPx = 10.dp.toPx()
             val animatedCornerRadius = CornerRadius(
@@ -292,7 +292,7 @@ private fun HappyRoundedBar(
             val happyPath = generateWeakPath(
                 canvasSize = this.size,
                 happyWeakData = happyWeakData,
-                width = this.size.width,
+                width = width,
                 barHeightPx = barHeight.toPx(),
                 heightAnimation = animationProgress,
                 lineThicknessPx = lineThickness.toPx() / 2f
@@ -313,7 +313,9 @@ private fun HappyRoundedBar(
                     cornerRadiusStartPx = cornerRadiusStartPx
                 )
             }
-        })
+        }
+        .height(height)
+        .fillMaxWidth())
 
 }
 
@@ -341,6 +343,7 @@ private fun generateWeakPath(
             )
         )
     }
+
     newWeekDate.forEach {
         val percentageOfTotal = happyWeakData.fractionOfTotalTime
         val periodWidth = percentageOfTotal * width
@@ -354,17 +357,16 @@ private fun generateWeakPath(
         val offsetY = lerp(
             0f, it.type.heightPos() * canvasSize.height, heightAnimation
         )
-        // step 1 - draw a line from previous sleep period to current
         if (previousHappyValue != null) {
             path.lineTo(
                 x = startOffsetPercentage * width + lineThicknessPx, y = offsetY + offset
             )
         }
-        // step 2 - add the current sleep period as rectangle to path
         path.addRect(
             rect = Rect(
-                offset = Offset(x = startOffsetPercentage * width + lineThicknessPx, y = offsetY),
-                size = canvasSize.copy(width = periodWidth, height = barHeightPx)
+                offset = Offset(
+                    x = startOffsetPercentage * width + lineThicknessPx, y = offsetY
+                ), size = canvasSize.copy(width = periodWidth, height = barHeightPx)
             )
         )
         // step 3 - 移动到末梢

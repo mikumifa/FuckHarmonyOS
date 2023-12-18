@@ -378,7 +378,7 @@ fun UserInput(
         /* nothing to do*/
     })
     speechToTextUtil
-    Column(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer)) {
+    Column(modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)) {
         if (isToolbarShow.value) {
             Box(
                 modifier = Modifier
@@ -391,7 +391,7 @@ fun UserInput(
                         Icon(
                             Icons.Filled.EmojiEmotions,
                             contentDescription = "Localized description",
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
                         )
 
                     }
@@ -413,7 +413,7 @@ fun UserInput(
                     Icon(
                         imageVector = if (isToolbarShow.value) Icons.Filled.IndeterminateCheckBox else Icons.Filled.AddBox,
                         contentDescription = "send",
-                        tint = MaterialTheme.colorScheme.primaryContainer
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
 
                     )
                 }
@@ -439,7 +439,7 @@ fun UserInput(
                     modifier = Modifier
                         .size(48.dp)
                         .background(
-                            MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(12.dp)
+                            MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(12.dp)
                         )
                         .clip(CircleShape), contentAlignment = Alignment.Center
                 ) {
@@ -470,14 +470,14 @@ fun UserInput(
                         }, modifier = Modifier
                             .size(48.dp)
                             .background(
-                                MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(12.dp)
+                                MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(12.dp)
                             )
                             .clip(CircleShape)
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.baseline_send_24),
                             contentDescription = "send",
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     }
                 } else {
@@ -492,7 +492,7 @@ fun UserInput(
                         }, modifier = Modifier
                             .size(48.dp)
                             .background(
-                                MaterialTheme.colorScheme.primaryContainer,
+                                MaterialTheme.colorScheme.secondaryContainer,
                                 shape = RoundedCornerShape(12.dp)
                             )
                             .clip(CircleShape)
@@ -501,7 +501,7 @@ fun UserInput(
                             imageVector = if (!isRecording) ImageVector.vectorResource(R.drawable.baseline_keyboard_voice_24)
                             else ImageVector.vectorResource(R.drawable.baseline_stop_24),
                             contentDescription = "keyboard voice",
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                     }
                 }
