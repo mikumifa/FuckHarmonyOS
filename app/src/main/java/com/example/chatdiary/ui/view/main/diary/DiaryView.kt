@@ -18,14 +18,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -45,7 +40,6 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -117,11 +111,11 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
-import coil.compose.AsyncImage
 import com.example.chatdiary.R
 import com.example.chatdiary.data.Diary
-import com.example.chatdiary.ui.view.common.AnimatedPreloader
+import com.example.chatdiary.ui.view.common.HorizontalImageList
 import com.example.chatdiary.ui.view.common.RequestWithPermission
+import com.example.chatdiary.ui.view.common.ZoomableImage
 import com.example.chatdiary.ui.view.common.keyboardAsState
 import com.example.chatdiary.ui.view.nav.Action
 import kotlinx.coroutines.delay
@@ -217,216 +211,130 @@ fun DiaryView(
     var searchText by remember { mutableStateOf("") }
     val diaryList = remember { mutableStateOf(emptyList<Diary>()) }
     var hasSearchResult by remember { mutableStateOf(false) }
-    Scaffold(topBar = {
-        TopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        ), title = {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    "日记", maxLines = 1, overflow = TextOverflow.Ellipsis
-                )
-                val currentDate = SimpleDateFormat("MMM d, yyyy", Locale.CHINA).format(Date())
-                Text(
-                    currentDate,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
-        }, navigationIcon = {
-            IconButton(onClick = { action.navController.navigateUp() }) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Localized description",
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-        }, actions = {
-            IconButton(onClick = { /* do something */ }) {
-                Icon(
-                    imageVector = Icons.Filled.MoreHoriz,
-                    contentDescription = "Localized description",
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+    var picUrl by remember { mutableStateOf<String?>(null) }
 
-                )
-            }
-        })
+    Box {
 
-    }, content = { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.background)
-                .padding(paddingValues = paddingValues)
-        ) {
-            Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.surfaceVariant)) {
-                Search(searchText, onQueryChange = { searchText = it }, onSearch = {
-                    val searchDiary =
-                        diaryViewModel?.searchDiariesByKeywordFlowAndDate(searchText, myDate)
-                    searchDiary?.observe(lifecycleOwner) {
-                        diaryList.value = it
-                        hasSearchResult = true
-                    }
-                }, onCancel = {
-                    hasSearchResult = false
-                    searchText = ""
-                })
-            }
-            Box(
-                Modifier
-                    .padding(4.dp)
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                LazyColumn(
-                    Modifier.fillMaxSize()
+        Scaffold(topBar = {
+            TopAppBar(colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ), title = {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-
-                    val diary = diaryViewModel?.searchDiariesByDateFlow(myDate)
-                    diary!!.observe(lifecycleOwner) {
-                        if (!hasSearchResult) diaryList.value = it
-                    }
-                    items(diaryList.value.size) {
-                        val item = diaryList.value[it]
-                        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
-                        dateFormat.parse(item.timestamp)?.let { date ->
-                            DiaryItem(
-                                title = item.title,
-                                context = item.content,
-                                pos = item.position,
-                                type = item.type,
-                                imageUrls = item.images,
-                                time = date,
-                            )
-                        }
-                    }
-
-                }
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(10.dp)
-                ) {
-
-                }
-            }
-            if (haveInputDialog) {
-                InputDialog(
-                    diaryViewModel!!, onSent = {
-                        val diary = diaryViewModel.searchDiariesByDateFlow(myDate)
-                        diary.observe(lifecycleOwner) {
-                            if (!hasSearchResult) diaryList.value = it
-                        }
-                    }, actions = action
-                )
-
-            }
-        }
-    })
-
-
-}
-
-@Preview
-@Composable
-fun DatePickerPreview() {
-    DatePicker({}, {})
-}
-
-@SuppressLint("WeekBasedYear")
-@Composable
-fun DatePicker(onDateSelected: (LocalDate) -> Unit, onDismissRequest: () -> Unit) {
-    val selDate = remember { mutableStateOf(LocalDate.now()) }
-
-    Dialog(onDismissRequest = { onDismissRequest() }, properties = DialogProperties()) {
-        Column(
-            modifier = Modifier
-                .wrapContentSize()
-                .background(
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(size = 16.dp)
-                )
-        ) {
-            Column(
-                Modifier
-                    .defaultMinSize(minHeight = 72.dp)
-                    .fillMaxWidth()
-                    .background(
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                    Text(
+                        "日记", maxLines = 1, overflow = TextOverflow.Ellipsis
                     )
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "Select date",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-
-                Spacer(modifier = Modifier.size(24.dp))
-
-                Text(
-                    text = selDate.value.format(DateTimeFormatter.ofPattern("MMM d, YYYY")),
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-
-                Spacer(modifier = Modifier.size(16.dp))
-            }
-
-            CustomCalendarView(onDateSelected = {
-                selDate.value = it
+                    val currentDate = SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(Date())
+                    Text(
+                        currentDate,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }, navigationIcon = {
+                IconButton(onClick = { action.navController.navigateUp() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Localized description",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }, actions = {
+//                IconButton(onClick = { /* do something */ }) {
+//                    Icon(
+//                        imageVector = Icons.Filled.MoreHoriz,
+//                        contentDescription = "Localized description",
+//                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+//
+//                    )
+//                }
             })
 
-            Spacer(modifier = Modifier.size(8.dp))
-
-            Row(
+        }, content = { paddingValues ->
+            Column(
                 modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(bottom = 16.dp, end = 16.dp)
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .padding(paddingValues = paddingValues)
             ) {
-                TextButton(
-                    onClick = onDismissRequest
+                Column(modifier = Modifier.background(color = MaterialTheme.colorScheme.surfaceVariant)) {
+                    Search(searchText, onQueryChange = { searchText = it }, onSearch = {
+                        val searchDiary =
+                            diaryViewModel?.searchDiariesByKeywordFlowAndDate(searchText, myDate)
+                        searchDiary?.observe(lifecycleOwner) {
+                            diaryList.value = it
+                            hasSearchResult = true
+                        }
+                    }, onCancel = {
+                        hasSearchResult = false
+                        searchText = ""
+                    })
+                }
+                Box(
+                    Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth()
+                        .weight(1f)
                 ) {
-                    Text(
-                        text = "Cancel",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
+                    LazyColumn(
+                        Modifier.fillMaxSize()
+                    ) {
 
-                TextButton(onClick = {
-                    onDateSelected(selDate.value)
-                    onDismissRequest()
-                }) {
-                    Text(
-                        text = "OK",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
+                        val diary = diaryViewModel?.searchDiariesByDateFlow(myDate)
+                        diary!!.observe(lifecycleOwner) {
+                            if (!hasSearchResult) diaryList.value = it
+                        }
+                        items(diaryList.value.size) {
+                            val item = diaryList.value[it]
+                            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
+                            dateFormat.parse(item.timestamp)?.let { date ->
+                                DiaryItem(title = item.title,
+                                    context = item.content,
+                                    pos = item.position,
+                                    type = item.type,
+                                    imageUrls = item.images,
+                                    time = date,
+                                    onClickImage = { url ->
+                                        picUrl = url
+                                    })
+                            }
+                        }
 
+                    }
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(10.dp)
+                    ) {
+
+                    }
+                }
+                if (haveInputDialog) {
+                    InputDialog(
+                        diaryViewModel!!, onSent = {
+                            val diary = diaryViewModel.searchDiariesByDateFlow(myDate)
+                            diary.observe(lifecycleOwner) {
+                                if (!hasSearchResult) diaryList.value = it
+                            }
+                        }, actions = action
+                    )
+
+                }
             }
+        })
+        //下面覆盖
+        if (picUrl != null) {
+            ZoomableImage(imageUrl = picUrl!!,
+                modifier = Modifier.fillMaxSize(),
+                onClose = { picUrl = null })
         }
     }
-}
 
-@Composable
-fun CustomCalendarView(onDateSelected: (LocalDate) -> Unit) {
-    // Adds view to Compose
-    AndroidView(modifier = Modifier.wrapContentSize(), factory = { context ->
-        CalendarView(ContextThemeWrapper(context, R.style.CalenderViewCustom))
-    }, update = { view ->
-        view.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            onDateSelected(
-                LocalDate.now().withMonth(month + 1).withYear(year).withDayOfMonth(dayOfMonth)
-            )
-        }
-    })
+
 }
 
 
@@ -609,13 +517,12 @@ fun InputDialog(
     }
 
 
-    TimedDialog(
-        showDialog = isErrorShow,
+    TimedDialog(showDialog = isErrorShow,
         durationMillis = 1000,
         text = errorShowInfo,
         onDismiss = {})
 
-    Column(modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)) {
+    Column(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer)) {
         Row(
             verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
         ) {
@@ -630,7 +537,7 @@ fun InputDialog(
                     Icon(
                         imageVector = if (isToolbarShow.value) Icons.Filled.IndeterminateCheckBox else Icons.Filled.AddBox,
                         contentDescription = "send",
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
             }
@@ -672,14 +579,15 @@ fun InputDialog(
                     }, modifier = Modifier
                         .size(48.dp)
                         .background(
-                            MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(12.dp)
+                            MaterialTheme.colorScheme.primaryContainer,
+                            shape = RoundedCornerShape(12.dp)
                         )
                         .clip(CircleShape)
                 ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.baseline_send_24),
                         contentDescription = "send",
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
 
                     )
                 }
@@ -697,7 +605,8 @@ fun InputDialog(
                         }, modifier = Modifier
                             .size(48.dp)
                             .background(
-                                MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(12.dp)
+                                MaterialTheme.colorScheme.primaryContainer,
+                                shape = RoundedCornerShape(12.dp)
                             )
                             .clip(CircleShape)
                     ) {
@@ -705,7 +614,7 @@ fun InputDialog(
                             imageVector = if (!isRecording) ImageVector.vectorResource(R.drawable.baseline_keyboard_voice_24)
                             else ImageVector.vectorResource(R.drawable.baseline_stop_24),
                             contentDescription = "keyboard voice",
-                            tint = MaterialTheme.colorScheme.onSecondaryContainer
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                 }
@@ -723,7 +632,7 @@ fun InputDialog(
                         Icon(
                             Icons.Filled.EmojiEmotions,
                             contentDescription = "Localized description",
-                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
 
                             )
 
@@ -739,7 +648,7 @@ fun InputDialog(
                         Icon(
                             Icons.Filled.Image,
                             contentDescription = "Localized description",
-                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                     }
                 }
@@ -766,7 +675,14 @@ fun InputDialog(
 
 @Composable
 fun DiaryItem(
-    title: String, context: String, pos: String, type: String, imageUrls: List<String>?, time: Date
+    title: String,
+    context: String,
+    pos: String,
+    type: String,
+    imageUrls: List<String>?,
+    time: Date,
+    onClickImage: (String) -> Unit
+
 ) {
     val scrollState = rememberScrollState()
     Card(
@@ -809,7 +725,9 @@ fun DiaryItem(
                     text = context, style = MaterialTheme.typography.bodyMedium
                 )
                 if (imageUrls != null && imageUrls.isNotEmpty()) {
-                    HorizontalImageList(imageUrls = imageUrls, modifier = Modifier)
+                    HorizontalImageList(
+                        imageUrls = imageUrls, modifier = Modifier, onClick = onClickImage
+                    )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Spacer(modifier = Modifier.weight(1f))
@@ -835,33 +753,6 @@ fun DiaryItem(
             }
         }
     }
-}
-
-@Composable
-fun HorizontalImageList(imageUrls: List<String>, modifier: Modifier = Modifier) {
-    if (imageUrls.isNotEmpty()) {
-        LazyRow(
-            modifier = modifier
-                .height(180.dp)
-                .fillMaxWidth()
-        ) {
-            items(imageUrls.size) { idx ->
-                val imageUrl = imageUrls[idx]
-                AsyncImage(
-                    model = imageUrl,
-                    contentDescription = imageUrl,
-                    modifier = Modifier
-                        .height(160.dp)
-                        .padding(end = 2.dp, start = 2.dp),
-                )
-            }
-        }
-    } else {
-        Box(modifier = Modifier.height(180.dp)) {
-            AnimatedPreloader(lottieSource = R.raw.no_image)
-        }
-    }
-
 }
 
 enum class EmojiStickerSelector {

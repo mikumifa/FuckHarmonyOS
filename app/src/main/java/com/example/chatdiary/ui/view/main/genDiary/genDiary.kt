@@ -34,7 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatdiary.R
 import com.example.chatdiary.ui.view.common.AnimatedPreloader
 import com.example.chatdiary.ui.view.main.diary.DiaryViewModel
-import com.example.chatdiary.ui.view.main.diary.HorizontalImageList
+import com.example.chatdiary.ui.view.common.HorizontalImageList
 import com.example.chatdiary.ui.view.nav.Action
 
 
@@ -90,9 +90,9 @@ fun GenDiaryScreen(
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
                 )
-                HorizontalImageList(
-                    imageUrls = imageUrls, modifier = Modifier.padding(start = 14.dp)
-                )
+                HorizontalImageList(imageUrls = imageUrls,
+                    modifier = Modifier.padding(start = 14.dp),
+                    onClick = {})
                 Text(
                     text = articleTitle,
                     style = MaterialTheme.typography.headlineSmall.copy(color = MaterialTheme.colorScheme.onBackground),
@@ -107,7 +107,7 @@ fun GenDiaryScreen(
                         tint = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
-                        text =stringResource(id = R.string.date),
+                        text = stringResource(id = R.string.date),
                         style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
                         modifier = Modifier
                             .padding(bottom = 8.dp)
