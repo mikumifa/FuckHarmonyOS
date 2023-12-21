@@ -40,6 +40,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,6 +50,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Error
@@ -60,6 +62,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
@@ -78,9 +81,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -118,6 +123,8 @@ import com.example.chatdiary.ui.view.common.RequestWithPermission
 import com.example.chatdiary.ui.view.common.ZoomableImage
 import com.example.chatdiary.ui.view.common.keyboardAsState
 import com.example.chatdiary.ui.view.nav.Action
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -212,7 +219,15 @@ fun DiaryView(
     val diaryList = remember { mutableStateOf(emptyList<Diary>()) }
     var hasSearchResult by remember { mutableStateOf(false) }
     var picUrl by remember { mutableStateOf<String?>(null) }
-
+    // 创建 LazyListState 来监听滚动
+    val listState = rememberLazyListState()
+    //创建一个只在 listState.firstVisibleItemIndex 改变时更新的派生状态
+    val showButton = remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 0
+        }
+    }.value
+    val scope = rememberCoroutineScope()
     Box {
 
         Scaffold(topBar = {
@@ -227,7 +242,8 @@ fun DiaryView(
                     Text(
                         "日记", maxLines = 1, overflow = TextOverflow.Ellipsis
                     )
-                    val currentDate = SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(Date())
+                    val currentDate =
+                        SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(Date())
                     Text(
                         currentDate,
                         maxLines = 1,
@@ -244,14 +260,7 @@ fun DiaryView(
                     )
                 }
             }, actions = {
-//                IconButton(onClick = { /* do something */ }) {
-//                    Icon(
-//                        imageVector = Icons.Filled.MoreHoriz,
-//                        contentDescription = "Localized description",
-//                        tint = MaterialTheme.colorScheme.onPrimaryContainer
-//
-//                    )
-//                }
+                Spacer(modifier = Modifier.size(40.dp))
             })
 
         }, content = { paddingValues ->
@@ -281,7 +290,7 @@ fun DiaryView(
                         .weight(1f)
                 ) {
                     LazyColumn(
-                        Modifier.fillMaxSize()
+                        state = listState, modifier = Modifier.fillMaxSize()
                     ) {
 
                         val diary = diaryViewModel?.searchDiariesByDateFlow(myDate)
@@ -305,13 +314,21 @@ fun DiaryView(
                         }
 
                     }
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(10.dp)
-                    ) {
 
-                    }
+                    if (showButton) {
+                        FloatingActionButton(
+                            onClick = {                // 实现回到顶部的逻辑
+                                scope.launch {
+                                    listState.animateScrollToItem(0)
+                                }
+
+                            }, modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(16.dp)
+                        ) {
+                            Icon(Icons.Filled.ArrowUpward, contentDescription = "Go to Top")
+                        }
+                    } //
                 }
                 if (haveInputDialog) {
                     InputDialog(
