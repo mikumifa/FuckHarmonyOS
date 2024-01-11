@@ -35,7 +35,7 @@ android {
         debug {
             buildConfigField("String", "BASE_URL", "\"http://124.70.150.192:8080\"")
 
-            //buildConfigField ("String", "BASE_URL", "\"http://10.0.2.2:8080\"")
+            // buildConfigField ("String", "BASE_URL", "\"http://10.0.2.2:8080\"")
         }
 
     }
@@ -63,6 +63,7 @@ android {
 
 
 dependencies {
+    implementation("com.rabbitmq:amqp-client:5.15.0")
     implementation("com.google.accompanist:accompanist-permissions:0.31.0-alpha")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.31.0-alpha")
     implementation("androidx.lifecycle:lifecycle-process:2.6.2")

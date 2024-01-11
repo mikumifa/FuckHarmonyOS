@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.chatdiary.data.Diary
+import com.example.chatdiary.service.AMQPProducer
 import com.example.chatdiary.service.DiaryService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.flow
@@ -59,16 +60,20 @@ class DiaryViewModel @Inject constructor(private val diaryService: DiaryService)
         val result = MutableLiveData<Boolean>()
         viewModelScope.launch {
             kotlin.runCatching {
-                diaryService.insertDiary(newDiary)
+                insertDiary(newDiary)
             }.onSuccess {
                 result.value = true
             }.onFailure {
                 result.value = false
+                Log.d("addDiary", it.message.toString())
             }
         }
         return result
     }
-
+    suspend fun insertDiary(newDiary: DiaryRequest){
+        val amqpProducer = AMQPProducer()
+        amqpProducer.sendDiary(newDiary)
+    }
     fun getDiariesFlow(): MutableLiveData<List<Diary>> {
 
         val resultLiveData = MutableLiveData<List<Diary>>()
